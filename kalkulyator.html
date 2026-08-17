@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="az">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Kalkulyator | Best Think TAX CONSULTANCY
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+    <style>
+
+        /* =========================================
+           KALKULYATOR
+           ========================================= */
+
+        .calculator-page {
+            padding-top: 55px;
+            padding-bottom: 80px;
+        }
+
+        .calculator-page .section-head {
+            margin-bottom: 35px;
+        }
+
+        .calculator-card {
+            max-width: 1050px;
+            margin: 0 auto;
+            padding: 36px;
+            background: #ffffff;
+            border: 1px solid #dfe6ef;
+            border-radius: 24px;
+            box-shadow:
+                0 18px 45px rgba(19, 35, 62, 0.07);
+        }
+
+        /* BAŞLIQ */
+
+        .calculator-title {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 38px;
+        }
+
+        .calculator-icon {
+            width: 72px;
+            height: 72px;
+            flex: 0 0 72px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #123f70,
+                    #2466d3
+                );
+
+            color: #ffffff;
+            border-radius: 20px;
+            font-size: 34px;
+            font-weight: 800;
+        }
+
+        .calculator-title h2 {
+            margin: 0 0 8px;
+            font-size: 32px;
+            line-height: 1.2;
+            color: var(--text);
+        }
+
+        .calculator-title p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 16px;
+        }
+
+        /* FORM */
+
+        .calculator-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px 28px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+        }
+
+        .form-group label {
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            height: 52px;
+            box-sizing: border-box;
+
+            padding: 0 15px;
+
+            border: 1px solid #d8e1ed;
+            border-radius: 12px;
+
+            background: #ffffff;
+            color: var(--text);
+
+            font-family: inherit;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: var(--blue);
+
+            box-shadow:
+                0 0 0 3px
+                rgba(36, 102, 211, 0.10);
+        }
+
+        /* MƏZƏNNƏ */
+
+        .rate-card {
+            min-height: 52px;
+            box-sizing: border-box;
+
+            padding: 15px 18px;
+
+            background: #f1f6ff;
+            border: 1px solid #d8e5f8;
+            border-radius: 12px;
+        }
+
+        .rate-card h3 {
+            margin: 0 0 6px;
+            font-size: 14px;
+            color: var(--text);
+        }
+
+        .rate-line {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+        }
+
+        .rate-value {
+            color: var(--blue);
+            font-size: 24px;
+            font-weight: 800;
+        }
+
+        .rate-currency {
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        /* YÜKLƏNİR */
+
+        .rate-loading {
+            color: #6b7a90;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .rate-error {
+            color: #c92121;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        /* MƏBLƏĞ */
+
+        .amount-input {
+            display: flex;
+            height: 52px;
+
+            overflow: hidden;
+
+            border: 1px solid #d8e1ed;
+            border-radius: 12px;
+
+            background: #ffffff;
+        }
+
+        .amount-input input {
+            flex: 1;
+            width: 100%;
+            height: 100%;
+
+            padding: 0 15px;
+
+            border: 0;
+            outline: none;
+
+            font-family: inherit;
+            font-size: 16px;
+        }
+
+        .amount-input span {
+            min-width: 70px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #f5f7fa;
+
+            border-left: 1px solid #d8e1ed;
+
+            font-weight: 700;
+        }
+
+        /* =========================================
+           HESABLAMA
+           ========================================= */
+
+        .calculation-details {
+            margin-top: 32px;
+
+            padding: 24px;
+
+            background: #f8fafc;
+
+            border: 1px solid #e1e7ef;
+
+            border-radius: 16px;
+        }
+
+        .calculation-details h3 {
+            margin: 0 0 18px;
+
+            font-size: 20px;
+
+            color: var(--text);
+        }
+
+        .calculation-row {
+            display: flex;
+
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 20px;
+
+            padding: 12px 0;
+
+            border-bottom: 1px solid #e4e9f0;
+        }
+
+        .calculation-row span {
+            color: var(--muted);
+        }
+
+        .calculation-row strong {
+            color: var(--text);
+
+            font-size: 16px;
+
+            text-align: right;
+        }
+
+        .calculation-difference {
+            display: flex;
+
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 20px;
+
+            padding-top: 18px;
+        }
+
+        .calculation-difference span {
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .calculation-difference strong {
+            color: #11823e;
+            font-size: 20px;
+        }
+
+        /* =========================================
+           NƏTİCƏ
+           ========================================= */
+
+        .calculator-result {
+            margin-top: 24px;
+
+            padding: 24px;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 20px;
+
+            background: #f1fbf3;
+
+            border: 1px solid #cfe8d5;
+
+            border-radius: 16px;
+        }
+
+        .result-icon {
+            width: 64px;
+            height: 64px;
+
+            flex: 0 0 64px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            background: #159447;
+
+            color: #ffffff;
+
+            border-radius: 50%;
+
+            font-size: 34px;
+            font-weight: 800;
+        }
+
+        .result-content {
+            flex: 1;
+        }
+
+        .result-content h3 {
+            margin: 0 0 8px;
+
+            color: #125a2e;
+
+            font-size: 20px;
+
+            line-height: 1.35;
+        }
+
+        .result-value {
+            color: #11823e;
+
+            font-size: 30px;
+
+            font-weight: 800;
+        }
+
+        /* MƏNFI NƏTİCƏ */
+
+        .calculator-result.negative {
+            background: #fff2f2;
+            border-color: #efcccc;
+        }
+
+        .calculator-result.negative .result-icon {
+            background: #d92d2d;
+        }
+
+        .calculator-result.negative .result-content h3 {
+            color: #9d1c1c;
+        }
+
+        .calculator-result.negative .result-value {
+            color: #c92121;
+        }
+
+        /* =========================================
+           AMB MƏLUMATI
+           ========================================= */
+
+        .calculator-info {
+            margin-top: 18px;
+
+            padding: 15px 18px;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            background: #fff9eb;
+
+            border: 1px solid #f1dba7;
+
+            border-radius: 12px;
+        }
+
+        .info-icon {
+            width: 28px;
+            height: 28px;
+
+            flex: 0 0 28px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            background: #123f70;
+
+            color: #ffffff;
+
+            border-radius: 50%;
+
+            font-weight: 800;
+        }
+
+        .calculator-info p {
+            margin: 0;
+
+            color: var(--text);
+
+            font-size: 14px;
+        }
+
+        /* =========================================
+           MOBİL
+           ========================================= */
+
+        @media (max-width: 700px) {
+
+            .calculator-page {
+                padding-top: 40px;
+                padding-bottom: 55px;
+            }
+
+            .calculator-card {
+                padding: 22px;
+                border-radius: 20px;
+            }
+
+            .calculator-title {
+                align-items: flex-start;
+                gap: 14px;
+                margin-bottom: 28px;
+            }
+
+            .calculator-icon {
+                width: 58px;
+                height: 58px;
+                flex-basis: 58px;
+
+                border-radius: 16px;
+
+                font-size: 28px;
+            }
+
+            .calculator-title h2 {
+                font-size: 24px;
+            }
+
+            .calculator-title p {
+                font-size: 14px;
+            }
+
+            .calculator-form {
+                grid-template-columns: 1fr;
+                gap: 18px;
+            }
+
+            .calculation-row {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .calculation-row strong {
+                text-align: left;
+            }
+
+            .calculation-difference {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .calculator-result {
+                align-items: flex-start;
+                padding: 20px;
+            }
+
+            .result-icon {
+                width: 54px;
+                height: 54px;
+
+                flex-basis: 54px;
+
+                font-size: 28px;
+            }
+
+            .result-content h3 {
+                font-size: 17px;
+            }
+
+            .result-value {
+                font-size: 27px;
+            }
+
+            .calculator-info {
+                align-items: flex-start;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<!-- =========================================
+     HEADER
+     ========================================= -->
+
+<!-- MƏRKƏZİ HEADER -->
+<div id="site-header"></div>
+
+<!-- =========================================
+     MAIN
+     ========================================= -->
+
+<main>
+
+    <section class="section calculator-page">
+
+        <div class="container">
+
+            <div class="section-head">
+
+                <p class="kicker">
+                    Praktik mühasibat alətləri
+                </p>
+
+        
+            
+                
+
+                <p>
+                    Mühasibat və biznes əməliyyatlarında istifadə edə biləcəyiniz
+                    praktik hesablayıcılar.
+                </p>
+
+            </div>
+
+
+            <article class="calculator-card">
+
+
+                <!-- BAŞLIQ -->
+
+                <div class="calculator-title">
+
+                    <div class="calculator-icon">
+                        ₼
+                    </div>
+
+                    <div>
+
+                        <h2>
+                            Məzənnə Fərqi Kalkulyatoru
+                        </h2>
+
+                        <p>
+                            Xarici valyuta ilə əməliyyatlarda
+                            məzənnə fərqini hesabla.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =====================================
+                     MƏLUMATLAR
+                     ===================================== -->
+
+                <div class="calculator-form">
+
+
+                    <!-- VALYUTA -->
+
+                    <div class="form-group">
+
+                        <label for="currency">
+                            Valyuta
+                        </label>
+
+                        <select id="currency">
+
+                            <option value="USD">
+                                USD — ABŞ dolları
+                            </option>
+
+                            <option value="EUR">
+                                EUR — Avro
+                            </option>
+
+                            <option value="RUB">
+                                RUB — Rusiya rublu
+                            </option>
+
+                            <option value="TRY">
+                                TRY — Türk lirəsi
+                            </option>
+
+                            <option value="CNY">
+                                CNY — Çin yuanı
+                            </option>
+
+                            <option value="GBP">
+                                GBP — Funt sterlinq
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- ƏMƏLİYYAT MƏBLƏĞİ -->
+
+                    <div class="form-group">
+
+                        <label for="amount">
+                            Əməliyyat məbləği
+                        </label>
+
+                        <div class="amount-input">
+
+                            <input
+                                type="number"
+                                id="amount"
+                                value="0.00"
+                                min="0"
+                                step="0.01"
+                            >
+
+                            <span id="currency-label">
+                                USD
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ÖDƏNİŞ TARİXİ -->
+
+                    <div class="form-group">
+
+                        <label for="payment-date">
+                            Ödəniş tarixi
+                        </label>
+
+                        <input
+                            type="date"
+                            id="payment-date"
+                        >
+
+                    </div>
+
+
+                    <!-- ÖDƏNİŞ MƏZƏNNƏSİ -->
+
+                    <div class="rate-card">
+
+                        <h3>
+                            Ödəniş məzənnəsi
+                        </h3>
+
+                        <div class="rate-line">
+
+                            <div
+                                class="rate-value"
+                                id="payment-rate"
+                            >
+                                —
+                            </div>
+
+                            <span class="rate-currency">
+                                AZN
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- İDXAL TARİXİ -->
+
+                    <div class="form-group">
+
+                        <label for="import-date">
+                            Malın idxal tarixi
+                        </label>
+
+                        <input
+                            type="date"
+                            id="import-date"
+                        >
+
+                    </div>
+
+
+                    <!-- İDXAL MƏZƏNNƏSİ -->
+
+                    <div class="rate-card">
+
+                        <h3>
+                            İdxal məzənnəsi
+                        </h3>
+
+                        <div class="rate-line">
+
+                            <div
+                                class="rate-value"
+                                id="import-rate"
+                            >
+                                —
+                            </div>
+
+                            <span class="rate-currency">
+                                AZN
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- =====================================
+                     HESABLAMA
+                     ===================================== -->
+
+                <div class="calculation-details">
+
+                    <h3>
+                        Hesablama
+                    </h3>
+
+
+                    <div class="calculation-row">
+
+                        <span>
+                            Ödəniş zamanı
+                        </span>
+
+                        <strong id="payment-calculation">
+                            —
+                        </strong>
+
+                    </div>
+
+
+                    <div class="calculation-row">
+
+                        <span>
+                            Malın idxalı zamanı
+                        </span>
+
+                        <strong id="import-calculation">
+                            —
+                        </strong>
+
+                    </div>
+
+
+                    <div class="calculation-difference">
+
+                        <span>
+                            Məzənnə fərqi
+                        </span>
+
+                        <strong id="calculation-difference">
+                            —
+                        </strong>
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- =====================================
+                     NƏTİCƏ
+                     ===================================== -->
+
+                <div
+                    class="calculator-result"
+                    id="calculator-result"
+                >
+
+                    <div
+                        class="result-icon"
+                        id="result-icon"
+                    >
+                        ↗
+                    </div>
+
+
+                    <div class="result-content">
+
+                        <h3 id="result-title">
+                            Nəticə
+                        </h3>
+
+                        <div
+                            class="result-value"
+                            id="result-value"
+                        >
+                            —
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =====================================
+                     AMB MƏLUMATI
+                     ===================================== -->
+
+                <div class="calculator-info">
+
+                    <div class="info-icon">
+                        i
+                    </div>
+
+                    <p>
+                        Məzənnələr Azərbaycan Mərkəzi Bankından
+                        (AMB) alınır və məlumatlar API vasitəsilə
+                        avtomatik yenilənir.
+                    </p>
+
+                </div>
+
+
+            </article>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<!-- =========================================
+     FOOTER
+     ========================================= -->
+
+<footer
+    id="elaqe"
+    class="footer"
+>
+
+    <div class="container footer-grid">
+
+
+        <div>
+
+            <img
+                class="footer-logo"
+                src="assets/logo.png"
+                alt="Best Think TAX CONSULTANCY"
+            >
+
+            <p>
+                Vergi və mühasibatlıq sahəsində peşəkar həllər.
+            </p>
+
+        </div>
+
+
+        <div>
+
+            <h4>
+                Sürətli keçidlər
+            </h4>
+
+            <a href="index.html">
+                Ana səhifə
+            </a>
+
+            <a href="haqqimizda.html">
+                Haqqımızda
+            </a>
+
+            <a href="xidmetlerimiz.html">
+                Xidmətlərimiz
+            </a>
+
+            <a href="kalkulyator.html">
+                Kalkulyator
+            </a>
+
+        </div>
+
+
+        <div>
+
+            <h4>
+                Xidmətlər
+            </h4>
+
+            <a href="xidmetlerimiz.html">
+                Vergi uçotu
+            </a>
+
+            <a href="xidmetlerimiz.html">
+                Mühasibat uçotu
+            </a>
+
+            <a href="xidmetlerimiz.html">
+                Maliyyə hesabatları
+            </a>
+
+        </div>
+
+
+        <div>
+
+            <h4>
+                Əlaqə
+            </h4>
+
+            <a href="elaqe.html">
+                Əlaqə forması
+            </a>
+
+        </div>
+
+
+    </div>
+
+
+    <div class="container copyright">
+
+        © 2026 Best Think Konsaltinq.
+        Bütün hüquqlar qorunur.
+
+    </div>
+
+</footer>
+
+
+
+<script src="script.js"></script>
+</body>
+
+</html>
