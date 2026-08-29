@@ -506,7 +506,7 @@
 /* BAŞLIQ HİSSƏSİ */
 
 .article-hero {
-    padding: 70px 0 55px;
+    padding: 35px 0 30px;
     background: #f6f8fb;
 }
 
@@ -544,7 +544,7 @@
 /* ƏSAS MƏQALƏ HİSSƏSİ */
 
 .article-section {
-    padding: 70px 0;
+    padding: 40px 0;
 }
 
 .article-container {
@@ -556,7 +556,7 @@
 
 .article-intro {
     max-width: 850px;
-    margin: 0 auto 70px;
+    margin: 0 auto 45px;
 
     font-size: 18px;
     line-height: 1.8;
@@ -655,14 +655,12 @@
 
 .best-think-note {
     max-width: 850px;
-    margin: 70px auto 50px;
+    margin: 40px auto 50px;
 
-    padding: 35px 40px;
-
-    background: #f1f6fb;
-
-    border-left: 5px solid var(--primary);
-    border-radius: 14px;
+    padding: 0;
+    background: none;
+    border: none;
+}
 }
 
 .best-think-note h3 {
