@@ -922,6 +922,10 @@
 .cta{padding:42px 0}
 .cta h2{font-size:34px}
 .cta-inner{align-items:flex-end}
+.btn-arrow{display:inline-block;margin-left:6px;font-size:1.18em;font-weight:900;line-height:.7;transform:translateY(1px)}
+
+/* Düymələrdə ox işarəsini istifadə etmirik — daha təmiz və yığcam görünüş üçün. */
+.btn-arrow{display:none}
 @media(max-width:600px){.cta{padding:36px 0}.cta h2{font-size:28px}}
 .hero h1{font-size:clamp(36px,3.8vw,50px)}
 .cta h2,.contact-main-title{font-size:30px !important}
