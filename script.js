@@ -123,6 +123,35 @@ const response = await fetch(headerPath);
 loadHeader();
 
 /* =========================================================
+   VAHİD FOOTER-İ BÜTÜN SƏHİFƏLƏRƏ YÜKLƏ
+   ========================================================= */
+
+async function loadFooter() {
+
+    const footer = document.querySelector('footer.footer');
+
+    if (!footer) {
+        return;
+    }
+
+    try {
+        const response = await fetch('/footer.html?v=1');
+
+        if (!response.ok) {
+            throw new Error(`footer.html yüklənmədi: ${response.status}`);
+        }
+
+        footer.outerHTML = await response.text();
+    }
+
+    catch (error) {
+        console.error('Footer xətası:', error);
+    }
+}
+
+loadFooter();
+
+/* =========================================================
    2. MƏZƏNNƏ FƏRQİ KALKULYATORU
    ========================================================= */
 
