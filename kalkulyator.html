@@ -12,24 +12,24 @@
 
 <meta
     name="description"
-    content="Azərbaycan Mərkəzi Bankının rəsmi məzənnələri ilə xarici valyuta, ödəniş və idxal əməliyyatları üzrə məzənnə fərqini hesablayın."
+    content="Valyuta məzənnəsi fərqini və gross əmək haqqından net əmək haqqını əsas tutulmalarla birlikdə hesablayın."
 >
 
 <title>
-    Valyuta Məzənnəsi Kalkulyatoru | Best Think
+    Əmək haqqı və Məzənnə Kalkulyatorları | Best Think
 </title>
 
 <meta property="og:type" content="website">
-<meta property="og:title" content="Məzənnə Fərqi Kalkulyatoru | BEST THINK TAX CONSULTANCY">
-<meta property="og:description" content="Azərbaycan Mərkəzi Bankının rəsmi məzənnələri ilə ödəniş və idxal tarixləri üzrə valyuta hesablamalarını aparın.">
+<meta property="og:title" content="Əmək haqqı və Məzənnə Kalkulyatorları | BEST THINK TAX CONSULTANCY">
+<meta property="og:description" content="Gross əmək haqqından net əmək haqqını və valyuta məzənnəsi fərqini praktik şəkildə hesablayın.">
 <meta property="og:url" content="https://besthink.az/kalkulyator.html">
 <meta property="og:image" content="https://besthink.az/assets/logo.png">
 <meta property="og:site_name" content="BEST THINK TAX CONSULTANCY">
 <meta property="og:locale" content="az_AZ">
 
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Məzənnə Fərqi Kalkulyatoru | BEST THINK TAX CONSULTANCY">
-<meta name="twitter:description" content="Azərbaycan Mərkəzi Bankının rəsmi məzənnələri ilə ödəniş və idxal tarixləri üzrə valyuta hesablamalarını aparın.">
+<meta name="twitter:title" content="Əmək haqqı və Məzənnə Kalkulyatorları | BEST THINK TAX CONSULTANCY">
+<meta name="twitter:description" content="Gross əmək haqqından net əmək haqqını və valyuta məzənnəsi fərqini praktik şəkildə hesablayın.">
 <meta name="twitter:image" content="https://besthink.az/assets/logo.png">
 
 <link
@@ -541,6 +541,425 @@
 
         }
 
+        /* =========================================
+           ƏMƏK HAQQI KALKULYATORU
+           ========================================= */
+
+        .calculator-grid {
+            max-width: 1240px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 24px;
+            align-items: start;
+        }
+
+        .calculator-grid .calculator-card {
+            max-width: none;
+            margin: 0;
+            padding: 30px;
+        }
+
+        .calculator-grid .calculator-title {
+            gap: 15px;
+            margin-bottom: 28px;
+        }
+
+        .calculator-grid .calculator-icon {
+            width: 62px;
+            height: 62px;
+            flex-basis: 62px;
+            border-radius: 17px;
+            font-size: 29px;
+        }
+
+        .salary-form {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px 18px;
+        }
+
+        .salary-field-full {
+            grid-column: 1 / -1;
+        }
+
+        .salary-check {
+            min-height: 70px;
+            box-sizing: border-box;
+            display: flex !important;
+            flex-direction: row !important;
+            align-items: center;
+            gap: 12px;
+            padding: 13px 14px;
+            border: 1px solid #d8e1ed;
+            border-radius: 12px;
+            background: #f8fafc;
+            cursor: pointer;
+        }
+
+        .salary-calculator-card .salary-check input {
+            width: 18px;
+            height: 18px;
+            flex: 0 0 18px;
+            margin: 0;
+            accent-color: var(--blue);
+        }
+
+        .salary-check span {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .salary-check strong {
+            color: var(--text);
+            font-size: 14px;
+        }
+
+        .salary-check small {
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 400;
+            line-height: 1.35;
+        }
+
+        .salary-calculation {
+            margin-top: 24px;
+            padding: 20px;
+        }
+
+        .salary-calculation h3 {
+            margin-bottom: 12px;
+            font-size: 19px;
+        }
+
+        .salary-calculation .calculation-row {
+            padding: 10px 0;
+        }
+
+        .salary-calculation .calculation-row strong {
+            font-size: 14px;
+        }
+
+        .salary-calculation .salary-total-row {
+            margin-top: 7px;
+            padding-top: 15px;
+            border-top: 1px solid #ccd7e4;
+            border-bottom: 0;
+        }
+
+        .salary-calculation .salary-total-row span,
+        .salary-calculation .salary-total-row strong {
+            color: var(--text);
+            font-weight: 800;
+        }
+
+        .salary-result {
+            margin-top: 18px;
+            padding: 20px;
+        }
+
+        .salary-result .result-value {
+            font-size: 27px;
+        }
+
+        .salary-info {
+            margin-top: 14px;
+            padding: 13px 15px;
+        }
+
+        .salary-info p {
+            font-size: 12px;
+            line-height: 1.45;
+        }
+
+        .salary-input-grid,
+        .salary-settings-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .salary-calculator-card .amount-input .salary-calculation-mode {
+            width: 104px;
+            flex: 0 0 104px;
+            height: 100%;
+            box-sizing: border-box;
+            padding: 0 30px 0 12px;
+            border: 0;
+            border-left: 1px solid #d8e1ed;
+            border-radius: 0;
+            background-color: #f5f7fa;
+            color: var(--blue);
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .salary-calculator-card .amount-input .salary-calculation-mode:focus {
+            border-left-color: var(--blue);
+            box-shadow: inset 0 0 0 2px rgba(36, 102, 211, .16);
+        }
+
+        .salary-settings-grid {
+            margin-top: 20px;
+            align-items: start;
+        }
+
+        .salary-deduction-input {
+            height: 52px;
+            box-sizing: border-box;
+            display: grid;
+            grid-template-columns: 100px minmax(0, 1fr) 56px;
+            overflow: hidden;
+            border: 1px solid #d8e1ed;
+            border-radius: 12px;
+            background: #ffffff;
+        }
+
+        .salary-deduction-input select,
+        .salary-deduction-input input {
+            width: 100%;
+            height: 100%;
+            box-sizing: border-box;
+            padding: 0 10px;
+            border: 0;
+            border-radius: 0;
+            outline: none;
+            background: transparent;
+            font-family: inherit;
+            font-size: 14px;
+            color: var(--text);
+        }
+
+        .salary-deduction-input select {
+            border-right: 1px solid #d8e1ed;
+            background: #f5f7fa;
+            font-weight: 700;
+        }
+
+        .salary-deduction-input input:focus {
+            box-shadow: inset 0 0 0 2px rgba(36, 102, 211, .16);
+        }
+
+        .salary-deduction-input span {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-left: 1px solid #d8e1ed;
+            background: #f5f7fa;
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .salary-field-hint {
+            display: block;
+            margin-top: 7px;
+            color: var(--muted);
+            font-size: 11px;
+            line-height: 1.35;
+        }
+
+        .salary-tax-exemptions {
+            margin-top: 20px;
+        }
+
+        .salary-exemption-heading {
+            display: block;
+            margin-bottom: 9px;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .salary-exemption-option {
+            min-height: 64px;
+        }
+
+        .salary-main-workplace-option {
+            height: 52px;
+            box-sizing: border-box;
+            background: #ffffff;
+        }
+
+        .salary-main-workplace-label {
+            flex: 1;
+            color: var(--text);
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .salary-help-icon {
+            position: relative;
+            width: 20px;
+            height: 20px;
+            flex: 0 0 20px;
+            display: inline-flex !important;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #eef1f4;
+            color: #78869a;
+            font-size: 12px;
+            font-style: normal;
+            font-weight: 800;
+            line-height: 1;
+            cursor: help;
+        }
+
+        .salary-help-icon::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            z-index: 10;
+            right: 0;
+            bottom: calc(100% + 9px);
+            width: 235px;
+            padding: 9px 11px;
+            border-radius: 8px;
+            background: #13233e;
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 400;
+            line-height: 1.4;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(4px);
+            transition: opacity .18s ease, transform .18s ease;
+        }
+
+        .salary-help-icon:hover::after,
+        .salary-help-icon:focus::after {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .salary-tax-exemptions {
+            grid-column: 1 / -1;
+            margin-top: 20px;
+            border: 1px solid #d8e1ed;
+            border-radius: 14px;
+            background: #ffffff;
+        }
+
+        .salary-tax-exemptions summary {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 15px 17px;
+            color: var(--text);
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            list-style: none;
+        }
+
+        .salary-tax-exemptions summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .salary-tax-exemptions summary::after {
+            content: "+";
+            width: 22px;
+            height: 22px;
+            flex: 0 0 22px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #eef1f4;
+            color: #78869a;
+            font-size: 18px;
+            font-weight: 400;
+            line-height: 1;
+        }
+
+        .salary-tax-exemptions[open] summary::after {
+            content: "−";
+        }
+
+        .salary-exemption-selection {
+            margin-left: auto;
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .salary-exemption-list {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+            padding: 0 12px 12px;
+            border-top: 1px solid #e5eaf0;
+        }
+
+        .salary-exemption-option {
+            align-items: flex-start;
+            min-height: 0;
+            padding: 11px 12px;
+            background: #f8fafc;
+        }
+
+        .salary-exemption-option input {
+            margin-top: 3px !important;
+        }
+
+        .salary-exemption-option span {
+            min-width: 0;
+        }
+
+        .salary-exemption-option strong {
+            font-size: 12px;
+        }
+
+        .salary-exemption-option small {
+            font-size: 11px;
+        }
+
+        .salary-exemption-note {
+            margin: 0;
+            padding: 0 17px 15px;
+            color: var(--muted);
+            font-size: 11px;
+            line-height: 1.4;
+        }
+
+        @media (max-width: 1100px) {
+
+            .calculator-grid {
+                grid-template-columns: 1fr;
+                max-width: 700px;
+            }
+
+        }
+
+        @media (max-width: 700px) {
+
+            .calculator-grid .calculator-card {
+                padding: 22px;
+            }
+
+            .salary-form {
+                grid-template-columns: 1fr;
+                gap: 18px;
+            }
+
+            .salary-input-grid,
+            .salary-settings-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .salary-exemption-list {
+                grid-template-columns: 1fr;
+            }
+
+            .salary-field-full {
+                grid-column: auto;
+            }
+
+        }
+
     </style>
 
 </head>
@@ -583,7 +1002,9 @@
             </div>
 
 
-            <article class="calculator-card">
+            <div class="calculator-grid">
+
+            <article class="calculator-card calculator-card-exchange">
 
 
                 <!-- BAŞLIQ -->
@@ -877,6 +1298,383 @@
 
 
             </article>
+
+
+            <article class="calculator-card salary-calculator-card">
+
+                <div class="calculator-title">
+
+                    <div class="calculator-icon">
+                        ₼
+                    </div>
+
+                    <div>
+
+                        <h2 class="calculator-main-title">
+                            Əmək haqqı kalkulyatoru
+                        </h2>
+
+                        <p>
+                            Gross və ya net əmək haqqını hesabla.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="salary-input-grid">
+
+                    <div class="form-group">
+
+                        <label for="salary-gross">
+                            Aylıq gəlir
+                        </label>
+
+                        <div class="amount-input">
+
+                            <input
+                                type="number"
+                                id="salary-gross"
+                                value="1000"
+                                min="0"
+                                step="0.01"
+                                inputmode="decimal"
+                            >
+
+                            <select
+                                id="salary-calculation-mode"
+                                class="salary-calculation-mode"
+                                aria-label="Aylıq gəlirin növü"
+                            >
+                                <option value="gross" selected>Gross</option>
+                                <option value="net">Net</option>
+                            </select>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="salary-sector">
+                            Müəssisənin fəaliyyət sahəsi
+                        </label>
+
+                        <select id="salary-sector">
+
+                            <option value="public-oil">
+                                Neft-qaz və dövlət sektoru
+                            </option>
+
+                            <option value="private">
+                                Özəl sektor
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                </div>
+
+
+                <div class="salary-settings-grid">
+
+                    <div class="form-group salary-main-workplace-field">
+
+                        <label for="salary-main-workplace">
+                            Əsas iş yeri
+                        </label>
+
+                        <label for="salary-main-workplace" class="salary-check salary-main-workplace-option">
+
+                            <input
+                                type="checkbox"
+                                id="salary-main-workplace"
+                                checked
+                            >
+
+                            <span class="salary-main-workplace-label">
+                                Bəli, əsas iş yeridir
+                            </span>
+
+                            <span
+                                class="salary-help-icon"
+                                tabindex="0"
+                                role="img"
+                                aria-label="Əsas iş yeri üzrə 200 AZN azadolma haqqında məlumat"
+                                data-tooltip="Əsas iş yerində 2500 AZN-dək aylıq gəlirin 200 AZN hissəsi gəlir vergisindən azaddır."
+                            >
+                                i
+                            </span>
+
+                        </label>
+
+                    </div>
+
+
+                    <div class="form-group salary-deduction-field">
+
+                        <label for="salary-other-deduction">
+                            Əmək haqqından tutulmalar
+                        </label>
+
+                        <div class="salary-deduction-input">
+
+                            <select id="salary-deduction-type">
+                                <option value="amount">Məbləğ</option>
+                                <option value="percent">Faiz</option>
+                            </select>
+
+                            <input
+                                type="number"
+                                id="salary-other-deduction"
+                                value="0"
+                                min="0"
+                                step="0.01"
+                                inputmode="decimal"
+                            >
+
+                            <span id="salary-other-deduction-suffix">
+                                AZN
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <details class="salary-tax-exemptions" id="salary-tax-exemptions">
+
+                    <summary>
+                        <span>
+                            Gəlir vergisindən azadolmalar və güzəştlər
+                        </span>
+
+                        <span
+                            class="salary-exemption-selection"
+                            id="salary-exemption-selection"
+                        >
+                            Seçilməyib
+                        </span>
+                    </summary>
+
+                    <div class="salary-exemption-list">
+
+                        <label class="salary-check salary-exemption-option">
+                            <input type="radio" name="salary-tax-exemption" value="800" data-code="VM 102.1-1">
+                            <span>
+                                <strong>VM 102.1-1</strong>
+                                <small>Şəhid statusu almış şəxslərin valideynləri, dul arvadları (ərləri) və övladları - 800 AZN</small>
+                            </span>
+                        </label>
+
+                        <label class="salary-check salary-exemption-option">
+                            <input type="radio" name="salary-tax-exemption" value="400" data-code="VM 102.2.1">
+                            <span>
+                                <strong>VM 102.2.1</strong>
+                                <small>Azərbaycan Respublikasının Vətən Müharibəsi Qəhrəmanları - 400 AZN</small>
+                            </span>
+                        </label>
+
+                        <label class="salary-check salary-exemption-option">
+                            <input type="radio" name="salary-tax-exemption" value="400" data-code="VM 102.2.1-1">
+                            <span>
+                                <strong>VM 102.2.1-1</strong>
+                                <small>Azərbaycanın Milli Qəhrəmanları - 400 AZN</small>
+                            </span>
+                        </label>
+
+                        <label class="salary-check salary-exemption-option">
+                            <input type="radio" name="salary-tax-exemption" value="400" data-code="VM 102.2.2">
+                            <span>
+                                <strong>VM 102.2.2</strong>
+                                <small>Sovet İttifaqı və Sosialist Əməyi Qəhrəmanları - 400 AZN</small>
+                            </span>
+                        </label>
+
+                        <label class="salary-check salary-exemption-option">
+                            <input type="radio" name="salary-tax-exemption" value="400" data-code="VM 102.2.4">
+                            <span>
+                                <strong>VM 102.2.4</strong>
+                                <small>Müharibə ilə əlaqədar əlilliyi olan şəxslər - 400 AZN</small>
+                            </span>
+                        </label>
+
+                        <label class="salary-check salary-exemption-option">
+                            <input type="radio" name="salary-tax-exemption" value="400" data-code="VM 102.2.5">
+                            <span>
+                                <strong>VM 102.2.5</strong>
+                                <small>Həlak olmuş və ya sonradan vəfat etmiş döyüşçülərin dul arvadları (ərləri) və övladları - 400 AZN</small>
+                            </span>
+                        </label>
+
+                        <label class="salary-check salary-exemption-option">
+                            <input type="radio" name="salary-tax-exemption" value="400" data-code="VM 102.2.6">
+                            <span>
+                                <strong>VM 102.2.6</strong>
+                                <small>1941-1945-ci illərdə arxa cəbhədə təltif olunan şəxslər - 400 AZN</small>
+                            </span>
+                        </label>
+
+                        <label class="salary-check salary-exemption-option">
+                            <input type="radio" name="salary-tax-exemption" value="400" data-code="VM 102.2.7">
+                            <span>
+                                <strong>VM 102.2.7</strong>
+                                <small>Qanunvericiliklə müəyyən edilmiş müharibə veteranları - 400 AZN</small>
+                            </span>
+                        </label>
+
+                        <label class="salary-check salary-exemption-option">
+                            <input type="radio" name="salary-tax-exemption" value="400" data-code="VM 102.2.8">
+                            <span>
+                                <strong>VM 102.2.8</strong>
+                                <small>Çernobıl və digər radiasiya qəzaları nəticəsində şüa xəstəliyinə tutulmuş şəxslər - 400 AZN</small>
+                            </span>
+                        </label>
+
+                        <label class="salary-check salary-exemption-option">
+                            <input type="radio" name="salary-tax-exemption" value="400" data-code="VM 102.2.9">
+                            <span>
+                                <strong>VM 102.2.9</strong>
+                                <small>Minatəmizləyənlərin həlak olmuş və ya vəfat etmiş valideynləri, dul arvadları (ərləri) və övladları - 400 AZN</small>
+                            </span>
+                        </label>
+
+                        <label class="salary-check salary-exemption-option">
+                            <input type="radio" name="salary-tax-exemption" value="200" data-code="VM 102.3">
+                            <span>
+                                <strong>VM 102.3</strong>
+                                <small>61-100% funksional pozuntu ilə əlilliyi olan şəxslər, əlilliyi olan uşaqlar və onlara qulluq edən şəxslər - 200 AZN</small>
+                            </span>
+                        </label>
+
+                        <label class="salary-check salary-exemption-option">
+                            <input type="radio" name="salary-tax-exemption" value="100" data-code="VM 102.4.1">
+                            <span>
+                                <strong>VM 102.4.1</strong>
+                                <small>Həlak olmuş və ya vəfat etmiş döyüşçülərin valideynləri; həlak olmuş dövlət qulluqçularının valideynləri və dul arvadları (ərləri) - 100 AZN</small>
+                            </span>
+                        </label>
+
+                        <label class="salary-check salary-exemption-option">
+                            <input type="radio" name="salary-tax-exemption" value="100" data-code="VM 102.4.3">
+                            <span>
+                                <strong>VM 102.4.3</strong>
+                                <small>Əfqanıstana və digər döyüş əməliyyatlarına göndərilmiş hərbi qulluqçular və hərbi vəzifəlilər - 100 AZN</small>
+                            </span>
+                        </label>
+
+                        <label class="salary-check salary-exemption-option">
+                            <input type="radio" name="salary-tax-exemption" value="100" data-code="VM 102.4.5">
+                            <span>
+                                <strong>VM 102.4.5</strong>
+                                <small>Məcburi köçkünlər və onlara bərabər tutulan şəxslər - 100 AZN</small>
+                            </span>
+                        </label>
+
+                        <label class="salary-check salary-exemption-option">
+                            <input type="radio" name="salary-tax-exemption" value="50" data-code="VM 102.5">
+                            <span>
+                                <strong>VM 102.5</strong>
+                                <small>Himayəsində azı üç nəfər olan ər və ya arvad - 50 AZN</small>
+                            </span>
+                        </label>
+
+                    </div>
+
+                    <p class="salary-exemption-note">
+                        Qeyd: Bir neçə güzəşt hüququ olduqda yalnız məbləğcə ən böyük güzəşt nəzərə alınır.
+                    </p>
+
+                </details>
+
+
+                <div class="calculation-details salary-calculation">
+
+                    <h3>
+                        Hesablama
+                    </h3>
+
+                    <div class="calculation-row">
+                        <span>Gross əmək haqqı</span>
+                        <strong id="salary-gross-result">—</strong>
+                    </div>
+
+                    <div class="calculation-row">
+                        <span>Əsas iş yeri üzrə azadolma</span>
+                        <strong id="salary-basic-exemption-result">—</strong>
+                    </div>
+
+                    <div class="calculation-row">
+                        <span>Seçilmiş vergi güzəşti</span>
+                        <strong id="salary-hero-tax-exemption-result">—</strong>
+                    </div>
+
+                    <div class="calculation-row">
+                        <span>Vergi tutulan gəlir</span>
+                        <strong id="salary-taxable-result">—</strong>
+                    </div>
+
+                    <div class="calculation-row">
+                        <span>Gəlir vergisi</span>
+                        <strong id="salary-tax-result">—</strong>
+                    </div>
+
+                    <div class="calculation-row">
+                        <span>Əmək haqqından digər tutulmalar</span>
+                        <strong id="salary-other-deduction-result">—</strong>
+                    </div>
+
+                    <div class="calculation-row salary-total-row">
+                        <span>Ümumi tutulmalar</span>
+                        <strong id="salary-total-result">—</strong>
+                    </div>
+
+                </div>
+
+
+                <div class="calculator-result salary-result">
+
+                    <div class="result-icon">
+                        ₼
+                    </div>
+
+                    <div class="result-content">
+
+                        <h3 id="salary-result-title">
+                            İşçinin alacağı net əmək haqqı
+                        </h3>
+
+                        <div class="result-value" id="salary-net-result">
+                            —
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="calculator-info salary-info">
+
+                    <div class="info-icon">
+                        i
+                    </div>
+
+                    <p>
+                        İlkin versiyada yalnız gəlir vergisi və istifadəçinin qeyd etdiyi əlavə tutulma hesablanır.
+                        Sosial, tibbi və işsizlik sığortaları növbəti mərhələdə əlavə ediləcək.
+                    </p>
+
+                </div>
+
+            </article>
+
+            </div>
 
         </div>
 
