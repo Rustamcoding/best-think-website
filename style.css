@@ -935,3 +935,162 @@
   .footer-grid{grid-template-columns:1fr}
   .footer-form-row{grid-template-columns:1fr}
 }
+
+/* ANA SƏHİFƏ - MÜASİR HERO VƏ XİDMƏT KARTLARI */
+.hero-tags{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:12px;
+}
+.hero-tags span{
+  padding:6px 10px;
+  border:1px solid #cbd9eb;
+  border-radius:999px;
+  background:#f7faff;
+  color:var(--blue);
+  font-size:11px;
+  font-weight:700;
+}
+.hero-card .bars{
+  height:150px;
+  margin-top:18px;
+}
+.section-intro{
+  max-width:620px;
+  margin:10px auto 0;
+  color:var(--muted);
+  font-size:15px;
+}
+.service-summary{
+  margin:0 0 15px;
+  color:var(--muted);
+  font-size:14px;
+  line-height:1.55;
+}
+.service-card details{
+  margin-top:0;
+  padding-top:13px;
+  border-top:1px solid var(--line);
+}
+.service-card summary{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+}
+.service-card summary::after{
+  content:"↘";
+  font-size:17px;
+  font-weight:800;
+  line-height:1;
+  transform:translateY(-1px);
+}
+
+/* HERO DÜYMƏSİ VƏ XİDMƏTLƏR BAŞLIĞI */
+.actions .btn-primary{
+  background:#174eaa;
+}
+.actions .btn-primary:hover{
+  background:#123f8b;
+}
+.actions .btn-light{
+  background:#edf4ff;
+  border-color:#c9dcfb;
+  color:var(--blue);
+  box-shadow:none;
+}
+.actions .btn-light:hover{
+  background:#e0ecff;
+  border-color:#a9c8f6;
+}
+.btn-new{
+  display:inline-flex;
+  align-items:center;
+  min-height:17px;
+  margin-left:8px;
+  padding:2px 6px;
+  border:1px solid #9ec3ff;
+  border-radius:999px;
+  background:#fff;
+  color:var(--blue);
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:.35px;
+  line-height:1;
+  text-transform:uppercase;
+}
+.section-head .kicker{
+  font-size:18px;
+  line-height:1.25;
+  letter-spacing:.1px;
+}
+.industry-label{
+  min-height:122px;
+  padding:18px 18px 20px;
+}
+.industry-label::before{
+  content:"";
+  display:block;
+  width:30px;
+  height:3px;
+  margin-bottom:10px;
+  border-radius:999px;
+  background:linear-gradient(90deg,var(--blue),#8eb7f5);
+}
+.industry-label b{
+  font-size:17px;
+  line-height:1.25;
+}
+.industry-label span{
+  margin-top:7px;
+  font-size:13px;
+  line-height:1.5;
+}
+@media(max-width:600px){
+  .section-head .kicker{font-size:17px}
+  .industry-label{min-height:0}
+}
+
+.industry-label details{
+  margin-top:14px;
+  padding-top:12px;
+  border-top:1px solid var(--line);
+}
+.industry-label summary{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  cursor:pointer;
+  list-style:none;
+  color:var(--blue);
+  font-size:13px;
+  font-weight:800;
+}
+.industry-label summary::-webkit-details-marker{display:none}
+.industry-label summary::after{
+  content:"↘";
+  flex:0 0 auto;
+  width:24px;
+  height:24px;
+  display:grid;
+  place-items:center;
+  border:1px solid #cbdcf5;
+  border-radius:8px;
+  color:var(--blue);
+  font-size:16px;
+  line-height:1;
+  transition:transform .2s ease,background .2s ease;
+}
+.industry-label details[open] summary::after{
+  content:"↗";
+  background:#edf4ff;
+}
+.industry-label details ul{
+  margin:10px 0 0;
+  padding-left:18px;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.55;
+}
+.industry-label details li+li{margin-top:6px}
