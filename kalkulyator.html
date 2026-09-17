@@ -44,12 +44,43 @@
            ========================================= */
 
         .calculator-page {
-            padding-top: 55px;
+            padding-top: 38px;
             padding-bottom: 80px;
         }
 
         .calculator-page .section-head {
-            margin-bottom: 35px;
+            max-width: 760px;
+            margin: 0 auto 31px;
+            padding: 18px 28px 16px;
+            text-align: center;
+            border: 1px solid #e1eaf5;
+            border-radius: 18px;
+            background: linear-gradient(135deg, #f5f9ff 0%, #ffffff 100%);
+            box-shadow: 0 10px 26px rgba(19, 35, 62, .05);
+        }
+
+        .calculator-page .section-head.is-hidden {
+            display: none;
+        }
+
+        .calculator-page .section-head .kicker {
+            display: inline-flex;
+            align-items: center;
+            margin: 0 0 10px;
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: #eaf2ff;
+            color: var(--blue);
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: .01em;
+        }
+
+        .calculator-page .section-head > p:not(.kicker) {
+            margin: 0;
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.6;
         }
 
         .calculator-card {
@@ -94,10 +125,10 @@
             font-weight: 800;
         }
 
-        .calculator-title h2,
+.calculator-title h2,
 .calculator-main-title {
     margin: 0 0 8px;
-    font-size: 32px;
+    font-size: 30px;
     line-height: 1.2;
     color: var(--text);
 }
@@ -125,6 +156,92 @@
         .form-group label {
             font-weight: 700;
             color: var(--text);
+        }
+
+        .salary-field-label {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .salary-field-label > label {
+            margin: 0;
+        }
+
+        .salary-sector-info {
+            position: relative;
+            z-index: 5;
+            flex: 0 0 auto;
+        }
+
+        .salary-sector-info summary {
+            width: 20px;
+            height: 20px;
+            box-sizing: border-box;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #eef1f4;
+            color: #78869a;
+            font-size: 12px;
+            font-weight: 800;
+            line-height: 1;
+            cursor: pointer;
+            list-style: none;
+        }
+
+        .salary-sector-info summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .salary-sector-info summary:hover,
+        .salary-sector-info[open] summary {
+            background: #e5eefc;
+            color: var(--blue);
+        }
+
+        .salary-sector-info-panel {
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            width: min(330px, calc(100vw - 48px));
+            box-sizing: border-box;
+            padding: 14px 16px;
+            border: 1px solid #cbd9ec;
+            border-radius: 12px;
+            background: #ffffff;
+            box-shadow: 0 14px 30px rgba(19, 35, 62, .14);
+        }
+
+        .salary-sector-info-panel strong {
+            display: block;
+            color: var(--text);
+            font-size: 13px;
+            line-height: 1.35;
+        }
+
+        .salary-sector-info-panel p {
+            margin: 8px 0 0;
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 400;
+            line-height: 1.5;
+        }
+
+        .salary-sector-info-panel a {
+            display: inline-flex;
+            margin-top: 11px;
+            color: var(--blue);
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 1.35;
+            text-decoration: none;
+        }
+
+        .salary-sector-info-panel a:hover {
+            text-decoration: underline;
         }
 
         .form-group input,
@@ -458,7 +575,7 @@
         @media (max-width: 700px) {
 
             .calculator-page {
-                padding-top: 40px;
+                padding-top: 32px;
                 padding-bottom: 55px;
             }
 
@@ -483,9 +600,9 @@
                 font-size: 28px;
             }
 
-            .calculator-title h2,
+.calculator-title h2,
 .calculator-main-title {
-    font-size: 24px;
+    font-size: 23px;
 }
 
             .calculator-title p {
@@ -546,31 +663,100 @@
            ========================================= */
 
         .calculator-grid {
-            max-width: 1240px;
+            max-width: 840px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 24px;
+            grid-template-columns: minmax(0, 1fr);
+            gap: 14px;
             align-items: start;
         }
 
         .calculator-grid .calculator-card {
             max-width: none;
             margin: 0;
-            padding: 30px;
+            padding: 23px;
+            transition: padding .25s ease, box-shadow .25s ease;
+        }
+
+        .calculator-grid .salary-calculator-card {
+            order: 1;
+        }
+
+        .calculator-grid .calculator-card-exchange {
+            order: 2;
+        }
+
+        .calculator-grid .calculator-card:not(.is-open) {
+            padding-top: 15px;
+            padding-bottom: 15px;
+        }
+
+        .calculator-grid .calculator-card:not(.is-open) > :not(.calculator-title) {
+            display: none;
+        }
+
+        .calculator-grid .calculator-card:not(.is-open) .calculator-title {
+            margin-bottom: 0;
         }
 
         .calculator-grid .calculator-title {
-            gap: 15px;
-            margin-bottom: 28px;
+            position: relative;
+            gap: 11px;
+            margin-bottom: 21px;
+            padding-right: 50px;
+        }
+
+        .calculator-grid .calculator-main-title {
+            margin-bottom: 6px;
+            font-size: 26px;
+        }
+
+        .calculator-grid .calculator-title p {
+            font-size: 14px;
+        }
+
+        .calculator-grid .calculator-title > div:nth-child(2) {
+            cursor: pointer;
+        }
+
+        .calculator-expand {
+            position: absolute;
+            top: 50%;
+            right: 0;
+            width: 38px;
+            height: 38px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #d8e1ed;
+            border-radius: 10px;
+            background: #f5f7fa;
+            color: var(--blue);
+            font-size: 22px;
+            font-weight: 800;
+            line-height: 1;
+            cursor: pointer;
+            transform: translateY(-50%);
+            transition: background-color .2s ease, color .2s ease, transform .25s ease;
+        }
+
+        .calculator-expand:hover,
+        .calculator-expand:focus-visible {
+            background: var(--blue);
+            color: #ffffff;
+            outline: none;
+        }
+
+        .calculator-card.is-open .calculator-expand {
+            transform: translateY(-50%) rotate(180deg);
         }
 
         .calculator-grid .calculator-icon {
-            width: 62px;
-            height: 62px;
-            flex-basis: 62px;
-            border-radius: 17px;
-            font-size: 29px;
+            width: 48px;
+            height: 48px;
+            flex-basis: 48px;
+            border-radius: 15px;
+            font-size: 22px;
         }
 
         .salary-form {
@@ -637,8 +823,200 @@
             padding: 10px 0;
         }
 
+        .salary-calculation .calculation-row span {
+            font-size: 14px;
+            font-weight: 400;
+        }
+
+        .salary-calculation .calculation-row.is-not-applicable {
+            opacity: .42;
+        }
+
         .salary-calculation .calculation-row strong {
             font-size: 14px;
+        }
+
+        .salary-tax-breakdown {
+            margin: 0 0 10px;
+            border: 1px solid #d8e1ed;
+            border-radius: 10px;
+            background: #f8fafc;
+        }
+
+        .salary-tax-breakdown summary {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 9px 11px;
+            color: var(--blue);
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            list-style: none;
+        }
+
+        .salary-tax-breakdown summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .salary-tax-breakdown summary::after {
+            content: "⌄";
+            color: var(--blue);
+            font-size: 16px;
+            line-height: 1;
+            transition: transform .2s ease;
+        }
+
+        .salary-tax-breakdown[open] summary::after {
+            transform: rotate(180deg);
+        }
+
+        .salary-tax-breakdown-body {
+            padding: 0 11px 10px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .salary-tax-breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 8px 0 0;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .salary-tax-breakdown-row strong {
+            color: var(--text);
+            font-size: 12px;
+            text-align: right;
+        }
+
+        .salary-tax-breakdown-row[hidden] {
+            display: none !important;
+        }
+
+        .salary-tax-breakdown-inline {
+            margin: 0;
+            border: 0;
+            background: transparent;
+        }
+
+        .salary-tax-breakdown-inline summary {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 124px;
+            gap: 16px;
+            padding: 10px 0;
+            border-radius: 0;
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.4;
+            font-weight: 400;
+            transition: background-color .2s ease, color .2s ease;
+        }
+
+        .salary-tax-breakdown-inline {
+            border-bottom: 1px solid #e4e9f0;
+        }
+
+        .salary-tax-breakdown-inline[open] {
+            background: linear-gradient(180deg, #f5f9ff 0%, #ffffff 100%);
+            border-bottom-color: #b9cfee;
+        }
+
+        .salary-tax-breakdown-inline[open] summary {
+            color: var(--blue);
+        }
+
+        .salary-tax-breakdown-inline[open] .salary-tax-breakdown-row {
+            color: #5d79a1;
+        }
+
+        .salary-tax-breakdown-inline[open] .salary-tax-breakdown-row strong {
+            color: var(--blue);
+        }
+
+        .salary-tax-breakdown-inline .salary-tax-breakdown-body {
+            border-top: 0;
+        }
+
+        .salary-tax-breakdown-inline.is-not-applicable {
+            opacity: .42;
+        }
+
+        .salary-tax-breakdown-inline.is-not-applicable summary {
+            cursor: default;
+        }
+
+        .salary-tax-breakdown-inline summary:hover {
+            background: transparent;
+            color: var(--muted);
+        }
+
+        .salary-tax-breakdown-inline summary::after {
+            display: none;
+        }
+
+        .salary-tax-breakdown-inline summary strong {
+            width: 100%;
+            color: var(--text);
+            font-size: 14px;
+            text-align: right;
+        }
+
+        .salary-tax-breakdown-label {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 20px;
+            align-items: center;
+            gap: 7px;
+            min-width: 0;
+            width: 100%;
+            font-size: 14px;
+        }
+
+        #salary-gross-calculation-row {
+            border-bottom-width: 1.5px;
+            border-bottom-color: #cfd8e5;
+        }
+
+        #salary-taxable-calculation-row {
+            border-bottom-width: 1.5px;
+            border-bottom-color: #cfd8e5;
+        }
+
+        .salary-tax-breakdown-arrow {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            border: 1px solid #cbd9eb;
+            border-radius: 8px;
+            background: linear-gradient(145deg, #f8fbff, #eaf2fc);
+            color: transparent;
+            font-size: 0;
+            line-height: 1;
+            transition: background-color .2s ease, border-color .2s ease;
+        }
+
+        .salary-tax-breakdown-arrow::before {
+            content: "";
+            width: 5px;
+            height: 5px;
+            border-right: 2px solid var(--blue);
+            border-bottom: 2px solid var(--blue);
+            transform: rotate(45deg) translate(-1px, -1px);
+            transition: transform .2s ease;
+        }
+
+        .salary-tax-breakdown-inline[open] .salary-tax-breakdown-arrow {
+            background: #e2edfc;
+            border-color: #a9c5ec;
+        }
+
+        .salary-tax-breakdown-inline[open] .salary-tax-breakdown-arrow::before {
+            transform: rotate(225deg) translate(-1px, -1px);
         }
 
         .salary-calculation .salary-total-row {
@@ -663,16 +1041,6 @@
             font-size: 27px;
         }
 
-        .salary-info {
-            margin-top: 14px;
-            padding: 13px 15px;
-        }
-
-        .salary-info p {
-            font-size: 12px;
-            line-height: 1.45;
-        }
-
         .salary-input-grid,
         .salary-settings-grid {
             display: grid;
@@ -681,11 +1049,11 @@
         }
 
         .salary-calculator-card .amount-input .salary-calculation-mode {
-            width: 104px;
-            flex: 0 0 104px;
+            width: 108px;
+            flex: 0 0 108px;
             height: 100%;
             box-sizing: border-box;
-            padding: 0 30px 0 12px;
+            padding: 0 28px 0 12px;
             border: 0;
             border-left: 1px solid #d8e1ed;
             border-radius: 0;
@@ -695,6 +1063,17 @@
             font-size: 13px;
             font-weight: 800;
             cursor: pointer;
+        }
+
+        .salary-calculator-card .amount-input .salary-amount-currency {
+            min-width: 42px;
+            flex: 0 0 42px;
+            box-sizing: border-box;
+            color: var(--text);
+            font-size: 16px;
+            font-weight: 700;
+            border-left: 0;
+            border-right: 1px solid #d8e1ed;
         }
 
         .salary-calculator-card .amount-input .salary-calculation-mode:focus {
@@ -779,8 +1158,12 @@
 
         .salary-main-workplace-option {
             height: 52px;
+            min-height: 52px;
             box-sizing: border-box;
+            padding-top: 0;
+            padding-bottom: 0;
             background: #ffffff;
+            transition: background-color .2s ease, border-color .2s ease;
         }
 
         .salary-main-workplace-label {
@@ -788,6 +1171,17 @@
             color: var(--text);
             font-size: 14px;
             font-weight: 700;
+            transition: color .2s ease, font-weight .2s ease;
+        }
+
+        .salary-main-workplace-option.is-additional-workplace {
+            background: #f5f7fa;
+            border-color: #d8e1ed;
+        }
+
+        .salary-main-workplace-option.is-additional-workplace .salary-main-workplace-label {
+            color: #7b8798;
+            font-weight: 600;
         }
 
         .salary-help-icon {
@@ -879,6 +1273,15 @@
             content: "−";
         }
 
+        .salary-tax-exemptions.is-disabled {
+            opacity: .58;
+        }
+
+        .salary-tax-exemptions.is-disabled summary {
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
         .salary-exemption-selection {
             margin-left: auto;
             color: var(--muted);
@@ -890,8 +1293,91 @@
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
             gap: 10px;
+            max-height: 340px;
+            overflow-y: auto;
+            scrollbar-gutter: stable;
             padding: 0 12px 12px;
             border-top: 1px solid #e5eaf0;
+        }
+
+        .salary-exemption-search {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 12px 10px;
+        }
+
+        .salary-exemption-search label {
+            flex: 0 0 auto;
+            color: var(--text);
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .salary-exemption-search input {
+            min-width: 0;
+            flex: 1;
+            height: 38px;
+            box-sizing: border-box;
+            padding: 0 12px;
+            border: 1px solid #d8e1ed;
+            border-radius: 9px;
+            background: #f8fafc;
+            color: var(--text);
+            font: inherit;
+            font-size: 12px;
+            outline: none;
+        }
+
+        .salary-exemption-search input:focus {
+            border-color: var(--blue);
+            box-shadow: inset 0 0 0 2px rgba(36, 102, 211, .12);
+        }
+
+        .salary-exemption-select-all {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            flex: 0 0 auto;
+            color: var(--muted);
+            font-size: 11px;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        .salary-exemption-select-all input {
+            width: 16px;
+            height: 16px;
+            flex: 0 0 auto;
+            margin: 0;
+            padding: 0;
+            border: 0;
+            background: transparent;
+            accent-color: var(--blue);
+        }
+
+        .salary-exemption-close {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex: 0 0 28px;
+            width: 28px;
+            height: 28px;
+            padding: 0;
+            border: 1px solid #d8e1ed;
+            border-radius: 50%;
+            background: #eef1f4;
+            color: var(--blue);
+            font-size: 17px;
+            font-weight: 700;
+            line-height: 1;
+            cursor: pointer;
+            transition: background .2s ease, transform .2s ease;
+        }
+
+        .salary-exemption-close:hover {
+            background: #e1ebfb;
+            transform: translateY(-1px);
         }
 
         .salary-exemption-option {
@@ -899,6 +1385,10 @@
             min-height: 0;
             padding: 11px 12px;
             background: #f8fafc;
+        }
+
+        .salary-exemption-option[hidden] {
+            display: none !important;
         }
 
         .salary-exemption-option input {
@@ -937,7 +1427,16 @@
         @media (max-width: 700px) {
 
             .calculator-grid .calculator-card {
-                padding: 22px;
+                padding: 20px;
+            }
+
+            .calculator-grid .calculator-main-title {
+                font-size: 22px;
+            }
+
+            .salary-tax-breakdown-inline summary {
+                grid-template-columns: minmax(0, 1fr) 104px;
+                gap: 10px;
             }
 
             .salary-form {
@@ -1004,7 +1503,7 @@
 
             <div class="calculator-grid">
 
-            <article class="calculator-card calculator-card-exchange">
+            <article class="calculator-card calculator-card-exchange" id="exchange-calculator-panel">
 
 
                 <!-- BAŞLIQ -->
@@ -1027,6 +1526,16 @@
                         </p>
 
                     </div>
+
+                    <button
+                        class="calculator-expand"
+                        type="button"
+                        aria-expanded="false"
+                        aria-controls="exchange-calculator-panel"
+                        aria-label="Məzənnə fərqi kalkulyatorunu aç"
+                    >
+                        <span aria-hidden="true">↓</span>
+                    </button>
 
                 </div>
 
@@ -1300,7 +1809,7 @@
             </article>
 
 
-            <article class="calculator-card salary-calculator-card">
+            <article class="calculator-card salary-calculator-card" id="salary-calculator-panel">
 
                 <div class="calculator-title">
 
@@ -1320,6 +1829,16 @@
 
                     </div>
 
+                    <button
+                        class="calculator-expand"
+                        type="button"
+                        aria-expanded="false"
+                        aria-controls="salary-calculator-panel"
+                        aria-label="Əmək haqqı kalkulyatorunu aç"
+                    >
+                        <span aria-hidden="true">↓</span>
+                    </button>
+
                 </div>
 
 
@@ -1328,15 +1847,22 @@
                     <div class="form-group">
 
                         <label for="salary-gross">
-                            Aylıq gəlir
+                            Aylıq gəlir (muzdlu işdən)
                         </label>
 
                         <div class="amount-input">
 
+                            <span
+                                class="salary-amount-currency"
+                                aria-label="Azərbaycan manatı"
+                            >
+                                ₼
+                            </span>
+
                             <input
                                 type="number"
                                 id="salary-gross"
-                                value="1000"
+                                value="0.00"
                                 min="0"
                                 step="0.01"
                                 inputmode="decimal"
@@ -1358,9 +1884,46 @@
 
                     <div class="form-group">
 
-                        <label for="salary-sector">
-                            Müəssisənin fəaliyyət sahəsi
-                        </label>
+                        <div class="salary-field-label">
+
+                            <label for="salary-sector">
+                                Müəssisənin fəaliyyət sahəsi
+                            </label>
+
+                            <details class="salary-sector-info">
+
+                                <summary
+                                    aria-label="Fəaliyyət sahəsi haqqında məlumat"
+                                    title="Fəaliyyət sahəsi haqqında məlumat"
+                                >
+                                    i
+                                </summary>
+
+                                <div class="salary-sector-info-panel">
+
+                                    <strong>Fəaliyyət sahəsi üzrə məlumat</strong>
+
+                                    <p>
+                                        Əmək haqqı üzrə gəlir vergisi və sosial sığorta hesablamalarında müəssisənin neft-qaz sahəsinə aid olub-olmaması və dövlət və ya qeyri-dövlət sektoruna daxil edilməsi nəzərə alınır. Bu seçimlər hesablamada tətbiq olunan dərəcələri müəyyən edir.
+                                    </p>
+
+                                    <p>
+                                        Meyarlar Azərbaycan Respublikası Nazirlər Kabinetinin 18 fevral 2019-cu il tarixli 56 nömrəli Qərarı ilə müəyyən edilir.
+                                    </p>
+
+                                    <a
+                                        href="https://e-qanun.az/framework/41611"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        Qərarın tam mətninə baxın →
+                                    </a>
+
+                                </div>
+
+                            </details>
+
+                        </div>
 
                         <select id="salary-sector">
 
@@ -1385,7 +1948,7 @@
                     <div class="form-group salary-main-workplace-field">
 
                         <label for="salary-main-workplace">
-                            Əsas iş yeri
+                            İş yeri barədə qeyd
                         </label>
 
                         <label for="salary-main-workplace" class="salary-check salary-main-workplace-option">
@@ -1396,8 +1959,8 @@
                                 checked
                             >
 
-                            <span class="salary-main-workplace-label">
-                                Bəli, əsas iş yeridir
+                            <span id="salary-workplace-status" class="salary-main-workplace-label">
+                                Əsas iş yeri
                             </span>
 
                             <span
@@ -1462,6 +2025,34 @@
                             Seçilməyib
                         </span>
                     </summary>
+
+                    <div class="salary-exemption-search">
+                        <label for="salary-exemption-search-input">
+                            Axtarış
+                        </label>
+
+                        <input
+                            type="search"
+                            id="salary-exemption-search-input"
+                            placeholder="Maddə və ya güzəşt axtarın"
+                            autocomplete="off"
+                        >
+
+                        <button
+                            type="button"
+                            class="salary-exemption-close"
+                            id="salary-exemption-close"
+                            aria-label="Güzəştlər bölməsini bağla"
+                            title="Bölməni bağla"
+                        >
+                            ↑
+                        </button>
+
+                        <label class="salary-exemption-select-all" for="salary-exemption-select-all">
+                            <input type="checkbox" id="salary-exemption-select-all">
+                            <span>Hamısını seç</span>
+                        </label>
+                    </div>
 
                     <div class="salary-exemption-list">
 
@@ -1588,7 +2179,7 @@
                     </div>
 
                     <p class="salary-exemption-note">
-                        Qeyd: Bir neçə güzəşt hüququ olduqda yalnız məbləğcə ən böyük güzəşt nəzərə alınır.
+                        Qeyd: 102.1-1, 102.2, 102.3 və 102.4-cü maddələr üzrə yalnız məbləğcə ən böyük güzəşt nəzərə alınır.
                     </p>
 
                 </details>
@@ -1600,30 +2191,101 @@
                         Hesablama
                     </h3>
 
-                    <div class="calculation-row">
-                        <span>Gross əmək haqqı</span>
+                    <div class="calculation-row" id="salary-gross-calculation-row">
+                        <span>Muzdlu işdən aylıq gəlir</span>
                         <strong id="salary-gross-result">—</strong>
                     </div>
 
-                    <div class="calculation-row">
-                        <span>Əsas iş yeri üzrə azadolma</span>
+                    <div class="calculation-row" id="salary-basic-exemption-row">
+                        <span>VM 102.1.6 maddəsinə əsasən azadolma</span>
                         <strong id="salary-basic-exemption-result">—</strong>
                     </div>
 
-                    <div class="calculation-row">
-                        <span>Seçilmiş vergi güzəşti</span>
+                    <div class="calculation-row salary-exemption-breakdown">
+                        <span>Digər azadolma və güzəştlər</span>
                         <strong id="salary-hero-tax-exemption-result">—</strong>
                     </div>
 
-                    <div class="calculation-row">
-                        <span>Vergi tutulan gəlir</span>
+                    <div class="calculation-row" id="salary-taxable-calculation-row">
+                        <span>Vergi tutulan aylıq gəlir</span>
                         <strong id="salary-taxable-result">—</strong>
                     </div>
 
-                    <div class="calculation-row">
-                        <span>Gəlir vergisi</span>
-                        <strong id="salary-tax-result">—</strong>
-                    </div>
+                    <details class="salary-tax-breakdown salary-tax-breakdown-inline">
+                        <summary>
+                            <span class="salary-tax-breakdown-label">
+                                Gəlir vergisi
+                                <span class="salary-tax-breakdown-arrow">⌄</span>
+                            </span>
+                            <strong id="salary-tax-result">—</strong>
+                        </summary>
+                        <div class="salary-tax-breakdown-body">
+                            <div class="salary-tax-breakdown-row" id="salary-tax-breakdown-base-row">
+                                <span><span id="salary-tax-breakdown-base-amount">—</span> × <span id="salary-tax-breakdown-base-rate">14%</span></span>
+                                <strong id="salary-tax-breakdown-base-result">—</strong>
+                            </div>
+                            <div class="salary-tax-breakdown-row" id="salary-tax-breakdown-extra-row" hidden>
+                                <span><span id="salary-tax-breakdown-extra-amount">—</span> × <span id="salary-tax-breakdown-extra-rate">25%</span></span>
+                                <strong id="salary-tax-breakdown-extra-result">—</strong>
+                            </div>
+                            <div class="salary-tax-breakdown-row" id="salary-tax-breakdown-upper-row" hidden>
+                                <span><span id="salary-tax-breakdown-upper-amount">—</span> × <span id="salary-tax-breakdown-upper-rate">14%</span></span>
+                                <strong id="salary-tax-breakdown-upper-result">—</strong>
+                            </div>
+                            <div class="salary-tax-breakdown-row">
+                                <span>Yekun gəlir vergisi</span>
+                                <strong id="salary-tax-breakdown-total">—</strong>
+                            </div>
+                        </div>
+                    </details>
+
+                    <details class="salary-tax-breakdown salary-tax-breakdown-inline">
+                        <summary>
+                            <span class="salary-tax-breakdown-label">
+                                Məcburi dövlət sosial sığortası
+                                <span class="salary-tax-breakdown-arrow">⌄</span>
+                            </span>
+                            <strong id="salary-social-result">—</strong>
+                        </summary>
+                        <div class="salary-tax-breakdown-body">
+                            <div class="salary-tax-breakdown-row">
+                                <span id="salary-social-breakdown-label">—</span>
+                                <strong id="salary-social-breakdown-result">—</strong>
+                            </div>
+                        </div>
+                    </details>
+
+                    <details class="salary-tax-breakdown salary-tax-breakdown-inline">
+                        <summary>
+                            <span class="salary-tax-breakdown-label">
+                                İşsizlikdən sığorta haqqı
+                                <span class="salary-tax-breakdown-arrow">⌄</span>
+                            </span>
+                            <strong id="salary-unemployment-result">—</strong>
+                        </summary>
+                        <div class="salary-tax-breakdown-body">
+                            <div class="salary-tax-breakdown-row">
+                                <span id="salary-unemployment-breakdown-label">—</span>
+                                <strong id="salary-unemployment-breakdown-result">—</strong>
+                            </div>
+                        </div>
+                    </details>
+
+                    <details class="salary-tax-breakdown salary-tax-breakdown-inline">
+                        <summary>
+                            <span class="salary-tax-breakdown-label">
+                                İcbari tibbi sığorta haqqı
+                                <span class="salary-tax-breakdown-arrow">⌄</span>
+                            </span>
+                            <strong id="salary-medical-result">—</strong>
+                        </summary>
+                        <div class="salary-tax-breakdown-body">
+                            <div class="salary-tax-breakdown-row">
+                                <span id="salary-medical-breakdown-label">—</span>
+                                <strong id="salary-medical-breakdown-result">—</strong>
+                            </div>
+                        </div>
+                    </details>
 
                     <div class="calculation-row">
                         <span>Əmək haqqından digər tutulmalar</span>
@@ -1658,19 +2320,6 @@
 
                 </div>
 
-
-                <div class="calculator-info salary-info">
-
-                    <div class="info-icon">
-                        i
-                    </div>
-
-                    <p>
-                        İlkin versiyada yalnız gəlir vergisi və istifadəçinin qeyd etdiyi əlavə tutulma hesablanır.
-                        Sosial, tibbi və işsizlik sığortaları növbəti mərhələdə əlavə ediləcək.
-                    </p>
-
-                </div>
 
             </article>
 

@@ -924,7 +924,7 @@ function calculateSalary() {
 
     /* Əsas iş yerində 2500 AZN-dək gəlirin 200 AZN hissəsi azaddır. */
     const basicExemption =
-        gross > 0 && gross <= 2500 ? 200 : 0;
+        gross > 0 && gross <= 2500 ? Math.min(gross, 200) : 0;
 
     const taxableIncome =
         Math.max(
@@ -1101,8 +1101,36 @@ const salaryTaxSector =
 const salaryMainWorkplace =
     document.getElementById('salary-main-workplace');
 
+const salaryWorkplaceStatus =
+    document.getElementById('salary-workplace-status');
+
 const salaryTaxExemptionOptions =
     document.querySelectorAll('input[name="salary-tax-exemption"]');
+
+salaryTaxExemptionOptions.forEach((option) => {
+    option.type = 'checkbox';
+});
+
+const salaryExemptionOptionLabels =
+    document.querySelectorAll('.salary-exemption-option');
+
+const salaryTaxExemptionsDetails =
+    document.getElementById('salary-tax-exemptions');
+
+const salarySelectedExemptionsBreakdown =
+    document.getElementById('salary-selected-exemptions-breakdown');
+
+const salaryExemptionBreakdown =
+    document.querySelector('.salary-exemption-breakdown');
+
+const salaryExemptionSearchInput =
+    document.getElementById('salary-exemption-search-input');
+
+const salaryExemptionSelectAll =
+    document.getElementById('salary-exemption-select-all');
+
+const salaryExemptionClose =
+    document.getElementById('salary-exemption-close');
 
 const salaryDeductionType =
     document.getElementById('salary-deduction-type');
@@ -1113,11 +1141,163 @@ const salaryOtherDeduction =
 const salaryOtherDeductionSuffix =
     document.getElementById('salary-other-deduction-suffix');
 
+function updateSalaryWorkplaceStatus() {
+    if (!salaryMainWorkplace || !salaryWorkplaceStatus) {
+        return;
+    }
+
+    const isMainWorkplace = salaryMainWorkplace.checked;
+    salaryWorkplaceStatus.textContent = isMainWorkplace
+        ? 'Əsas iş yeri'
+        : 'Əlavə iş yeri';
+
+    const workplaceOption =
+        salaryMainWorkplace.closest('.salary-main-workplace-option');
+
+    if (workplaceOption) {
+        workplaceOption.classList.toggle(
+            'is-additional-workplace',
+            !isMainWorkplace
+        );
+    }
+
+    const exemptionsDisabled = !isMainWorkplace;
+
+    salaryTaxExemptionOptions.forEach((option) => {
+        option.disabled = exemptionsDisabled;
+    });
+
+    if (salaryExemptionSelectAll) {
+        salaryExemptionSelectAll.disabled = exemptionsDisabled;
+    }
+
+    if (salaryTaxExemptionsDetails) {
+        salaryTaxExemptionsDetails.classList.toggle(
+            'is-disabled',
+            exemptionsDisabled
+        );
+
+        if (exemptionsDisabled) {
+            salaryTaxExemptionsDetails.open = false;
+        }
+    }
+
+    if (salaryExemptionBreakdown) {
+        salaryExemptionBreakdown.classList.toggle(
+            'is-not-applicable',
+            exemptionsDisabled
+        );
+    }
+}
+
+function normalizeSalarySearchText(value) {
+    return String(value || '')
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[ə]/g, 'e')
+        .replace(/[ı]/g, 'i')
+        .replace(/[ş]/g, 's')
+        .replace(/[ç]/g, 'c')
+        .replace(/[ğ]/g, 'g')
+        .replace(/[ö]/g, 'o')
+        .replace(/[ü]/g, 'u');
+}
+
+function getSelectedSalaryTaxExemptions() {
+    const selected = Array.from(salaryTaxExemptionOptions)
+        .filter((option) => option.checked)
+        .map((option) => ({
+            code: option.dataset.code || '',
+            value: Math.max(0, parseFloat(option.value) || 0),
+            text: option.closest('.salary-exemption-option')?.textContent
+                .replace(/\s+/g, ' ')
+                .trim() || ''
+        }));
+
+    const largestOnlyGroup = selected.filter((item) =>
+        item.code === 'VM 102.1-1' ||
+        item.code.startsWith('VM 102.2.') ||
+        item.code === 'VM 102.3' ||
+        item.code.startsWith('VM 102.4.')
+    );
+
+    const otherGroup = selected.filter((item) => !largestOnlyGroup.includes(item));
+    const largestOnly = largestOnlyGroup.length
+        ? [largestOnlyGroup.reduce((largest, item) =>
+            item.value > largest.value ? item : largest
+        )]
+        : [];
+
+    const applicable = [...largestOnly, ...otherGroup];
+
+    return {
+        selected,
+        applicable,
+        total: applicable.reduce((sum, item) => sum + item.value, 0)
+    };
+}
+
+function updateSelectedSalaryExemptionsBreakdown(items) {
+    if (!salarySelectedExemptionsBreakdown) {
+        return;
+    }
+
+    salarySelectedExemptionsBreakdown.innerHTML = items.length
+        ? items.map((item) => `
+            <div class="salary-tax-breakdown-row">
+                <span>${item.code}</span>
+                <strong>${formatSalaryAZN(item.value)}</strong>
+            </div>
+        `).join('')
+        : '<div class="salary-tax-breakdown-row"><span>Güzəşt seçilməyib</span><strong>—</strong></div>';
+}
+
+function filterSalaryExemptionOptions() {
+    const query = normalizeSalarySearchText(
+        salaryExemptionSearchInput?.value
+    ).trim();
+    let visibleOptions = 0;
+
+    salaryExemptionOptionLabels.forEach((optionLabel) => {
+        const optionText = normalizeSalarySearchText(
+            optionLabel.textContent
+        );
+        const queryParts = query.split(/\s+/).filter(Boolean);
+        const matches = !query || queryParts.every((part) => optionText.includes(part));
+
+        optionLabel.hidden = !matches;
+
+        if (matches) {
+            visibleOptions += 1;
+        }
+    });
+
+    updateSalaryExemptionSelectAllState();
+}
+
+function updateSalaryExemptionSelectAllState() {
+    if (!salaryExemptionSelectAll) {
+        return;
+    }
+
+    const options = Array.from(salaryTaxExemptionOptions);
+    const selectedCount = options.filter((option) => option.checked).length;
+
+    salaryExemptionSelectAll.checked =
+        options.length > 0 && selectedCount === options.length;
+    salaryExemptionSelectAll.indeterminate =
+        selectedCount > 0 && selectedCount < options.length;
+}
+
 const salaryTaxGrossResult =
     document.getElementById('salary-gross-result');
 
 const salaryStageBasicExemptionResult =
     document.getElementById('salary-basic-exemption-result');
+
+const salaryBasicExemptionRow =
+    document.getElementById('salary-basic-exemption-row');
 
 const salaryHeroTaxExemptionResult =
     document.getElementById('salary-hero-tax-exemption-result');
@@ -1134,6 +1314,15 @@ const salaryStageTaxResult =
 const salaryOtherDeductionResult =
     document.getElementById('salary-other-deduction-result');
 
+const salarySocialInsuranceResult =
+    document.getElementById('salary-social-result');
+
+const salaryUnemploymentInsuranceResult =
+    document.getElementById('salary-unemployment-result');
+
+const salaryMedicalInsuranceResult =
+    document.getElementById('salary-medical-result');
+
 const salaryTotalTaxResult =
     document.getElementById('salary-total-result');
 
@@ -1142,6 +1331,63 @@ const salaryNetTaxResult =
 
 const salaryResultTitle =
     document.getElementById('salary-result-title');
+
+const salaryTaxBreakdownBaseRow =
+    document.getElementById('salary-tax-breakdown-base-row');
+
+const salaryTaxBreakdownExtraRow =
+    document.getElementById('salary-tax-breakdown-extra-row');
+
+const salaryTaxBreakdownUpperRow =
+    document.getElementById('salary-tax-breakdown-upper-row');
+
+const salaryTaxBreakdownBaseAmount =
+    document.getElementById('salary-tax-breakdown-base-amount');
+
+const salaryTaxBreakdownBaseRate =
+    document.getElementById('salary-tax-breakdown-base-rate');
+
+const salaryTaxBreakdownBaseResult =
+    document.getElementById('salary-tax-breakdown-base-result');
+
+const salaryTaxBreakdownExtraAmount =
+    document.getElementById('salary-tax-breakdown-extra-amount');
+
+const salaryTaxBreakdownExtraRate =
+    document.getElementById('salary-tax-breakdown-extra-rate');
+
+const salaryTaxBreakdownExtraResult =
+    document.getElementById('salary-tax-breakdown-extra-result');
+
+const salaryTaxBreakdownUpperAmount =
+    document.getElementById('salary-tax-breakdown-upper-amount');
+
+const salaryTaxBreakdownUpperRate =
+    document.getElementById('salary-tax-breakdown-upper-rate');
+
+const salaryTaxBreakdownUpperResult =
+    document.getElementById('salary-tax-breakdown-upper-result');
+
+const salaryTaxBreakdownTotal =
+    document.getElementById('salary-tax-breakdown-total');
+
+const salarySocialBreakdownLabel =
+    document.getElementById('salary-social-breakdown-label');
+
+const salarySocialBreakdownResult =
+    document.getElementById('salary-social-breakdown-result');
+
+const salaryUnemploymentBreakdownLabel =
+    document.getElementById('salary-unemployment-breakdown-label');
+
+const salaryUnemploymentBreakdownResult =
+    document.getElementById('salary-unemployment-breakdown-result');
+
+const salaryMedicalBreakdownLabel =
+    document.getElementById('salary-medical-breakdown-label');
+
+const salaryMedicalBreakdownResult =
+    document.getElementById('salary-medical-breakdown-result');
 
 
 function formatSalaryAZN(value) {
@@ -1154,6 +1400,116 @@ function formatSalaryAZN(value) {
         }
     ).format(Math.max(0, value)) + ' AZN';
 
+}
+
+function updateSalaryTaxBreakdown(sector, taxableIncome, incomeTax) {
+    const hide = (row, value) => {
+        if (row) {
+            row.hidden = value;
+        }
+    };
+
+    hide(salaryTaxBreakdownBaseRow, false);
+    hide(salaryTaxBreakdownExtraRow, true);
+    hide(salaryTaxBreakdownUpperRow, true);
+
+    if (sector === 'private') {
+        if (taxableIncome <= 2500) {
+            salaryTaxBreakdownBaseAmount.textContent = formatSalaryAZN(taxableIncome);
+            salaryTaxBreakdownBaseRate.textContent = '3%';
+            salaryTaxBreakdownBaseResult.textContent = formatSalaryAZN(incomeTax);
+        } else {
+            salaryTaxBreakdownBaseAmount.textContent = formatSalaryAZN(2500);
+            salaryTaxBreakdownBaseRate.textContent = '3%';
+            salaryTaxBreakdownBaseResult.textContent = formatSalaryAZN(75);
+
+            const middleAmount = Math.min(taxableIncome, 8000) - 2500;
+            salaryTaxBreakdownExtraAmount.textContent = formatSalaryAZN(middleAmount);
+            salaryTaxBreakdownExtraRate.textContent = '10%';
+            salaryTaxBreakdownExtraResult.textContent = formatSalaryAZN(middleAmount * 0.10);
+            hide(salaryTaxBreakdownExtraRow, false);
+
+            if (taxableIncome > 8000) {
+                const upperAmount = taxableIncome - 8000;
+                salaryTaxBreakdownUpperAmount.textContent = formatSalaryAZN(upperAmount);
+                salaryTaxBreakdownUpperRate.textContent = '14%';
+                salaryTaxBreakdownUpperResult.textContent = formatSalaryAZN(upperAmount * 0.14);
+                hide(salaryTaxBreakdownUpperRow, false);
+            }
+        }
+    } else if (taxableIncome <= 2500) {
+        salaryTaxBreakdownBaseAmount.textContent = formatSalaryAZN(taxableIncome);
+        salaryTaxBreakdownBaseRate.textContent = '14%';
+        salaryTaxBreakdownBaseResult.textContent = formatSalaryAZN(incomeTax);
+    } else {
+        salaryTaxBreakdownBaseAmount.textContent = formatSalaryAZN(2500);
+        salaryTaxBreakdownBaseRate.textContent = '14%';
+        salaryTaxBreakdownBaseResult.textContent = formatSalaryAZN(350);
+
+        salaryTaxBreakdownExtraAmount.textContent = formatSalaryAZN(taxableIncome - 2500);
+        salaryTaxBreakdownExtraRate.textContent = '25%';
+        salaryTaxBreakdownExtraResult.textContent = formatSalaryAZN((taxableIncome - 2500) * 0.25);
+        hide(salaryTaxBreakdownExtraRow, false);
+    }
+
+    if (salaryTaxBreakdownTotal) {
+        salaryTaxBreakdownTotal.textContent = formatSalaryAZN(incomeTax);
+    }
+}
+
+
+function updateSalaryInsuranceBreakdowns(
+    sector,
+    gross,
+    socialInsurance,
+    unemploymentInsurance,
+    medicalInsurance
+) {
+    if (salarySocialBreakdownLabel) {
+        if (sector === 'private') {
+            if (gross <= 200) {
+                salarySocialBreakdownLabel.textContent =
+                    `${formatSalaryAZN(gross)} × 3%`;
+            } else if (gross <= 8000) {
+                salarySocialBreakdownLabel.textContent =
+                    `${formatSalaryAZN(200)} × 3% + ${formatSalaryAZN(gross - 200)} × 10%`;
+            } else {
+                salarySocialBreakdownLabel.textContent =
+                    `786,00 AZN + ${formatSalaryAZN(gross - 8000)} × 10%`;
+            }
+        } else {
+            salarySocialBreakdownLabel.textContent =
+                `${formatSalaryAZN(gross)} × 3%`;
+        }
+    }
+
+    if (salarySocialBreakdownResult) {
+        salarySocialBreakdownResult.textContent =
+            formatSalaryAZN(socialInsurance);
+    }
+
+    if (salaryUnemploymentBreakdownLabel) {
+        salaryUnemploymentBreakdownLabel.textContent =
+            `${formatSalaryAZN(gross)} × 0,5%`;
+    }
+
+    if (salaryUnemploymentBreakdownResult) {
+        salaryUnemploymentBreakdownResult.textContent =
+            formatSalaryAZN(unemploymentInsurance);
+    }
+
+    if (salaryMedicalBreakdownLabel) {
+        const medicalLimit = sector === 'private' ? 2500 : 8000;
+
+        salaryMedicalBreakdownLabel.textContent = gross <= medicalLimit
+            ? `${formatSalaryAZN(gross)} × 2%`
+            : `${formatSalaryAZN(medicalLimit)} × 2% + ${formatSalaryAZN(gross - medicalLimit)} × 0,5%`;
+    }
+
+    if (salaryMedicalBreakdownResult) {
+        salaryMedicalBreakdownResult.textContent =
+            formatSalaryAZN(medicalInsurance);
+    }
 }
 
 
@@ -1180,7 +1536,7 @@ function getSalaryCalculation(
 
     const basicExemption =
         mainWorkplace && gross > 0 && gross <= 2500
-            ? 200
+            ? Math.min(gross, 200)
             : 0;
 
     const taxableIncome =
@@ -1223,10 +1579,24 @@ function getSalaryCalculation(
     const limitedOtherDeduction =
         Math.min(gross, otherDeduction);
 
+    const socialInsurance = sector === 'private'
+        ? Math.min(gross, 200) * 0.03 + Math.max(0, gross - 200) * 0.10
+        : gross * 0.03;
+
+    const unemploymentInsurance = gross * 0.005;
+
+    const medicalInsurance = sector === 'private'
+        ? Math.min(gross, 2500) * 0.02 + Math.max(0, gross - 2500) * 0.005
+        : Math.min(gross, 8000) * 0.02 + Math.max(0, gross - 8000) * 0.005;
+
     const totalDeductions =
         Math.min(
             gross,
-            incomeTax + limitedOtherDeduction
+            incomeTax +
+            socialInsurance +
+            unemploymentInsurance +
+            medicalInsurance +
+            limitedOtherDeduction
         );
 
     return {
@@ -1234,6 +1604,9 @@ function getSalaryCalculation(
         basicExemption,
         taxableIncome,
         incomeTax,
+        socialInsurance,
+        unemploymentInsurance,
+        medicalInsurance,
         limitedOtherDeduction,
         totalDeductions,
         netSalary: Math.max(0, gross - totalDeductions)
@@ -1335,11 +1708,11 @@ function calculateSalaryTaxOnly() {
     const sector =
         salaryTaxSector.value;
 
-    const selectedTaxExemption =
-        document.querySelector('input[name="salary-tax-exemption"]:checked');
+    const selectedSalaryExemptions =
+        getSelectedSalaryTaxExemptions();
 
-    const taxExemption = selectedTaxExemption
-        ? Math.max(0, parseFloat(selectedTaxExemption.value) || 0)
+    const taxExemption = salaryMainWorkplace.checked
+        ? selectedSalaryExemptions.total
         : 0;
 
     const enteredDeduction =
@@ -1365,6 +1738,9 @@ function calculateSalaryTaxOnly() {
             salaryHeroTaxExemptionResult,
             salaryStageTaxableResult,
             salaryStageTaxResult,
+            salarySocialInsuranceResult,
+            salaryUnemploymentInsuranceResult,
+            salaryMedicalInsuranceResult,
             salaryOtherDeductionResult,
             salaryTotalTaxResult,
             salaryNetTaxResult
@@ -1386,6 +1762,9 @@ function calculateSalaryTaxOnly() {
         basicExemption,
         taxableIncome,
         incomeTax,
+        socialInsurance,
+        unemploymentInsurance,
+        medicalInsurance,
         limitedOtherDeduction,
         totalDeductions,
         netSalary
@@ -1407,13 +1786,26 @@ function calculateSalaryTaxOnly() {
         salaryStageBasicExemptionResult.textContent = formatSalaryAZN(basicExemption);
     }
 
+    if (salaryBasicExemptionRow) {
+        salaryBasicExemptionRow.classList.toggle(
+            'is-not-applicable',
+            gross > 2500 || !calculationOptions.mainWorkplace
+        );
+    }
+
     if (salaryHeroTaxExemptionResult) {
         salaryHeroTaxExemptionResult.textContent = formatSalaryAZN(taxExemption);
     }
 
+    updateSelectedSalaryExemptionsBreakdown(
+        salaryMainWorkplace.checked
+            ? selectedSalaryExemptions.applicable
+            : []
+    );
+
     if (salaryExemptionSelection) {
-        salaryExemptionSelection.textContent = selectedTaxExemption
-            ? `${selectedTaxExemption.dataset.code} (${formatSalaryAZN(taxExemption)})`
+        salaryExemptionSelection.textContent = taxExemption
+            ? `${selectedSalaryExemptions.applicable.length} seçim (${formatSalaryAZN(taxExemption)})`
             : 'Seçilməyib';
     }
 
@@ -1425,9 +1817,35 @@ function calculateSalaryTaxOnly() {
         salaryStageTaxResult.textContent = formatSalaryAZN(incomeTax);
     }
 
+    updateSalaryTaxBreakdown(
+        calculationOptions.sector,
+        taxableIncome,
+        incomeTax
+    );
+
     if (salaryOtherDeductionResult) {
         salaryOtherDeductionResult.textContent = formatSalaryAZN(limitedOtherDeduction);
     }
+
+    if (salarySocialInsuranceResult) {
+        salarySocialInsuranceResult.textContent = formatSalaryAZN(socialInsurance);
+    }
+
+    if (salaryUnemploymentInsuranceResult) {
+        salaryUnemploymentInsuranceResult.textContent = formatSalaryAZN(unemploymentInsurance);
+    }
+
+    if (salaryMedicalInsuranceResult) {
+        salaryMedicalInsuranceResult.textContent = formatSalaryAZN(medicalInsurance);
+    }
+
+    updateSalaryInsuranceBreakdowns(
+        calculationOptions.sector,
+        gross,
+        socialInsurance,
+        unemploymentInsurance,
+        medicalInsurance
+    );
 
     if (salaryTotalTaxResult) {
         salaryTotalTaxResult.textContent = formatSalaryAZN(totalDeductions);
@@ -1464,12 +1882,35 @@ if (salaryTaxSector) {
 }
 
 if (salaryMainWorkplace) {
-    salaryMainWorkplace.addEventListener('change', calculateSalaryTaxOnly);
+    salaryMainWorkplace.addEventListener('change', () => {
+        updateSalaryWorkplaceStatus();
+        calculateSalaryTaxOnly();
+    });
 }
 
 salaryTaxExemptionOptions.forEach((option) => {
-    option.addEventListener('change', calculateSalaryTaxOnly);
+    option.addEventListener('change', () => {
+        updateSalaryExemptionSelectAllState();
+        calculateSalaryTaxOnly();
+    });
 });
+
+if (salaryExemptionSelectAll) {
+    salaryExemptionSelectAll.addEventListener('change', () => {
+        salaryTaxExemptionOptions.forEach((option) => {
+            option.checked = salaryExemptionSelectAll.checked;
+        });
+
+        updateSalaryExemptionSelectAllState();
+        calculateSalaryTaxOnly();
+    });
+}
+
+if (salaryExemptionClose && salaryTaxExemptionsDetails) {
+    salaryExemptionClose.addEventListener('click', () => {
+        salaryTaxExemptionsDetails.open = false;
+    });
+}
 
 if (salaryDeductionType) {
     salaryDeductionType.addEventListener('change', () => {
@@ -1483,4 +1924,110 @@ if (salaryOtherDeduction) {
 }
 
 updateSalaryDeductionSuffix();
+updateSalaryWorkplaceStatus();
+filterSalaryExemptionOptions();
 calculateSalaryTaxOnly();
+
+const salaryBreakdownSummaries =
+    document.querySelectorAll('.salary-tax-breakdown-inline summary');
+
+salaryBreakdownSummaries.forEach((summary) => {
+    const breakdown = summary.closest('details');
+
+    if (!breakdown) {
+        return;
+    }
+
+    summary.addEventListener('click', (event) => {
+        event.preventDefault();
+
+        const currentScrollTop = window.scrollY;
+        breakdown.open = !breakdown.open;
+
+        requestAnimationFrame(() => {
+            const previousScrollBehavior =
+                document.documentElement.style.scrollBehavior;
+
+            document.documentElement.style.scrollBehavior = 'auto';
+            window.scrollTo(0, currentScrollTop);
+            document.documentElement.style.scrollBehavior =
+                previousScrollBehavior;
+        });
+    });
+});
+
+const calculatorCards =
+    document.querySelectorAll('.calculator-grid .calculator-card');
+
+const calculatorPageIntro =
+    document.querySelector('.calculator-page .section-head');
+
+function updateCalculatorPageIntro() {
+    if (!calculatorPageIntro) {
+        return;
+    }
+
+    const isCalculatorOpen = Array.from(calculatorCards)
+        .some((card) => card.classList.contains('is-open'));
+
+    calculatorPageIntro.classList.toggle(
+        'is-hidden',
+        isCalculatorOpen
+    );
+}
+
+calculatorCards.forEach((card) => {
+    const expandButton = card.querySelector('.calculator-expand');
+    const calculatorTitleArea =
+        card.querySelector('.calculator-title > div:nth-child(2)');
+
+    if (!expandButton) {
+        return;
+    }
+
+    const toggleCalculatorCard = () => {
+        const shouldOpen = !card.classList.contains('is-open');
+        const calculatorTitle =
+            card.querySelector('.calculator-main-title');
+
+        card.classList.toggle('is-open', shouldOpen);
+        expandButton.setAttribute(
+            'aria-expanded',
+            String(shouldOpen)
+        );
+
+        updateCalculatorPageIntro();
+
+        if (calculatorTitle) {
+            const calculatorName = calculatorTitle.textContent.trim();
+
+            expandButton.setAttribute(
+                'aria-label',
+                shouldOpen
+                    ? `${calculatorName} kalkulyatorunu yığ`
+                    : `${calculatorName} kalkulyatorunu aç`
+            );
+        }
+
+        if (shouldOpen) {
+            card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    };
+
+    expandButton.addEventListener('click', toggleCalculatorCard);
+
+    if (calculatorTitleArea) {
+        calculatorTitleArea.addEventListener('click', toggleCalculatorCard);
+    }
+});
+
+updateCalculatorPageIntro();
+
+if (salaryExemptionSearchInput) {
+    ['input', 'search', 'keyup'].forEach((eventName) => {
+        salaryExemptionSearchInput.addEventListener(
+            eventName,
+            filterSalaryExemptionOptions
+        );
+    });
+}

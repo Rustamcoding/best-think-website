@@ -930,3 +930,8 @@
 .hero h1{font-size:clamp(36px,3.8vw,50px)}
 .cta h2,.contact-main-title{font-size:30px !important}
 @media(max-width:600px){.hero h1{font-size:36px}.cta h2,.contact-main-title{font-size:24px !important}}
+
+@media(max-width:600px){
+  .footer-grid{grid-template-columns:1fr}
+  .footer-form-row{grid-template-columns:1fr}
+}
