@@ -135,7 +135,7 @@ async function loadFooter() {
     }
 
     try {
-        const response = await fetch('/footer.html?v=1');
+        const response = await fetch('/footer.html?v=20260918-software-page');
 
         if (!response.ok) {
             throw new Error(`footer.html yüklənmədi: ${response.status}`);

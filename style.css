@@ -1411,6 +1411,201 @@
 .about-policy-copy p:last-child{
   margin-bottom:0;
 }
+
+/* İSTİFADƏ ETDİYİMİZ PROQRAMLAR */
+.software-page{
+  padding-top:42px;
+}
+.software-intro{
+  max-width:760px;
+  margin:0 auto 42px;
+  text-align:center;
+}
+.software-intro h1{
+  margin:5px 0 16px;
+  font-size:clamp(32px,3.8vw,48px);
+  line-height:1.12;
+  letter-spacing:-1px;
+}
+.software-intro p{
+  max-width:700px;
+  margin:0 auto;
+  color:var(--muted);
+  font-size:17px;
+}
+.software-story-list{
+  display:grid;
+  gap:26px;
+}
+.software-story-row{
+  display:grid;
+  grid-template-columns:.9fr 1.1fr;
+  gap:34px;
+  align-items:stretch;
+  padding:24px;
+  border:1px solid var(--line);
+  border-radius:22px;
+  background:#fff;
+  box-shadow:0 12px 28px #0d1f3a0b;
+}
+.software-story-row:nth-child(even) .software-story-visual{order:2}
+.software-story-row:nth-child(even) .software-story-copy{order:1}
+.software-story-visual{
+  min-height:280px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  gap:22px;
+  overflow:hidden;
+  border-radius:16px;
+  padding:34px;
+  background:linear-gradient(145deg,#eaf2fc,#fff 72%);
+  border:1px solid #edf2f8;
+  position:relative;
+}
+.software-story-visual::after{
+  content:"";
+  position:absolute;
+  width:180px;
+  height:180px;
+  right:-72px;
+  bottom:-86px;
+  border-radius:50%;
+  background:#2466d312;
+}
+.software-brand-line{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  position:relative;
+  z-index:1;
+}
+.software-brand-mark{
+  width:68px;
+  height:68px;
+  display:grid;
+  place-items:center;
+  flex:0 0 68px;
+  border-radius:18px;
+  padding:12px;
+  border:1px solid #dfe8f4;
+  background:#fff;
+  color:#fff;
+  font-size:20px;
+  font-weight:800;
+  letter-spacing:-.6px;
+  box-shadow:0 10px 22px #0d1f3a20;
+}
+.software-brand-mark img{
+  width:100%;
+  height:100%;
+  display:block;
+  object-fit:contain;
+}
+.software-brand-mark--1c{padding:8px}
+.software-brand-mark--ai{padding:12px}
+.software-brand-mark--drive{padding:11px}
+.software-brand-mark--todo{padding:10px}
+.software-brand-mark--office{padding:10px}
+.software-brand-mark--asan{background:linear-gradient(145deg,#0868b6,#5cb7f0);font-size:15px}
+.software-brand-mark--cloud{padding:10px}
+.software-brand-mark--tax{background:linear-gradient(145deg,#0e4e9b,#f18f35);font-size:15px}
+.software-logo-pair{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex:0 0 auto;
+}
+.software-logo-pair .software-brand-mark{
+  width:48px;
+  height:48px;
+  flex-basis:48px;
+  padding:9px;
+  border-radius:14px;
+}
+.software-brand-line strong{
+  display:block;
+  color:var(--text);
+  font-size:22px;
+  line-height:1.15;
+}
+.software-brand-line small{
+  display:block;
+  margin-top:5px;
+  color:var(--muted);
+  font-size:12px;
+}
+.software-task-board{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  position:relative;
+  z-index:1;
+}
+.software-task-board span{
+  padding:7px 10px;
+  border:1px solid #cbdcf5;
+  border-radius:999px;
+  background:#fff;
+  color:var(--blue);
+  font-size:11px;
+  font-weight:700;
+}
+.software-mini-panel{
+  display:grid;
+  gap:8px;
+  position:relative;
+  z-index:1;
+}
+.software-mini-panel i{
+  display:block;
+  height:8px;
+  border-radius:999px;
+  background:linear-gradient(90deg,#2466d3 0 68%,#dce8f8 68%);
+}
+.software-mini-panel i:nth-child(2){background:linear-gradient(90deg,#5e9df0 0 46%,#e2ebf7 46%)}
+.software-mini-panel i:nth-child(3){background:linear-gradient(90deg,#a8c9f4 0 82%,#e2ebf7 82%)}
+.software-story-copy{
+  align-self:center;
+  padding:0 8px;
+}
+.software-story-copy h2{
+  margin:0 0 14px;
+  color:var(--text);
+  font-size:26px;
+  line-height:1.2;
+}
+.software-story-copy p{
+  margin:0 0 13px;
+  color:var(--muted);
+  font-size:15px;
+  line-height:1.72;
+}
+.software-story-copy p:last-child{margin-bottom:0}
+.software-note{
+  max-width:760px;
+  margin:34px auto 0;
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.65;
+  text-align:center;
+}
+@media(max-width:600px){
+  .software-page{padding-top:32px}
+  .software-intro{margin-bottom:30px}
+  .software-intro p{font-size:15px}
+  .software-story-row{
+    grid-template-columns:1fr;
+    gap:20px;
+    padding:18px;
+  }
+  .software-story-row:nth-child(even) .software-story-visual,
+  .software-story-row:nth-child(even) .software-story-copy{order:initial}
+  .software-story-visual{min-height:220px;padding:24px}
+  .software-story-copy{padding:0 2px}
+  .software-story-copy h2{font-size:22px}
+  .software-story-copy p{font-size:14px}
+}
 @media(max-width:1050px){
   .outcome-grid{grid-template-columns:repeat(2,1fr)}
 }
