@@ -1094,3 +1094,50 @@
   line-height:1.55;
 }
 .industry-label details li+li{margin-top:6px}
+
+.outcome-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:18px;
+}
+.outcome-card{
+  position:relative;
+  min-height:190px;
+  padding:24px;
+  border:1px solid var(--line);
+  border-radius:16px;
+  background:#fff;
+  box-shadow:0 8px 22px #0d1f3a0b;
+  transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease;
+}
+.outcome-card:hover{
+  transform:translateY(-5px);
+  box-shadow:0 18px 40px #0d1f3a18;
+  border-color:#cbd9eb;
+}
+.outcome-mark{
+  display:block;
+  width:32px;
+  height:3px;
+  margin-bottom:18px;
+  border-radius:999px;
+  background:linear-gradient(90deg,var(--blue),#8eb7f5);
+}
+.outcome-card h3{
+  margin:0 0 8px;
+  font-size:18px;
+  line-height:1.3;
+}
+.outcome-card p{
+  margin:0;
+  color:var(--muted);
+  font-size:14px;
+  line-height:1.6;
+}
+@media(max-width:1050px){
+  .outcome-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:600px){
+  .outcome-grid{grid-template-columns:1fr}
+  .outcome-card{min-height:0;padding:21px}
+}
