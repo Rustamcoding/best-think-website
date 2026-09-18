@@ -19,6 +19,7 @@
 }
 .about-profile-head .kicker{
   font-size:18px;
+  margin-bottom:12px;
 }
 .about-profile-head h1{
   margin:4px 0 9px;
@@ -1302,8 +1303,8 @@
   object-fit:contain;
 }
 .service-story-copy{
-  align-self:center;
-  padding:10px 8px;
+  align-self:start;
+  padding:0 8px;
 }
 .service-story-index{
   display:inline-flex;
@@ -1335,6 +1336,7 @@
 }
 .about-policy{
   padding-top:33px;
+  background:#fff;
 }
 .about-policy .section-head .kicker{
   font-size:20px;
