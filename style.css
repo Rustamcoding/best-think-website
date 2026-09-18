@@ -974,16 +974,35 @@
   border-top:1px solid var(--line);
 }
 .service-card summary{
-  display:inline-flex;
+  display:flex;
   align-items:center;
-  gap:7px;
+  justify-content:space-between;
+  gap:12px;
+  width:100%;
+  cursor:pointer;
+  list-style:none;
 }
-.service-card summary::after{
-  content:"↘";
-  font-size:17px;
+.service-card summary::-webkit-details-marker{display:none}
+.service-card summary::after,
+.industry-label summary::after{
+  content:"↓";
+  flex:0 0 auto;
+  width:24px;
+  height:24px;
+  display:grid;
+  place-items:center;
+  border:1px solid #cbdcf5;
+  border-radius:8px;
+  color:var(--blue);
+  font-size:16px;
   font-weight:800;
   line-height:1;
-  transform:translateY(-1px);
+  transition:background .2s ease;
+}
+.service-card details[open] summary::after,
+.industry-label details[open] summary::after{
+  content:"↑";
+  background:#edf4ff;
 }
 
 /* HERO DÜYMƏSİ VƏ XİDMƏTLƏR BAŞLIĞI */
@@ -1069,21 +1088,10 @@
 }
 .industry-label summary::-webkit-details-marker{display:none}
 .industry-label summary::after{
-  content:"↘";
-  flex:0 0 auto;
-  width:24px;
-  height:24px;
-  display:grid;
-  place-items:center;
-  border:1px solid #cbdcf5;
-  border-radius:8px;
-  color:var(--blue);
-  font-size:16px;
-  line-height:1;
-  transition:transform .2s ease,background .2s ease;
+  content:"↓";
 }
 .industry-label details[open] summary::after{
-  content:"↗";
+  content:"↑";
   background:#edf4ff;
 }
 .industry-label details ul{
@@ -1093,12 +1101,21 @@
   font-size:12px;
   line-height:1.55;
 }
+
+/* Açılan məlumat bir kartın hündürlüyünü bütün sətirə yaymasın. */
+.service-grid,
+.industry-grid{
+  align-items:start;
+}
 .industry-label details li+li{margin-top:6px}
 
 .outcome-grid{
   display:grid;
   grid-template-columns:repeat(3,1fr);
   gap:18px;
+}
+.outcomes-section{
+  padding-top:40px;
 }
 .outcome-card{
   position:relative;

@@ -2031,3 +2031,96 @@ if (salaryExemptionSearchInput) {
         );
     });
 }
+
+/* =========================================================
+   XİDMƏTLƏRİMİZ - ACCORDION DAVRANIŞI
+   Eyni anda yalnız bir xidmətin məlumatı açıq qalsın.
+   ========================================================= */
+
+const accordionDetails =
+    document.querySelectorAll(
+        '.service-grid details, .industry-grid details'
+    );
+
+if (accordionDetails.length) {
+    document.addEventListener('click', (event) => {
+        const summary = event.target.closest?.('summary');
+        const detail = summary?.closest('details');
+
+    if (!summary || !detail || !Array.from(accordionDetails).includes(detail)) {
+            return;
+        }
+
+        event.preventDefault();
+
+        const shouldOpen = !detail.open;
+
+        accordionDetails.forEach((otherDetail) => {
+            if (otherDetail !== detail) {
+                otherDetail.open = false;
+            }
+        });
+
+        detail.open = shouldOpen;
+    });
+
+    const accordionSections = Array.from(
+        new Set(
+            [
+                ...Array.from(
+                    document.querySelectorAll(
+                        '.service-grid, .industry-grid'
+                    )
+                ).map((grid) => grid.closest('section')),
+                document.querySelector('.outcomes-section')
+            ].filter(Boolean)
+        )
+    );
+
+    let activeAccordionSection = null;
+
+    const closeOpenAccordionDetails = () => {
+        accordionDetails.forEach((detail) => {
+            detail.open = false;
+        });
+    };
+
+    const syncAccordionSection = () => {
+        if (window.scrollY <= 80) {
+            closeOpenAccordionDetails();
+            activeAccordionSection = null;
+            return;
+        }
+
+        const triggerLine = window.innerHeight * 0.45;
+        let nextSection = null;
+
+        accordionSections.forEach((section) => {
+            const rect = section.getBoundingClientRect();
+
+            if (rect.top <= triggerLine && rect.bottom > triggerLine) {
+                nextSection = section;
+            }
+        });
+
+        if (
+            nextSection &&
+            activeAccordionSection &&
+            nextSection !== activeAccordionSection
+        ) {
+            closeOpenAccordionDetails();
+        }
+
+        if (nextSection) {
+            activeAccordionSection = nextSection;
+        }
+    };
+
+    window.addEventListener('scroll', syncAccordionSection, {
+        passive: true
+    });
+
+    window.addEventListener('resize', syncAccordionSection);
+
+    syncAccordionSection();
+}
