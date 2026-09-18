@@ -1044,7 +1044,7 @@
   letter-spacing:.1px;
 }
 .industry-label{
-  min-height:122px;
+  min-height:180px;
   padding:18px 18px 20px;
 }
 .industry-label::before{
