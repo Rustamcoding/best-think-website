@@ -896,7 +896,7 @@
 
 .mission-intro h1 {
     margin: 5px 0 18px;
-    font-size: clamp(34px, 4vw, 48px);
+    font-size: clamp(32px, 3.6vw, 44px);
     line-height: 1.15;
 }
 
@@ -912,7 +912,12 @@
     grid-template-columns: 1.08fr .92fr;
     gap: 64px;
     align-items: center;
-    margin-bottom: 86px;
+    margin-bottom: 26px;
+    padding: 24px;
+    border: 1px solid var(--line);
+    border-radius: 22px;
+    background: #fff;
+    box-shadow: 0 12px 28px #0d1f3a0b;
 }
 
 .mission-feature-reverse .mission-image {
@@ -924,17 +929,20 @@
 }
 
 .mission-image {
+    display: grid;
+    place-items: center;
     overflow: hidden;
     border-radius: 22px;
-    background: #e8eff8;
-    box-shadow: 0 18px 42px rgba(13, 31, 58, .12);
+    padding: 24px;
+    background: linear-gradient(145deg,#eaf2fc,#fff);
+    border: 1px solid #edf2f8;
 }
 
 .mission-image img {
     width: 100%;
     aspect-ratio: 16 / 9;
     display: block;
-    object-fit: cover;
+    object-fit: contain;
     transition: transform .35s ease;
 }
 
@@ -948,8 +956,8 @@
 
 .mission-text h2 {
     margin: 5px 0 18px;
-    color: var(--blue);
-    font-size: clamp(28px, 3vw, 38px);
+    color: var(--text);
+    font-size: clamp(26px, 2.7vw, 34px);
     line-height: 1.2;
 }
 
@@ -980,7 +988,8 @@
     .mission-feature-reverse {
         grid-template-columns: 1fr;
         gap: 28px;
-        margin-bottom: 62px;
+        margin-bottom: 20px;
+        padding: 18px;
     }
 
     .mission-feature-reverse .mission-image,
@@ -989,7 +998,7 @@
     }
 
     .mission-text h2 {
-        font-size: 27px;
+        font-size: 25px;
     }
 
     .mission-text p:last-child {
