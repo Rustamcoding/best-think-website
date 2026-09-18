@@ -21,8 +21,8 @@ async function loadHeader() {
         const isBlogArticle = window.location.pathname.includes('/Bloglar/');
 
 const headerPath = isBlogArticle
-    ? '../header.html?v=2'
-    : './header.html?v=2';
+    ? '../header.html?v=3'
+    : './header.html?v=3';
 
 const response = await fetch(headerPath);
 
