@@ -1274,6 +1274,20 @@
 .services-detail-page .service-grid{
   display:none;
 }
+.services-detail-page{
+  padding-top:42px;
+}
+.services-detail-page .section-head,
+.coverage-section .section-head{
+  margin-bottom:26px;
+}
+.page-section-title{
+  margin:5px 0 0;
+  color:var(--text);
+  font-size:clamp(30px,3.2vw,40px);
+  line-height:1.15;
+  letter-spacing:-.7px;
+}
 .service-story-list{
   display:grid;
   gap:26px;
@@ -1507,6 +1521,7 @@
 .software-brand-mark--drive{padding:11px}
 .software-brand-mark--todo{padding:10px}
 .software-brand-mark--office{padding:10px}
+.software-brand-mark--power{padding:10px}
 .software-brand-mark--asan{background:linear-gradient(145deg,#0868b6,#5cb7f0);font-size:15px}
 .software-brand-mark--cloud{padding:10px}
 .software-brand-mark--tax{background:linear-gradient(145deg,#0e4e9b,#f18f35);font-size:15px}
