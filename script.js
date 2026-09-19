@@ -21,8 +21,8 @@ async function loadHeader() {
         const isBlogArticle = window.location.pathname.includes('/Bloglar/');
 
 const headerPath = isBlogArticle
-    ? '../header.html?v=3'
-    : './header.html?v=3';
+    ? '../header.html?v=4'
+    : './header.html?v=4';
 
 const response = await fetch(headerPath);
 
@@ -135,7 +135,7 @@ async function loadFooter() {
     }
 
     try {
-        const response = await fetch('/footer.html?v=20260918-software-page');
+        const response = await fetch('/footer.html?v=20260919-tools-menu');
 
         if (!response.ok) {
             throw new Error(`footer.html yüklənmədi: ${response.status}`);
