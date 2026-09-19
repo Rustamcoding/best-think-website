@@ -24,14 +24,6 @@
 .about-profile-head h1{
   margin:0;
 }
-.about-profile-head h2{
-  max-width:none;
-  margin:0 auto;
-  color:var(--navy);
-  font-size:24px;
-  line-height:1.35;
-  white-space:nowrap;
-}
 .about-profile-section .about-grid{
   align-items:start;
 }
@@ -1660,5 +1652,4 @@
   .about-profile-section{padding-top:30px}
   .about-profile-head{margin-bottom:22px}
   .about-profile-head h1{font-size:24px}
-  .about-profile-head h2{font-size:18px;white-space:normal}
 }
