@@ -10,7 +10,7 @@
 .industry-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.industry{border:1px solid var(--line);border-radius:18px;overflow:hidden;background:#fff;box-shadow:0 8px 22px #0d1f3a0b;transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease}.industry img{width:100%;height:220px;display:block;object-fit:cover;transition:transform .35s ease}.industry-label{padding:16px 18px;background:#fff}.industry-label b{display:block;padding:0;font-size:17px}.industry-label span{display:block;margin-top:4px;color:var(--muted);font-size:12px}.industry:hover img{transform:scale(1.035)}
 .about-grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:40px;align-items:start}.about-visual{min-height:450px;border-radius:22px;background:#fff;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 20px 45px #0d1f3a0c}.about-visual img{width:100%;height:100%;object-fit:cover;object-position:center 20%}.director-photo{padding:0}.about-grid h2{font-size:38px;margin:0 0 12px}.about-grid p{color:var(--muted)}
 .about-profile-section{
-  padding-top:42px;
+  padding-top:30px;
 }
 .about-profile-head{
   max-width:900px;
@@ -22,9 +22,7 @@
   margin-bottom:12px;
 }
 .about-profile-head h1{
-  margin:4px 0 9px;
-  font-size:38px;
-  line-height:1.15;
+  margin:0;
 }
 .about-profile-head h2{
   max-width:none;
@@ -866,7 +864,7 @@
 
 }
 .coverage-section {
-    padding-top: 8px;
+    padding-top: 30px;
 }
 .blog-card-content {
     position: relative;
@@ -895,9 +893,7 @@
 }
 
 .mission-intro h1 {
-    margin: 5px 0 18px;
-    font-size: clamp(32px, 3.6vw, 44px);
-    line-height: 1.15;
+    margin: 0;
 }
 
 .mission-intro > p:last-child {
@@ -1275,18 +1271,23 @@
   display:none;
 }
 .services-detail-page{
-  padding-top:42px;
+  padding-top:30px;
 }
 .services-detail-page .section-head,
 .coverage-section .section-head{
   margin-bottom:26px;
 }
-.page-section-title{
-  margin:5px 0 0;
+.page-main-title{
+  margin:0;
   color:var(--text);
-  font-size:clamp(30px,3.2vw,40px);
-  line-height:1.15;
-  letter-spacing:-.7px;
+  font-family:inherit;
+  font-size:32px;
+  font-weight:700;
+  line-height:1.2;
+  letter-spacing:0;
+}
+@media(max-width:768px){
+  .page-main-title{font-size:24px}
 }
 .service-story-list{
   display:grid;
@@ -1656,9 +1657,8 @@
   .service-story-copy p{font-size:14px}
 }
 @media(max-width:600px){
-  .about-profile-section{padding-top:40px}
+  .about-profile-section{padding-top:30px}
   .about-profile-head{margin-bottom:22px}
-  .about-profile-head .kicker{font-size:17px}
-  .about-profile-head h1{font-size:32px}
+  .about-profile-head h1{font-size:24px}
   .about-profile-head h2{font-size:18px;white-space:normal}
 }
