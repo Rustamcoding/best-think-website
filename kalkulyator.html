@@ -672,10 +672,48 @@
         }
 
         .calculator-grid .calculator-card {
+            position: relative;
+            isolation: isolate;
             max-width: none;
             margin: 0;
             padding: 23px;
             transition: padding .25s ease, box-shadow .25s ease;
+        }
+
+        @property --calculator-wave-angle {
+            syntax: "<angle>";
+            inherits: false;
+            initial-value: 0deg;
+        }
+
+        .calculator-grid .calculator-card::before {
+            content: "";
+            position: absolute;
+            inset: -1px;
+            z-index: 2;
+            padding: 1.5px;
+            border-radius: inherit;
+            background: conic-gradient(
+                from var(--calculator-wave-angle),
+                transparent 0deg 292deg,
+                rgba(36, 102, 211, .22) 310deg,
+                rgba(92, 157, 239, .92) 334deg,
+                rgba(36, 102, 211, .22) 356deg,
+                transparent 360deg
+            );
+            -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            -webkit-mask-composite: xor;
+            mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            mask-composite: exclude;
+            pointer-events: none;
+            filter: drop-shadow(0 0 2px rgba(36, 102, 211, .22));
+            animation: calculator-border-wave 5.8s linear infinite;
+        }
+
+        @keyframes calculator-border-wave {
+            to {
+                --calculator-wave-angle: 360deg;
+            }
         }
 
         .calculator-grid .salary-calculator-card {
@@ -867,46 +905,8 @@
             display: inline-block;
         }
 
-        .calculator-grid .calculator-card:not(.is-open) .calculator-card-action-label {
-            animation: calculator-action-text 2.6s ease-in-out infinite;
-        }
-
-        .calculator-grid .calculator-card:not(.is-open) .calculator-card-action > span[aria-hidden="true"] {
-            animation: calculator-action-arrow 2.6s ease-in-out infinite;
-        }
-
-        @keyframes calculator-action-text {
-            0%,
-            100% {
-                color: var(--blue);
-                transform: translateX(0);
-            }
-            42% {
-                color: #123f70;
-                transform: translateX(3px);
-            }
-            62% {
-                color: var(--blue);
-                transform: translateX(0);
-            }
-        }
-
-        @keyframes calculator-action-arrow {
-            0%,
-            100% {
-                transform: translateX(0);
-            }
-            42% {
-                transform: translateX(4px);
-            }
-            62% {
-                transform: translateX(0);
-            }
-        }
-
         @media (prefers-reduced-motion: reduce) {
-            .calculator-grid .calculator-card:not(.is-open) .calculator-card-action-label,
-            .calculator-grid .calculator-card:not(.is-open) .calculator-card-action > span[aria-hidden="true"] {
+            .calculator-grid .calculator-card::before {
                 animation: none;
             }
         }
@@ -1014,6 +1014,18 @@
 
         .life-savings-note.is-hidden {
             display: none;
+        }
+
+        .life-savings-form .salary-sector-info-panel {
+            left: 50%;
+            right: auto;
+            transform: translateX(-50%);
+        }
+
+        .life-savings-insurance-inputs > div:nth-child(3) .salary-sector-info-panel {
+            left: auto;
+            right: 0;
+            transform: none;
         }
 
         .life-savings-calculation {
@@ -2696,12 +2708,47 @@
 
                 <div class="life-savings-form">
                     <div>
-                        <label for="life-savings-amount">Aylıq gross əmək haqqı</label>
+                        <div class="salary-field-label">
+                            <label for="life-savings-amount">Aylıq gross əmək haqqı</label>
+                            <details class="salary-sector-info">
+                                <summary
+                                    aria-label="Aylıq gross əmək haqqı haqqında məlumat"
+                                    title="Aylıq gross əmək haqqı haqqında məlumat"
+                                >
+                                    i
+                                </summary>
+                                <div class="salary-sector-info-panel">
+                                    <strong>Aylıq gross əmək haqqı</strong>
+                                    <p>Vergilər və digər məcburi ödənişlər daxil əmək haqqı məbləğidir.</p>
+                                </div>
+                            </details>
+                        </div>
                         <input id="life-savings-amount" type="number" min="0" step="0.01" value="0.00" placeholder="0.00" inputmode="decimal">
                     </div>
 
                     <div>
-                        <label for="life-savings-sector">Sektor</label>
+                        <div class="salary-field-label">
+                            <label for="life-savings-sector">Sektor</label>
+                            <details class="salary-sector-info">
+                                <summary
+                                    aria-label="Sektor meyarları haqqında məlumat"
+                                    title="Sektor meyarları haqqında məlumat"
+                                >
+                                    i
+                                </summary>
+                                <div class="salary-sector-info-panel">
+                                    <strong>Sektor meyarları</strong>
+                                    <p>Müəssisənin neft-qaz sahəsinə aid olub-olmaması və dövlət və ya qeyri-dövlət sektoruna daxil edilməsi hesablama dərəcələrini müəyyən edir.</p>
+                                    <a
+                                        href="https://e-qanun.az/framework/41611"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        Meyarlarla tanış olun →
+                                    </a>
+                                </div>
+                            </details>
+                        </div>
                         <select id="life-savings-sector">
                             <option value="private">Qeyri-neft/qaz və qeyri-dövlət</option>
                             <option value="state" disabled>Neft-qaz / dövlət sektoru</option>
@@ -2717,7 +2764,21 @@
                     </div>
 
                     <div>
-                        <label for="life-savings-year">Hesablama ili</label>
+                        <div class="salary-field-label">
+                            <label for="life-savings-year">Hesablama ili</label>
+                            <details class="salary-sector-info">
+                                <summary
+                                    aria-label="Hesablama ili haqqında məlumat"
+                                    title="Hesablama ili haqqında məlumat"
+                                >
+                                    i
+                                </summary>
+                                <div class="salary-sector-info-panel">
+                                    <strong>Hesablama ili</strong>
+                                    <p>İllər üzrə vergi dərəcələri dəyişdiyi üçün hesablama nəticəsi fərqli ola bilər.</p>
+                                </div>
+                            </details>
+                        </div>
                         <select id="life-savings-year">
                             <option value="2026">2026</option>
                             <option value="2027">2027</option>
@@ -2757,15 +2818,57 @@
 
                     <div class="life-savings-insurance-inputs">
                         <div>
-                            <label id="life-savings-net-insurance-label" for="life-savings-insurance-amount">Net sığorta haqqı</label>
+                            <div class="salary-field-label">
+                                <label id="life-savings-net-insurance-label" for="life-savings-insurance-amount">Net sığorta haqqı</label>
+                                <details class="salary-sector-info">
+                                    <summary
+                                        aria-label="Net sığorta haqqı haqqında məlumat"
+                                        title="Net sığorta haqqı haqqında məlumat"
+                                    >
+                                        i
+                                    </summary>
+                                    <div class="salary-sector-info-panel">
+                                        <strong>Net sığorta haqqı</strong>
+                                        <p>Karta köçürülən net əmək haqqından ayrılan sığorta məbləğidir.</p>
+                                    </div>
+                                </details>
+                            </div>
                             <input id="life-savings-insurance-amount" type="number" min="0" step="0.01" value="" placeholder="Maks. məbləğ" inputmode="decimal">
                         </div>
                         <div>
-                            <label id="life-savings-gross-insurance-label" for="life-savings-gross-insurance-amount">Gross sığorta haqqı</label>
+                            <div class="salary-field-label">
+                                <label id="life-savings-gross-insurance-label" for="life-savings-gross-insurance-amount">Gross sığorta haqqı</label>
+                                <details class="salary-sector-info">
+                                    <summary
+                                        aria-label="Gross sığorta haqqı haqqında məlumat"
+                                        title="Gross sığorta haqqı haqqında məlumat"
+                                    >
+                                        i
+                                    </summary>
+                                    <div class="salary-sector-info-panel">
+                                        <strong>Gross sığorta haqqı</strong>
+                                        <p>Vergilər və digər məcburi ödənişlər daxil olmaqla əmək haqqı məbləğidir.</p>
+                                    </div>
+                                </details>
+                            </div>
                             <input id="life-savings-gross-insurance-amount" type="number" min="0" step="0.01" value="" placeholder="Maks. məbləğ" inputmode="decimal">
                         </div>
                         <div>
-                            <label id="life-savings-supergross-insurance-label" for="life-savings-supergross-insurance-amount">Supergross sığorta haqqı</label>
+                            <div class="salary-field-label">
+                                <label id="life-savings-supergross-insurance-label" for="life-savings-supergross-insurance-amount">Supergross sığorta haqqı</label>
+                                <details class="salary-sector-info">
+                                    <summary
+                                        aria-label="Supergross sığorta haqqı haqqında məlumat"
+                                        title="Supergross sığorta haqqı haqqında məlumat"
+                                    >
+                                        i
+                                    </summary>
+                                    <div class="salary-sector-info-panel">
+                                        <strong>Supergross sığorta haqqı</strong>
+                                        <p>Supergross əmək haqqı və məcburi dövlət sosial sığortası ilə birlikdə hesablanan məbləğdir.</p>
+                                    </div>
+                                </details>
+                            </div>
                             <input id="life-savings-supergross-insurance-amount" type="number" min="0" step="0.01" value="" placeholder="Maks. məbləğ" inputmode="decimal">
                         </div>
                         <p class="life-savings-note">
