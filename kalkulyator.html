@@ -663,11 +663,11 @@
            ========================================= */
 
         .calculator-grid {
-            max-width: 840px;
+            max-width: 1220px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: minmax(0, 1fr);
-            gap: 14px;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
             align-items: start;
         }
 
@@ -683,12 +683,106 @@
         }
 
         .calculator-grid .calculator-card-exchange {
+            order: 3;
+        }
+
+        .calculator-grid .life-savings-calculator-card {
             order: 2;
         }
 
         .calculator-grid .calculator-card:not(.is-open) {
             padding-top: 15px;
             padding-bottom: 15px;
+            min-height: 282px;
+            display: flex;
+        }
+
+        .calculator-grid .calculator-card.is-open {
+            grid-column: 1 / -1;
+            width: 100%;
+            max-width: 940px;
+            justify-self: center;
+        }
+
+        .calculator-grid.has-open-card > .calculator-card:not(.is-open) {
+            display: none;
+        }
+
+        .calculator-quick-nav {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            grid-column: 1 / -1;
+            width: 100%;
+            max-width: 940px;
+            justify-self: center;
+            box-sizing: border-box;
+            margin: 0 auto 12px;
+            padding: 10px 12px;
+            border: 1px solid #dfe8f3;
+            border-radius: 14px;
+            background: #f8fbff;
+        }
+
+        .calculator-quick-nav-label {
+            flex: 0 0 auto;
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .calculator-quick-nav-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            min-width: 0;
+        }
+
+        .calculator-quick-nav-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            min-height: 34px;
+            padding: 4px 10px 4px 5px;
+            border: 1px solid #dfe8f3;
+            border-radius: 999px;
+            background: #f8fbff;
+            color: var(--text);
+            font: inherit;
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 1.2;
+            text-align: left;
+            cursor: pointer;
+            transition: border-color .2s ease, background .2s ease, transform .2s ease;
+        }
+
+        .calculator-quick-nav-item:hover,
+        .calculator-quick-nav-item:focus-visible {
+            border-color: #9bbce8;
+            background: #eef5ff;
+            transform: translateY(-1px);
+        }
+
+        .calculator-quick-nav-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 25px;
+            height: 25px;
+            flex: 0 0 25px;
+            border-radius: 8px;
+            background: linear-gradient(145deg, #123f70, #2466d3);
+            color: #ffffff;
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        @media (max-width: 700px) {
+            .calculator-quick-nav {
+                align-items: flex-start;
+                flex-direction: column;
+            }
         }
 
         .calculator-grid .calculator-card:not(.is-open) > :not(.calculator-title) {
@@ -701,54 +795,37 @@
 
         .calculator-grid .calculator-title {
             position: relative;
-            gap: 11px;
-            margin-bottom: 21px;
-            padding-right: 50px;
+            flex: 1;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 13px;
+            margin-bottom: 0;
+            padding-right: 0;
+            min-height: 242px;
         }
 
         .calculator-grid .calculator-main-title {
-            margin-bottom: 6px;
-            font-size: 26px;
+            margin-bottom: 8px;
+            font-size: 22px;
         }
 
         .calculator-grid .calculator-title p {
             font-size: 14px;
+            line-height: 1.55;
         }
 
         .calculator-grid .calculator-title > div:nth-child(2) {
+            width: 100%;
             cursor: pointer;
+        }
+
+        .calculator-grid .calculator-card.is-open .calculator-title {
+            min-height: 0;
+            margin-bottom: 21px;
         }
 
         .calculator-expand {
-            position: absolute;
-            top: 50%;
-            right: 0;
-            width: 38px;
-            height: 38px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid #d8e1ed;
-            border-radius: 10px;
-            background: #f5f7fa;
-            color: var(--blue);
-            font-size: 22px;
-            font-weight: 800;
-            line-height: 1;
-            cursor: pointer;
-            transform: translateY(-50%);
-            transition: background-color .2s ease, color .2s ease, transform .25s ease;
-        }
-
-        .calculator-expand:hover,
-        .calculator-expand:focus-visible {
-            background: var(--blue);
-            color: #ffffff;
-            outline: none;
-        }
-
-        .calculator-card.is-open .calculator-expand {
-            transform: translateY(-50%) rotate(180deg);
+            display: none;
         }
 
         .calculator-grid .calculator-icon {
@@ -757,6 +834,255 @@
             flex-basis: 48px;
             border-radius: 15px;
             font-size: 22px;
+            cursor: pointer;
+        }
+
+        .calculator-card-action {
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            margin-top: auto;
+            padding: 15px 0 0;
+            border: 0;
+            border-top: 1px solid #e1e7ef;
+            background: transparent;
+            color: var(--blue);
+            font: inherit;
+            font-size: 15px;
+            font-weight: 700;
+            line-height: 1.3;
+            text-align: left;
+            cursor: pointer;
+        }
+
+        .calculator-card-action span {
+            display: inline-block;
+            margin-left: 5px;
+            font-size: 18px;
+            line-height: 1;
+            transition: transform .2s ease;
+        }
+
+        .calculator-card-action-label {
+            display: inline-block;
+        }
+
+        .calculator-grid .calculator-card:not(.is-open) .calculator-card-action-label {
+            animation: calculator-action-text 2.6s ease-in-out infinite;
+        }
+
+        .calculator-grid .calculator-card:not(.is-open) .calculator-card-action > span[aria-hidden="true"] {
+            animation: calculator-action-arrow 2.6s ease-in-out infinite;
+        }
+
+        @keyframes calculator-action-text {
+            0%,
+            100% {
+                color: var(--blue);
+                transform: translateX(0);
+            }
+            42% {
+                color: #123f70;
+                transform: translateX(3px);
+            }
+            62% {
+                color: var(--blue);
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes calculator-action-arrow {
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+            42% {
+                transform: translateX(4px);
+            }
+            62% {
+                transform: translateX(0);
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .calculator-grid .calculator-card:not(.is-open) .calculator-card-action-label,
+            .calculator-grid .calculator-card:not(.is-open) .calculator-card-action > span[aria-hidden="true"] {
+                animation: none;
+            }
+        }
+
+        .calculator-card-action:hover,
+        .calculator-card-action:focus-visible {
+            color: #123f70;
+            outline: none;
+        }
+
+        .calculator-card-action:hover span,
+        .calculator-card-action:focus-visible span {
+            transform: translateX(3px);
+        }
+
+        .life-savings-form {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 17px 18px;
+        }
+
+        .life-savings-field-full {
+            grid-column: 1 / -1;
+        }
+
+        .life-savings-insurance-inputs {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 14px;
+            margin-top: 3px;
+            padding-top: 16px;
+            border-top: 1px solid #dfe6ef;
+        }
+
+        .life-savings-limit-message {
+            grid-column: 1 / -1;
+            min-height: 18px;
+            margin: -5px 0 0;
+            color: #c92a2a;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .life-savings-form label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text);
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .life-savings-form input,
+        .life-savings-form select {
+            width: 100%;
+            min-height: 46px;
+            box-sizing: border-box;
+            padding: 0 13px;
+            border: 1px solid #d8e1ed;
+            border-radius: 11px;
+            background: #ffffff;
+            color: var(--text);
+            font: inherit;
+        }
+
+        .life-savings-form input:focus,
+        .life-savings-form select:focus {
+            border-color: var(--blue);
+            outline: 3px solid rgba(43, 105, 213, .12);
+        }
+
+        .life-savings-form input.life-savings-input-error,
+        .life-savings-form input.life-savings-input-error:focus,
+        .life-savings-form input.life-savings-input-required,
+        .life-savings-form input.life-savings-input-required:focus {
+            border-color: #c92a2a;
+            color: #c92a2a;
+            outline-color: rgba(201, 42, 42, .14);
+        }
+
+        .life-savings-other-deduction-input {
+            height: 46px;
+            grid-template-columns: 88px minmax(0, 1fr) 46px;
+        }
+
+        .life-savings-form input::placeholder {
+            color: #9aa9bd;
+            opacity: 1;
+        }
+
+        .life-savings-form select:disabled {
+            cursor: not-allowed;
+            background: #f4f7fb;
+            color: #60728e;
+        }
+
+        .life-savings-note {
+            grid-column: 1 / -1;
+            margin: -14px 0 0;
+            padding: 0 14px;
+            color: #c92a2a;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .life-savings-note.is-hidden {
+            display: none;
+        }
+
+        .life-savings-calculation {
+            margin-top: 20px;
+            padding: 18px;
+            border: 1px solid #d8e1ed;
+            border-radius: 13px;
+            background: #f8fafc;
+        }
+
+        .life-savings-calculation h3 {
+            margin: 0 0 10px;
+            color: var(--text);
+            font-size: 18px;
+        }
+
+        .life-savings-row {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 18px;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .life-savings-row:last-child {
+            border-bottom: 0;
+        }
+
+        .life-savings-row strong {
+            color: var(--text);
+            font-size: 14px;
+            text-align: right;
+        }
+
+        .life-savings-net-row {
+            margin-top: 8px;
+            padding-top: 14px;
+            border-top: 2px solid #2eaf63;
+            border-bottom: 0;
+            color: #238b4f;
+            font-weight: 700;
+        }
+
+        .life-savings-net-row strong {
+            color: #238b4f;
+            font-size: 15px;
+        }
+
+        .life-savings-result {
+            margin-top: 16px;
+        }
+
+        @media (max-width: 700px) {
+            .life-savings-form {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .life-savings-field-full {
+                grid-column: auto;
+            }
+
+            .life-savings-insurance-inputs {
+                grid-column: auto;
+                grid-template-columns: 1fr;
+            }
         }
 
         .salary-form {
@@ -1133,6 +1459,16 @@
             font-weight: 700;
         }
 
+        .life-savings-form .life-savings-other-deduction-input {
+            height: 46px;
+            grid-template-columns: 88px minmax(0, 1fr) 46px;
+        }
+
+        .life-savings-form .life-savings-other-deduction-input select {
+            padding-left: 6px;
+            padding-right: 4px;
+        }
+
         .salary-field-hint {
             display: block;
             margin-top: 7px;
@@ -1415,7 +1751,7 @@
             line-height: 1.4;
         }
 
-        @media (max-width: 1100px) {
+        @media (max-width: 700px) {
 
             .calculator-grid {
                 grid-template-columns: 1fr;
@@ -1511,7 +1847,7 @@
                 <div class="calculator-title">
 
                     <div class="calculator-icon">
-                        ₼
+                        ⇄
                     </div>
 
                     <div>
@@ -1521,11 +1857,15 @@
 </h1>
 
                         <p>
-                            Xarici valyuta ilə əməliyyatlarda
-                            məzənnə fərqini hesabla.
+                            Xarici valyuta ilə əməliyyatlarda məzənnə fərqini hesabla. Alış və satış məzənnələri arasındakı fərqin nəticəsini aydın şəkildə gör.
                         </p>
 
                     </div>
+
+                    <button class="calculator-card-action" type="button" aria-label="Məzənnə fərqi kalkulyatorunu sına">
+                        <span class="calculator-card-action-label">Dərhal sına</span>
+                        <span aria-hidden="true">→</span>
+                    </button>
 
                     <button
                         class="calculator-expand"
@@ -1824,10 +2164,15 @@
                         </h2>
 
                         <p>
-                            Gross və ya net əmək haqqını hesabla.
+                            Gross və ya net əməkhaqqını hesabla. Vergi və digər tutulmalardan sonra alacağın net məbləği müəyyən et.
                         </p>
 
                     </div>
+
+                    <button class="calculator-card-action" type="button" aria-label="Əmək haqqı kalkulyatorunu sına">
+                        <span class="calculator-card-action-label">Dərhal sına</span>
+                        <span aria-hidden="true">→</span>
+                    </button>
 
                     <button
                         class="calculator-expand"
@@ -2320,6 +2665,151 @@
 
                 </div>
 
+
+            </article>
+
+            <article class="calculator-card life-savings-calculator-card" id="life-savings-calculator-panel">
+
+                <div class="calculator-title">
+                    <div class="calculator-icon" aria-label="Yığım sığortası ikonu">◈</div>
+
+                    <div>
+                        <h2 class="calculator-main-title">Yığım sığortası kalkulyatoru</h2>
+                        <p>Gross əməkhaqqına əsasən maksimum qoşula biləcəyin sığorta məbləğini hesabla. Net, gross və supergross sığorta məbləğlərini müqayisə et.</p>
+                    </div>
+
+                    <button class="calculator-card-action" type="button" aria-label="Yığım sığortası kalkulyatorunu sına">
+                        <span class="calculator-card-action-label">Dərhal sına</span>
+                        <span aria-hidden="true">→</span>
+                    </button>
+
+                    <button
+                        class="calculator-expand"
+                        type="button"
+                        aria-expanded="false"
+                        aria-controls="life-savings-calculator-panel"
+                        aria-label="Yığım sığortası kalkulyatorunu aç"
+                    >
+                        <span aria-hidden="true">↓</span>
+                    </button>
+                </div>
+
+                <div class="life-savings-form">
+                    <div>
+                        <label for="life-savings-amount">Aylıq gross əmək haqqı</label>
+                        <input id="life-savings-amount" type="number" min="0" step="0.01" value="0.00" placeholder="0.00" inputmode="decimal">
+                    </div>
+
+                    <div>
+                        <label for="life-savings-sector">Sektor</label>
+                        <select id="life-savings-sector">
+                            <option value="private">Qeyri-neft/qaz və qeyri-dövlət</option>
+                            <option value="state" disabled>Neft-qaz / dövlət sektoru</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="life-savings-workplace">İş yeri</label>
+                        <select id="life-savings-workplace">
+                            <option value="main" selected>Əsas iş yeri</option>
+                            <option value="additional">Əlavə iş yeri</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="life-savings-year">Hesablama ili</label>
+                        <select id="life-savings-year">
+                            <option value="2026">2026</option>
+                            <option value="2027">2027</option>
+                            <option value="2028">2028</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="life-savings-union">Həmkarlar ittifaqı tutulması</label>
+                        <select id="life-savings-union">
+                            <option value="0">0%</option>
+                            <option value="0.01">1%</option>
+                            <option value="0.02">2%</option>
+                            <option value="0.03">3%</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="life-savings-other-deduction">Digər tutulmalar</label>
+                        <div class="salary-deduction-input life-savings-other-deduction-input">
+                            <select id="life-savings-other-deduction-type" aria-label="Digər tutulmaların növü">
+                                <option value="amount">Məbləğ</option>
+                                <option value="percent">Faiz</option>
+                            </select>
+                            <input
+                                type="number"
+                                id="life-savings-other-deduction"
+                                value="0"
+                                min="0"
+                                step="0.01"
+                                inputmode="decimal"
+                                aria-label="Digər tutulmaların dəyəri"
+                            >
+                            <span id="life-savings-other-deduction-suffix">AZN</span>
+                        </div>
+                    </div>
+
+                    <div class="life-savings-insurance-inputs">
+                        <div>
+                            <label id="life-savings-net-insurance-label" for="life-savings-insurance-amount">Net sığorta haqqı</label>
+                            <input id="life-savings-insurance-amount" type="number" min="0" step="0.01" value="" placeholder="Maks. məbləğ" inputmode="decimal">
+                        </div>
+                        <div>
+                            <label id="life-savings-gross-insurance-label" for="life-savings-gross-insurance-amount">Gross sığorta haqqı</label>
+                            <input id="life-savings-gross-insurance-amount" type="number" min="0" step="0.01" value="" placeholder="Maks. məbləğ" inputmode="decimal">
+                        </div>
+                        <div>
+                            <label id="life-savings-supergross-insurance-label" for="life-savings-supergross-insurance-amount">Supergross sığorta haqqı</label>
+                            <input id="life-savings-supergross-insurance-amount" type="number" min="0" step="0.01" value="" placeholder="Maks. məbləğ" inputmode="decimal">
+                        </div>
+                        <p class="life-savings-note">
+                            * Qoşulmaq istədiyin sığorta məbləğini müvafiq xanaya daxil et.
+                        </p>
+                        <p class="life-savings-limit-message" id="life-savings-limit-message" aria-live="polite"></p>
+                    </div>
+                </div>
+
+                <div class="life-savings-calculation">
+                    <h3>Büdcəyə ödəniləcək ödənişlər (sığortadan sonra)</h3>
+                    <div class="life-savings-row">
+                        <span>Gəlir vergisi</span>
+                        <strong id="life-savings-income-tax-result">—</strong>
+                    </div>
+                    <div class="life-savings-row">
+                        <span>Məcburi dövlət sosial sığorta haqqı</span>
+                        <strong id="life-savings-social-result">—</strong>
+                    </div>
+                    <div class="life-savings-row">
+                        <span>İşsizlikdən sığorta haqqı (ümumi gross əməkhaqqı üzrə)</span>
+                        <strong id="life-savings-unemployment-result">—</strong>
+                    </div>
+                    <div class="life-savings-row">
+                        <span>İcbari tibbi sığorta haqqı (ümumi gross əməkhaqqı üzrə)</span>
+                        <strong id="life-savings-medical-result">—</strong>
+                    </div>
+                    <div class="life-savings-row">
+                        <span>Həmkarlar ittifaqı tutulması</span>
+                        <strong id="life-savings-union-result">—</strong>
+                    </div>
+                    <div class="life-savings-row">
+                        <span>Digər tutulmalar</span>
+                        <strong id="life-savings-other-deduction-result">—</strong>
+                    </div>
+                    <div class="life-savings-row">
+                        <span>Əməkhaqqı üzrə ümumi tutulmalar</span>
+                        <strong id="life-savings-deductions-result">—</strong>
+                    </div>
+                    <div class="life-savings-row life-savings-net-row">
+                        <span id="life-savings-result-title">Sığortadan sonra karta köçürüləcək net əməkhaqqı</span>
+                        <strong id="life-savings-net-result">—</strong>
+                    </div>
+                </div>
 
             </article>
 

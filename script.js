@@ -1958,9 +1958,70 @@ salaryBreakdownSummaries.forEach((summary) => {
 
 const calculatorCards =
     document.querySelectorAll('.calculator-grid .calculator-card');
+const calculatorGrid = document.querySelector('.calculator-grid');
 
 const calculatorPageIntro =
     document.querySelector('.calculator-page .section-head');
+
+function renderCalculatorQuickNav(activeCard) {
+    if (!calculatorGrid) {
+        return;
+    }
+
+    calculatorGrid.querySelector('.calculator-quick-nav')?.remove();
+
+    if (!activeCard) {
+        return;
+    }
+
+    const quickNav = document.createElement('nav');
+    quickNav.className = 'calculator-quick-nav';
+    quickNav.setAttribute('aria-label', 'Digər kalkulyatorlar');
+
+    const quickNavLabel = document.createElement('span');
+    quickNavLabel.className = 'calculator-quick-nav-label';
+    quickNavLabel.textContent = 'Digər kalkulyatorlar';
+
+    const quickNavList = document.createElement('div');
+    quickNavList.className = 'calculator-quick-nav-list';
+
+    calculatorCards.forEach((otherCard) => {
+        if (otherCard === activeCard) {
+            return;
+        }
+
+        const otherTitle = otherCard.querySelector('.calculator-main-title');
+        const otherIcon = otherCard.querySelector('.calculator-icon');
+        const otherExpandButton = otherCard.querySelector('.calculator-expand');
+
+        if (!otherTitle || !otherIcon || !otherExpandButton) {
+            return;
+        }
+
+        const otherName = otherTitle.textContent.trim().replace(/\s+/g, ' ');
+        const quickNavButton = document.createElement('button');
+        quickNavButton.className = 'calculator-quick-nav-item';
+        quickNavButton.type = 'button';
+        quickNavButton.setAttribute('aria-label', `${otherName} kalkulyatorunu aç`);
+
+        const quickNavIcon = document.createElement('span');
+        quickNavIcon.className = 'calculator-quick-nav-icon';
+        quickNavIcon.setAttribute('aria-hidden', 'true');
+        quickNavIcon.textContent = otherIcon.textContent.trim();
+
+        const quickNavName = document.createElement('span');
+        quickNavName.textContent = otherName;
+
+        quickNavButton.append(quickNavIcon, quickNavName);
+        quickNavButton.addEventListener('click', () => {
+            otherExpandButton.click();
+        });
+        quickNavList.appendChild(quickNavButton);
+    });
+
+    quickNav.append(quickNavLabel, quickNavList);
+    calculatorGrid.prepend(quickNav);
+}
 
 function updateCalculatorPageIntro() {
     if (!calculatorPageIntro) {
@@ -1969,6 +2030,13 @@ function updateCalculatorPageIntro() {
 
     const isCalculatorOpen = Array.from(calculatorCards)
         .some((card) => card.classList.contains('is-open'));
+
+    calculatorGrid?.classList.toggle('has-open-card', isCalculatorOpen);
+    renderCalculatorQuickNav(
+        Array.from(calculatorCards).find((card) =>
+            card.classList.contains('is-open')
+        )
+    );
 
     calculatorPageIntro.classList.toggle(
         'is-hidden',
@@ -1980,6 +2048,8 @@ calculatorCards.forEach((card) => {
     const expandButton = card.querySelector('.calculator-expand');
     const calculatorTitleArea =
         card.querySelector('.calculator-title > div:nth-child(2)');
+    const calculatorIcon = card.querySelector('.calculator-icon');
+    const calculatorAction = card.querySelector('.calculator-card-action');
 
     if (!expandButton) {
         return;
@@ -1989,6 +2059,16 @@ calculatorCards.forEach((card) => {
         const shouldOpen = !card.classList.contains('is-open');
         const calculatorTitle =
             card.querySelector('.calculator-main-title');
+
+        if (shouldOpen) {
+            calculatorCards.forEach((otherCard) => {
+                if (otherCard === card || !otherCard.classList.contains('is-open')) {
+                    return;
+                }
+
+                otherCard.querySelector('.calculator-expand')?.click();
+            });
+        }
 
         card.classList.toggle('is-open', shouldOpen);
         expandButton.setAttribute(
@@ -2009,8 +2089,32 @@ calculatorCards.forEach((card) => {
             );
         }
 
+        if (calculatorAction) {
+            const actionLabel = calculatorAction.querySelector(
+                '.calculator-card-action-label'
+            );
+            const actionArrow = calculatorAction.querySelector(
+                'span[aria-hidden="true"]'
+            );
+
+            if (actionLabel) {
+                actionLabel.textContent = shouldOpen
+                    ? 'Bağla '
+                    : 'Dərhal sına ';
+            }
+            if (actionArrow) {
+                actionArrow.textContent = shouldOpen ? '↑' : '→';
+            }
+            calculatorAction.setAttribute(
+                'aria-label',
+                shouldOpen
+                    ? 'Kalkulyatoru bağla'
+                    : `${calculatorTitle?.textContent.trim() || 'Kalkulyatoru'} sına`
+            );
+        }
+
         if (shouldOpen) {
-            card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            calculatorGrid?.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
     };
 
@@ -2018,6 +2122,14 @@ calculatorCards.forEach((card) => {
 
     if (calculatorTitleArea) {
         calculatorTitleArea.addEventListener('click', toggleCalculatorCard);
+    }
+
+    if (calculatorIcon) {
+        calculatorIcon.addEventListener('click', toggleCalculatorCard);
+    }
+
+    if (calculatorAction) {
+        calculatorAction.addEventListener('click', toggleCalculatorCard);
     }
 });
 
@@ -2124,3 +2236,1304 @@ if (accordionDetails.length) {
 
     syncAccordionSection();
 }
+
+/* =========================================================
+   YIĞIM HƏYAT SIĞORTASI KALKULYATORU
+   Excel-dəki 2026–2028 qaydalarının veb tətbiqi.
+   ========================================================= */
+
+const lifeSavingsMode =
+    document.getElementById('life-savings-mode');
+const lifeSavingsYear =
+    document.getElementById('life-savings-year');
+const lifeSavingsSector =
+    document.getElementById('life-savings-sector');
+const lifeSavingsWorkplace =
+    document.getElementById('life-savings-workplace');
+const lifeSavingsUnion =
+    document.getElementById('life-savings-union');
+const lifeSavingsOtherDeductionType =
+    document.getElementById('life-savings-other-deduction-type');
+const lifeSavingsOtherDeduction =
+    document.getElementById('life-savings-other-deduction');
+const lifeSavingsOtherDeductionSuffix =
+    document.getElementById('life-savings-other-deduction-suffix');
+const lifeSavingsGrossSalary =
+    document.getElementById('life-savings-gross-salary');
+const lifeSavingsGrossSalaryField =
+    lifeSavingsGrossSalary?.closest('.life-savings-field');
+const lifeSavingsAmount =
+    document.getElementById('life-savings-amount');
+const lifeSavingsInsuranceAmount =
+    document.getElementById('life-savings-insurance-amount');
+const lifeSavingsInsuranceField =
+    lifeSavingsInsuranceAmount?.closest('.life-savings-insurance-field');
+const lifeSavingsAmountLabel =
+    document.getElementById('life-savings-amount-label');
+const lifeSavingsInsuranceAmountLabel =
+    document.getElementById('life-savings-insurance-amount-label');
+const lifeSavingsPrimaryLabel =
+    document.getElementById('life-savings-primary-label');
+const lifeSavingsPrimaryResult =
+    document.getElementById('life-savings-primary-result');
+const lifeSavingsInsuranceLabel =
+    document.getElementById('life-savings-insurance-label');
+const lifeSavingsInsuranceResult =
+    document.getElementById('life-savings-insurance-result');
+const lifeSavingsEmployerLabel =
+    document.getElementById('life-savings-employer-label');
+const lifeSavingsEmployerResult =
+    document.getElementById('life-savings-employer-result');
+const lifeSavingsSupergrossLabel =
+    document.getElementById('life-savings-supergross-label');
+const lifeSavingsSupergrossResult =
+    document.getElementById('life-savings-supergross-result');
+const lifeSavingsIncomeTaxResult =
+    document.getElementById('life-savings-income-tax-result');
+const lifeSavingsSocialResult =
+    document.getElementById('life-savings-social-result');
+const lifeSavingsUnemploymentResult =
+    document.getElementById('life-savings-unemployment-result');
+const lifeSavingsMedicalResult =
+    document.getElementById('life-savings-medical-result');
+const lifeSavingsInsuranceUnemploymentResult =
+    document.getElementById('life-savings-insurance-unemployment-result');
+const lifeSavingsInsuranceMedicalResult =
+    document.getElementById('life-savings-insurance-medical-result');
+const lifeSavingsUnionResult =
+    document.getElementById('life-savings-union-result');
+const lifeSavingsOtherDeductionResult =
+    document.getElementById('life-savings-other-deduction-result');
+const lifeSavingsInsuranceDeductionsResult =
+    document.getElementById('life-savings-insurance-deductions-result');
+const lifeSavingsDeductionsResult =
+    document.getElementById('life-savings-deductions-result');
+const lifeSavingsResultTitle =
+    document.getElementById('life-savings-result-title');
+const lifeSavingsNetResult =
+    document.getElementById('life-savings-net-result');
+const lifeSavingsNote =
+    document.querySelector('.life-savings-note');
+
+let lifeSavingsNetInsuranceManuallyChanged = false;
+
+const lifeSavingsRound = (value) =>
+    Math.round((Number(value) + 1e-9) * 100) / 100;
+
+function lifeSavingsYearTaxRate(year) {
+    return {
+        2026: 0.03,
+        2027: 0.05,
+        2028: 0.07
+    }[year] ?? 0.03;
+}
+
+function lifeSavingsSalaryTax(
+    grossSalary,
+    sector,
+    year,
+    totalMonthlyIncome = grossSalary,
+    workplace = 'main'
+) {
+    const gross = Math.max(0, grossSalary);
+    const monthlyIncome = Math.max(0, totalMonthlyIncome);
+    const basicExemption =
+        workplace === 'main' && monthlyIncome > 0 && monthlyIncome <= 2500
+            ? Math.min(gross, 200)
+            : 0;
+    const taxableIncome = Math.max(0, gross - basicExemption);
+
+    if (sector === 'private') {
+        const lowerBandRate = lifeSavingsYearTaxRate(year);
+
+        if (taxableIncome <= 2500) {
+            return taxableIncome * lowerBandRate;
+        }
+
+        if (taxableIncome <= 8000) {
+            return 2500 * lowerBandRate + (taxableIncome - 2500) * 0.10;
+        }
+
+        return 2500 * lowerBandRate + 5500 * 0.10 + (taxableIncome - 8000) * 0.14;
+    }
+
+    if (taxableIncome <= 2500) {
+        return taxableIncome * 0.14;
+    }
+
+    return 2500 * 0.14 + (taxableIncome - 2500) * 0.25;
+}
+
+function lifeSavingsEmployeeSocial(grossSalary, sector) {
+    const gross = Math.max(0, grossSalary);
+
+    return sector === 'private'
+        ? Math.min(gross, 200) * 0.03 + Math.max(0, gross - 200) * 0.10
+        : gross * 0.03;
+}
+
+function lifeSavingsUnemployment(grossSalary) {
+    return Math.max(0, grossSalary) * 0.005;
+}
+
+function lifeSavingsMedical(grossSalary, sector) {
+    const gross = Math.max(0, grossSalary);
+    const limit = sector === 'private' ? 2500 : 8000;
+
+    return Math.min(gross, limit) * 0.02 + Math.max(0, gross - limit) * 0.005;
+}
+
+function lifeSavingsSalaryBreakdown(
+    grossSalary,
+    sector,
+    year,
+    unionRate,
+    workplace = 'main'
+) {
+    const gross = Math.max(0, grossSalary);
+    const incomeTax = lifeSavingsSalaryTax(
+        gross,
+        sector,
+        year,
+        gross,
+        workplace
+    );
+    const social = lifeSavingsEmployeeSocial(gross, sector);
+    const unemployment = lifeSavingsUnemployment(gross);
+    const medical = lifeSavingsMedical(gross, sector);
+    const union = gross * unionRate;
+    const total = incomeTax + social + unemployment + medical + union;
+
+    return {
+        gross,
+        incomeTax,
+        social,
+        unemployment,
+        medical,
+        union,
+        total,
+        net: Math.max(0, gross - total)
+    };
+}
+
+function lifeSavingsBudgetAfterInsurance(
+    grossSalary,
+    grossInsurance,
+    sector,
+    year,
+    unionRate,
+    workplace = 'main',
+    otherDeductionAmount = 0
+) {
+    const gross = Math.max(0, grossSalary);
+    const insurance = Math.min(Math.max(0, grossInsurance), gross);
+    const salaryPart = Math.max(0, gross - insurance);
+    const otherDeduction = Math.min(
+        gross,
+        Math.max(0, Number(otherDeductionAmount) || 0)
+    );
+    // Vergi və DSMF sığortadan sonra qalan əməkhaqqı hissəsinə,
+    // işsizlik və tibbi sığorta isə bütün gross əməkhaqqına tətbiq olunur.
+    // 200 AZN əsas iş yeri güzəşti ümumi aylıq gəlir üzrə yoxlanılır.
+    // Məsələn, 3 000 AZN gross və 500 AZN sığortada ümumi gəlir 2 500-dən
+    // çox olduğu üçün 200 AZN güzəşt tətbiq edilmir: 2 500 × 3% = 75 AZN.
+    const incomeTax = lifeSavingsSalaryTax(
+        salaryPart,
+        sector,
+        year,
+        gross,
+        workplace
+    );
+    const social = lifeSavingsEmployeeSocial(salaryPart, sector);
+    const salaryUnemployment = lifeSavingsUnemployment(gross);
+    const salaryMedical = lifeSavingsMedical(gross, sector);
+    const insuranceUnemployment = 0;
+    const insuranceMedical = 0;
+    // Həmkarlar ittifaqı tutulması ümumi gross əməkhaqqından hesablanır.
+    const union = gross * unionRate;
+    const total =
+        incomeTax +
+        social +
+        salaryUnemployment +
+        salaryMedical +
+        insuranceUnemployment +
+        insuranceMedical +
+        union +
+        otherDeduction;
+
+    return {
+        incomeTax,
+        social,
+        salaryUnemployment,
+        salaryMedical,
+        insuranceUnemployment,
+        insuranceMedical,
+        union,
+        otherDeduction,
+        total,
+        netCash: Math.max(
+            0,
+            gross -
+                insurance -
+                incomeTax -
+                social -
+                salaryUnemployment -
+                salaryMedical -
+                union -
+                otherDeduction
+        )
+    };
+}
+
+function lifeSavingsSalaryGrossFromNet(
+    targetNet,
+    sector,
+    year,
+    unionRate
+) {
+    const target = Math.max(0, targetNet);
+
+    if (target === 0) {
+        return 0;
+    }
+
+    let low = 0;
+    let high = Math.max(1000, target * 2 + 1000);
+
+    while (
+        lifeSavingsSalaryBreakdown(high, sector, year, unionRate).net < target &&
+        high < 1000000000
+    ) {
+        high *= 2;
+    }
+
+    for (let step = 0; step < 90; step += 1) {
+        const middle = (low + high) / 2;
+        const net = lifeSavingsSalaryBreakdown(
+            middle,
+            sector,
+            year,
+            unionRate
+        ).net;
+
+        if (net >= target) {
+            high = middle;
+        } else {
+            low = middle;
+        }
+    }
+
+    return high;
+}
+
+function lifeSavingsBands(sector, year) {
+    const lowerBandRate = lifeSavingsYearTaxRate(year);
+
+    return sector === 'private'
+        ? [
+            { low: 0, high: 200, tax: 0, social: 0.03, employer: 0.22 },
+            { low: 200, high: 2500, tax: lowerBandRate, social: 0.10, employer: 0.15 },
+            { low: 2500, high: 8000, tax: 0.10, social: 0.10, employer: 0.15 },
+            { low: 8000, high: Infinity, tax: 0.14, social: 0.10, employer: 0.11 }
+        ]
+        : [
+            { low: 0, high: 200, tax: 0, social: 0.03, employer: 0.22 },
+            { low: 200, high: 2500, tax: 0.14, social: 0.03, employer: 0.22 },
+            { low: 2500, high: 8000, tax: 0.25, social: 0.03, employer: 0.22 },
+            { low: 8000, high: Infinity, tax: 0.25, social: 0.03, employer: 0.22 }
+        ];
+}
+
+function lifeSavingsSegmentTotal(start, end, bands, getValue) {
+    if (end <= start) {
+        return 0;
+    }
+
+    return bands.reduce((total, band) => {
+        const overlap = Math.max(
+            0,
+            Math.min(end, band.high) - Math.max(start, band.low)
+        );
+
+        return total + overlap * getValue(band);
+    }, 0);
+}
+
+function lifeSavingsNetInsurance(
+    grossSalary,
+    grossInsurance,
+    sector,
+    year
+) {
+    const salary = Math.max(0, grossSalary);
+    const insurance = Math.min(Math.max(0, grossInsurance), salary);
+    const start = salary - insurance;
+    const bands = lifeSavingsBands(sector, year);
+
+    // İşsizlik və tibbi sığorta net sığorta haqqına daxil deyil;
+    // onlar ayrıca nəticə kimi göstərilir.
+    return lifeSavingsSegmentTotal(
+        start,
+        salary,
+        bands,
+        (band) => 1 - band.tax - band.social
+    );
+}
+
+function lifeSavingsGrossInsuranceFromNet(
+    grossSalary,
+    netInsurance,
+    sector,
+    year
+) {
+    const target = Math.max(0, netInsurance);
+    let low = 0;
+    let high = Math.max(0, grossSalary);
+
+    for (let step = 0; step < 90; step += 1) {
+        const middle = (low + high) / 2;
+        const net = lifeSavingsNetInsurance(
+            grossSalary,
+            middle,
+            sector,
+            year
+        );
+
+        if (net >= target) {
+            high = middle;
+        } else {
+            low = middle;
+        }
+    }
+
+    return high;
+}
+
+function lifeSavingsSupergrossFromGross(
+    grossSalary,
+    grossInsurance,
+    sector,
+    year
+) {
+    const salary = Math.max(0, grossSalary);
+    const insurance = Math.min(Math.max(0, grossInsurance), salary);
+
+    if (sector === 'state') {
+        return insurance * 1.22;
+    }
+
+    const start = salary - insurance;
+    const bands = lifeSavingsBands(sector, year);
+
+    return lifeSavingsSegmentTotal(
+        start,
+        salary,
+        bands,
+        (band) => 1 + band.employer
+    );
+}
+
+function lifeSavingsGrossFromSupergross(
+    grossSalary,
+    supergrossInsurance,
+    sector,
+    year
+) {
+    const target = Math.max(0, supergrossInsurance);
+    let low = 0;
+    let high = Math.max(0, grossSalary);
+
+    for (let step = 0; step < 90; step += 1) {
+        const middle = (low + high) / 2;
+        const supergross = lifeSavingsSupergrossFromGross(
+            grossSalary,
+            middle,
+            sector,
+            year
+        );
+
+        if (supergross >= target) {
+            high = middle;
+        } else {
+            low = middle;
+        }
+    }
+
+    return high;
+}
+
+function lifeSavingsMaximumGrossInsurance(grossSalary, sector) {
+    // Mövcud Excel qaydasındakı maksimum qoşulma nisbəti hər iki sektor üçün
+    // eyni tətbiq olunur; sektor fərqi isə tutulma dərəcələrində hesablanır.
+    return lifeSavingsRound(Math.max(0, grossSalary) * 0.4643);
+}
+
+function setLifeSavingsResult(element, value) {
+    if (element) {
+        element.textContent = value === null
+            ? '—'
+            : formatSalaryAZN(lifeSavingsRound(value));
+    }
+}
+
+function resetLifeSavingsDeductionDetails() {
+    [
+        lifeSavingsIncomeTaxResult,
+        lifeSavingsSocialResult,
+        lifeSavingsUnemploymentResult,
+        lifeSavingsMedicalResult,
+        lifeSavingsUnionResult,
+        lifeSavingsInsuranceDeductionsResult
+    ].forEach((element) => setLifeSavingsResult(element, null));
+}
+
+function getSelectedNetInsurance(
+    grossSalary,
+    sector,
+    year,
+    forceMaximum = false
+) {
+    const maximumGross = lifeSavingsMaximumGrossInsurance(
+        grossSalary,
+        sector
+    );
+    const maximumNet = lifeSavingsRound(
+        lifeSavingsNetInsurance(grossSalary, maximumGross, sector, year)
+    );
+
+    if (!lifeSavingsInsuranceAmount) {
+        return { maximumGross, maximumNet, selectedNet: 0 };
+    }
+
+    lifeSavingsInsuranceAmount.max = maximumNet.toFixed(2);
+
+    const enteredNet = Math.max(
+        0,
+        Number(lifeSavingsInsuranceAmount.value) || 0
+    );
+
+    if (
+        forceMaximum ||
+        !lifeSavingsNetInsuranceManuallyChanged ||
+        enteredNet > maximumNet
+    ) {
+        lifeSavingsInsuranceAmount.value = maximumNet.toFixed(2);
+    }
+
+    return {
+        maximumGross,
+        maximumNet,
+        selectedNet: Math.min(
+            maximumNet,
+            Math.max(0, Number(lifeSavingsInsuranceAmount.value) || 0)
+        )
+    };
+}
+
+function updateLegacyLifeSavingsAmountLabel() {
+    if (!lifeSavingsMode || !lifeSavingsAmountLabel) {
+        return;
+    }
+
+    const labels = {
+        'gross-salary-to-net': 'Gross əməkhaqqı',
+        'net-salary-to-gross': 'Net əməkhaqqı',
+        'gross-insurance-to-supergross': 'Gross sığorta haqqı',
+        'supergross-to-gross-insurance': 'Supergross sığorta haqqı'
+    };
+
+    lifeSavingsAmountLabel.textContent =
+        labels[lifeSavingsMode.value] || 'Hesablanan məbləğ';
+
+    const isSalaryInsuranceMode =
+        lifeSavingsMode.value === 'gross-salary-to-net';
+
+    if (isSalaryInsuranceMode) {
+        lifeSavingsAmountLabel.textContent = 'Aylıq gross əməkhaqqı';
+
+        if (lifeSavingsSector) {
+            lifeSavingsSector.value = 'private';
+            lifeSavingsSector.disabled = true;
+        }
+
+        if (lifeSavingsInsuranceAmountLabel) {
+            lifeSavingsInsuranceAmountLabel.textContent =
+                'Net sığorta haqqı (kartdan ayrılan məbləğ)';
+        }
+    } else {
+        if (lifeSavingsSector) {
+            lifeSavingsSector.disabled = false;
+        }
+
+        if (lifeSavingsInsuranceAmountLabel) {
+            lifeSavingsInsuranceAmountLabel.textContent =
+                'Gross sığorta haqqı';
+        }
+    }
+
+    if (lifeSavingsGrossSalaryField) {
+        lifeSavingsGrossSalaryField.hidden =
+            isSalaryInsuranceMode ||
+            lifeSavingsMode.value === 'net-salary-to-gross';
+    }
+
+    if (lifeSavingsInsuranceField) {
+        lifeSavingsInsuranceField.hidden =
+            !isSalaryInsuranceMode &&
+            lifeSavingsMode.value !== 'net-salary-to-gross';
+    }
+}
+
+function calculateLegacyLifeSavings() {
+    if (
+        !lifeSavingsMode ||
+        !lifeSavingsYear ||
+        !lifeSavingsSector ||
+        !lifeSavingsUnion ||
+        !lifeSavingsGrossSalary ||
+        !lifeSavingsAmount
+    ) {
+        return;
+    }
+
+    const mode = lifeSavingsMode.value;
+    const year = Number(lifeSavingsYear.value);
+    const sector = lifeSavingsSector.value;
+    const unionRate = Number(lifeSavingsUnion.value) || 0;
+    const enteredAmount = Math.max(0, Number(lifeSavingsAmount.value) || 0);
+    const enteredGrossSalary = Math.max(
+        0,
+        Number(lifeSavingsGrossSalary.value) || 0
+    );
+    const enteredGrossInsurance = Math.max(
+        0,
+        Number(lifeSavingsInsuranceAmount?.value) || 0
+    );
+
+    if (mode === 'gross-salary-to-net') {
+        const grossSalary = enteredAmount;
+        const sector = 'private';
+        const salaryResult = lifeSavingsSalaryBreakdown(
+            grossSalary,
+            sector,
+            year,
+            unionRate
+        );
+        const {
+            maximumGross,
+            maximumNet,
+            selectedNet
+        } = getSelectedNetInsurance(
+            grossSalary,
+            sector,
+            year
+        );
+        const selectedGross = lifeSavingsGrossInsuranceFromNet(
+            grossSalary,
+            selectedNet,
+            sector,
+            year
+        );
+        const selectedSupergross = lifeSavingsSupergrossFromGross(
+            grossSalary,
+            selectedGross,
+            sector,
+            year
+        );
+        const insuranceDeductions = Math.max(
+            0,
+            selectedGross - selectedNet
+        );
+        const netSalaryAfterInsurance = Math.max(
+            0,
+            salaryResult.net - selectedNet
+        );
+
+        if (lifeSavingsPrimaryLabel) {
+            lifeSavingsPrimaryLabel.textContent =
+                'Maksimum net sığorta haqqı';
+        }
+        if (lifeSavingsInsuranceLabel) {
+            lifeSavingsInsuranceLabel.textContent =
+                'Maksimum gross sığorta haqqı';
+        }
+        if (lifeSavingsEmployerLabel) {
+            lifeSavingsEmployerLabel.textContent =
+                'Seçilmiş gross sığorta haqqı';
+        }
+        if (lifeSavingsSupergrossLabel) {
+            lifeSavingsSupergrossLabel.textContent =
+                'Seçilmiş sığorta üçün supergross məbləğ';
+        }
+
+        setLifeSavingsResult(lifeSavingsPrimaryResult, maximumNet);
+        setLifeSavingsResult(lifeSavingsInsuranceResult, maximumGross);
+        setLifeSavingsResult(lifeSavingsEmployerResult, selectedGross);
+        setLifeSavingsResult(
+            lifeSavingsSupergrossResult,
+            selectedSupergross
+        );
+        setLifeSavingsResult(
+            lifeSavingsIncomeTaxResult,
+            salaryResult.incomeTax
+        );
+        setLifeSavingsResult(lifeSavingsSocialResult, salaryResult.social);
+        setLifeSavingsResult(
+            lifeSavingsUnemploymentResult,
+            salaryResult.unemployment
+        );
+        setLifeSavingsResult(lifeSavingsMedicalResult, salaryResult.medical);
+        setLifeSavingsResult(lifeSavingsUnionResult, salaryResult.union);
+        setLifeSavingsResult(
+            lifeSavingsInsuranceDeductionsResult,
+            insuranceDeductions
+        );
+        setLifeSavingsResult(
+            lifeSavingsDeductionsResult,
+            salaryResult.total
+        );
+
+        if (lifeSavingsResultTitle) {
+            lifeSavingsResultTitle.textContent =
+                'Sığortadan sonra karta keçəcək net əməkhaqqı';
+        }
+        setLifeSavingsResult(lifeSavingsNetResult, netSalaryAfterInsurance);
+
+        return;
+    }
+
+    let grossSalary = enteredGrossSalary;
+    let salaryResult = null;
+    let grossInsurance = 0;
+    let insuranceResult = null;
+    let supergrossResult = null;
+    let primaryLabel = '';
+    let primaryResult = 0;
+    let insuranceLabel = '';
+    let employerLabel = '';
+    let deductionsResult = null;
+    let resultTitle = '';
+    let resultValue = 0;
+
+    if (mode === 'gross-salary-to-net') {
+        grossSalary = enteredAmount;
+        salaryResult = lifeSavingsSalaryBreakdown(
+            grossSalary,
+            sector,
+            year,
+            unionRate
+        );
+        grossInsurance = enteredGrossInsurance;
+        insuranceResult = lifeSavingsNetInsurance(
+            grossSalary,
+            grossInsurance,
+            sector,
+            year
+        );
+        supergrossResult = lifeSavingsSupergrossFromGross(
+            grossSalary,
+            grossInsurance,
+            sector,
+            year
+        );
+        primaryLabel = 'Net əməkhaqqı';
+        primaryResult = salaryResult.net;
+        insuranceLabel = 'Net sığorta haqqı';
+        employerLabel = 'Supergross sığorta haqqı';
+        deductionsResult = salaryResult.total;
+        resultTitle = 'İşçinin alacağı net əməkhaqqı';
+        resultValue = salaryResult.net;
+    } else if (mode === 'net-salary-to-gross') {
+        salaryResult = lifeSavingsSalaryGrossFromNet(
+            enteredAmount,
+            sector,
+            year,
+            unionRate
+        );
+        grossSalary = salaryResult;
+        const salaryBreakdown = lifeSavingsSalaryBreakdown(
+            grossSalary,
+            sector,
+            year,
+            unionRate
+        );
+        grossInsurance = enteredGrossInsurance;
+        insuranceResult = lifeSavingsNetInsurance(
+            grossSalary,
+            grossInsurance,
+            sector,
+            year
+        );
+        supergrossResult = lifeSavingsSupergrossFromGross(
+            grossSalary,
+            grossInsurance,
+            sector,
+            year
+        );
+        primaryLabel = 'Gross əməkhaqqı';
+        primaryResult = grossSalary;
+        insuranceLabel = 'Net sığorta haqqı';
+        employerLabel = 'Supergross sığorta haqqı';
+        deductionsResult = salaryBreakdown.total;
+        resultTitle = 'Hesablanan gross əməkhaqqı';
+        resultValue = grossSalary;
+    } else if (mode === 'gross-insurance-to-supergross') {
+        grossInsurance = enteredAmount;
+        supergrossResult = lifeSavingsSupergrossFromGross(
+            grossSalary,
+            grossInsurance,
+            sector,
+            year
+        );
+        insuranceResult = lifeSavingsNetInsurance(
+            grossSalary,
+            grossInsurance,
+            sector,
+            year
+        );
+        primaryLabel = 'Gross sığorta haqqı';
+        primaryResult = grossInsurance;
+        insuranceLabel = 'Net sığorta haqqı';
+        employerLabel = 'Supergross sığorta haqqı';
+        resultTitle = 'Hesablanan supergross sığorta haqqı';
+        resultValue = supergrossResult;
+    } else {
+        supergrossResult = enteredAmount;
+        grossInsurance = lifeSavingsGrossFromSupergross(
+            grossSalary,
+            supergrossResult,
+            sector,
+            year
+        );
+        insuranceResult = lifeSavingsNetInsurance(
+            grossSalary,
+            grossInsurance,
+            sector,
+            year
+        );
+        primaryLabel = 'Gross sığorta haqqı';
+        primaryResult = grossInsurance;
+        insuranceLabel = 'Net sığorta haqqı';
+        employerLabel = 'Daxil edilən supergross sığorta haqqı';
+        resultTitle = 'Hesablanan gross sığorta haqqı';
+        resultValue = grossInsurance;
+    }
+
+    if (lifeSavingsPrimaryLabel) {
+        lifeSavingsPrimaryLabel.textContent = primaryLabel;
+    }
+    if (lifeSavingsPrimaryResult) {
+        lifeSavingsPrimaryResult.textContent = formatSalaryAZN(primaryResult);
+    }
+    if (lifeSavingsInsuranceLabel) {
+        lifeSavingsInsuranceLabel.textContent = insuranceLabel;
+    }
+    if (lifeSavingsInsuranceResult) {
+        lifeSavingsInsuranceResult.textContent = formatSalaryAZN(insuranceResult);
+    }
+    if (lifeSavingsEmployerLabel) {
+        lifeSavingsEmployerLabel.textContent = employerLabel;
+    }
+    if (lifeSavingsEmployerResult) {
+        lifeSavingsEmployerResult.textContent = formatSalaryAZN(supergrossResult);
+    }
+    if (lifeSavingsSupergrossLabel) {
+        lifeSavingsSupergrossLabel.textContent =
+            'Supergross sığorta haqqı';
+    }
+    setLifeSavingsResult(lifeSavingsSupergrossResult, supergrossResult);
+    resetLifeSavingsDeductionDetails();
+    if (lifeSavingsDeductionsResult) {
+        lifeSavingsDeductionsResult.textContent = deductionsResult === null
+            ? '—'
+            : formatSalaryAZN(deductionsResult);
+    }
+    if (lifeSavingsResultTitle) {
+        lifeSavingsResultTitle.textContent = resultTitle;
+    }
+    if (lifeSavingsNetResult) {
+        lifeSavingsNetResult.textContent = formatSalaryAZN(resultValue);
+    }
+}
+
+[
+    lifeSavingsMode,
+    lifeSavingsYear,
+    lifeSavingsSector,
+    lifeSavingsUnion,
+    lifeSavingsGrossSalary,
+    lifeSavingsAmount,
+    lifeSavingsInsuranceAmount
+].forEach((element) => {
+    element?.addEventListener('input', (event) => {
+        if (!lifeSavingsMode) {
+            return;
+        }
+
+        if (
+            event.target === lifeSavingsInsuranceAmount &&
+            lifeSavingsMode?.value === 'gross-salary-to-net'
+        ) {
+            lifeSavingsNetInsuranceManuallyChanged = true;
+        }
+
+        updateLifeSavingsAmountLabel();
+        calculateLifeSavings();
+    });
+    element?.addEventListener('change', (event) => {
+        if (!lifeSavingsMode) {
+            return;
+        }
+
+        if (event.target === lifeSavingsMode) {
+            lifeSavingsNetInsuranceManuallyChanged = false;
+        }
+
+        if (
+            event.target === lifeSavingsInsuranceAmount &&
+            lifeSavingsMode?.value === 'gross-salary-to-net'
+        ) {
+            lifeSavingsNetInsuranceManuallyChanged = true;
+        }
+
+        updateLifeSavingsAmountLabel();
+        calculateLifeSavings();
+    });
+});
+
+/*
+   Bu hissənin sadələşdirilmiş interfeysi aşağıdakı yeni funksiya və
+   dinləyicilərlə işə salınır.
+*/
+
+const lifeSavingsGrossInsuranceAmount =
+    document.getElementById('life-savings-gross-insurance-amount');
+const lifeSavingsSupergrossInsuranceAmount =
+    document.getElementById('life-savings-supergross-insurance-amount');
+const lifeSavingsNetInsuranceLabel =
+    document.getElementById('life-savings-net-insurance-label');
+const lifeSavingsGrossInsuranceLabel =
+    document.getElementById('life-savings-gross-insurance-label');
+const lifeSavingsSupergrossInsuranceLabel =
+    document.getElementById('life-savings-supergross-insurance-label');
+const lifeSavingsLimitMessage =
+    document.getElementById('life-savings-limit-message');
+
+let lifeSavingsEditedInsuranceField = null;
+
+function lifeSavingsInputValue(element) {
+    return Math.max(0, Number(element?.value) || 0);
+}
+
+function updateLifeSavingsOtherDeductionSuffix() {
+    if (lifeSavingsOtherDeductionSuffix) {
+        lifeSavingsOtherDeductionSuffix.textContent =
+            lifeSavingsOtherDeductionType?.value === 'percent'
+                ? '%'
+                : 'AZN';
+    }
+}
+
+function lifeSavingsOtherDeductionValue(grossSalary) {
+    const gross = Math.max(0, grossSalary);
+    const entered = lifeSavingsInputValue(lifeSavingsOtherDeduction);
+    const amount = lifeSavingsOtherDeductionType?.value === 'percent'
+        ? gross * entered / 100
+        : entered;
+
+    return Math.min(gross, Math.max(0, amount));
+}
+
+function updateLifeSavingsInsuranceRequiredState() {
+    const fields = [
+        lifeSavingsInsuranceAmount,
+        lifeSavingsGrossInsuranceAmount,
+        lifeSavingsSupergrossInsuranceAmount
+    ];
+    const salaryEntered = lifeSavingsInputValue(lifeSavingsAmount) > 0;
+    const insuranceEntered = fields.some((field) =>
+        String(field?.value || '').trim() !== ''
+    );
+
+    lifeSavingsAmount?.classList.toggle(
+        'life-savings-input-required',
+        !salaryEntered
+    );
+
+    fields.forEach((field) => {
+        field?.classList.toggle(
+            'life-savings-input-required',
+            salaryEntered && !insuranceEntered
+        );
+    });
+}
+
+function updateLifeSavingsNote() {
+    if (!lifeSavingsNote) {
+        return;
+    }
+
+    const salaryEntered = lifeSavingsInputValue(lifeSavingsAmount) > 0;
+    const hasEnteredInsuranceAmount = [
+        lifeSavingsInsuranceAmount,
+        lifeSavingsGrossInsuranceAmount,
+        lifeSavingsSupergrossInsuranceAmount
+    ].some((field) => String(field?.value || '').trim() !== '');
+
+    lifeSavingsNote.classList.toggle(
+        'is-hidden',
+        !salaryEntered || hasEnteredInsuranceAmount
+    );
+}
+
+function lifeSavingsWriteInput(element, value, preserveActive = false) {
+    if (element && !(preserveActive && document.activeElement === element)) {
+        element.value = lifeSavingsRound(value).toFixed(2);
+    }
+}
+
+function lifeSavingsSetMaximumPlaceholder(element, maximum) {
+    if (element) {
+        element.placeholder = `Maks. ${formatSalaryAZN(maximum)}`;
+    }
+}
+
+function lifeSavingsSetLimitMessage(isExceeded, source = null) {
+    const fields = {
+        net: lifeSavingsInsuranceAmount,
+        gross: lifeSavingsGrossInsuranceAmount,
+        supergross: lifeSavingsSupergrossInsuranceAmount
+    };
+
+    Object.values(fields).forEach((field) => {
+        field?.classList.remove('life-savings-input-error');
+        field?.removeAttribute('aria-invalid');
+    });
+
+    const invalidField = fields[source];
+    if (isExceeded && invalidField) {
+        invalidField.classList.add('life-savings-input-error');
+        invalidField.setAttribute('aria-invalid', 'true');
+    }
+
+    if (lifeSavingsLimitMessage) {
+        lifeSavingsLimitMessage.textContent = isExceeded
+            ? 'Maksimal həddən çox məbləğ daxil edilə bilməz.'
+            : '';
+    }
+}
+
+function updateLifeSavingsAmountLabel() {
+    if (lifeSavingsSector) {
+        lifeSavingsSector.disabled = false;
+    }
+}
+
+function calculateLifeSavings(options = {}) {
+    if (
+        !lifeSavingsYear ||
+        !lifeSavingsUnion ||
+        !lifeSavingsAmount ||
+        !lifeSavingsInsuranceAmount ||
+        !lifeSavingsGrossInsuranceAmount ||
+        !lifeSavingsSupergrossInsuranceAmount
+    ) {
+        return;
+    }
+
+    const preserveActive = options.preserveActive === true;
+    const grossSalary = lifeSavingsInputValue(lifeSavingsAmount);
+    const sector = lifeSavingsSector?.value || 'private';
+    const workplace = lifeSavingsWorkplace?.value || 'main';
+    const year = Number(lifeSavingsYear.value);
+    const unionRate = Number(lifeSavingsUnion.value) || 0;
+    const otherDeduction = lifeSavingsOtherDeductionValue(grossSalary);
+    const salaryResult = lifeSavingsSalaryBreakdown(
+        grossSalary,
+        sector,
+        year,
+        unionRate,
+        workplace
+    );
+    const maximumGross = lifeSavingsMaximumGrossInsurance(
+        grossSalary,
+        sector
+    );
+    const maximumNet = lifeSavingsRound(
+        lifeSavingsNetInsurance(grossSalary, maximumGross, sector, year)
+    );
+    const maximumSupergross = lifeSavingsRound(
+        lifeSavingsSupergrossFromGross(
+            grossSalary,
+            maximumGross,
+            sector,
+            year
+        )
+    );
+    const activeId = document.activeElement?.id;
+    const source = options.source || (activeId === 'life-savings-insurance-amount'
+        ? 'net'
+        : activeId === 'life-savings-gross-insurance-amount'
+            ? 'gross'
+            : activeId === 'life-savings-supergross-insurance-amount'
+                ? 'supergross'
+                : lifeSavingsEditedInsuranceField);
+
+    let selectedNet = maximumNet;
+    let selectedGross = maximumGross;
+    let selectedSupergross = maximumSupergross;
+    let isExceeded = false;
+
+    if (source === 'net') {
+        selectedNet = lifeSavingsInputValue(lifeSavingsInsuranceAmount);
+        isExceeded = selectedNet > maximumNet;
+        selectedNet = Math.min(selectedNet, maximumNet);
+        selectedGross = lifeSavingsGrossInsuranceFromNet(
+            grossSalary,
+            selectedNet,
+            sector,
+            year
+        );
+        selectedSupergross = lifeSavingsSupergrossFromGross(
+            grossSalary,
+            selectedGross,
+            sector,
+            year
+        );
+    } else if (source === 'gross') {
+        selectedGross = lifeSavingsInputValue(
+            lifeSavingsGrossInsuranceAmount
+        );
+        isExceeded = selectedGross > maximumGross;
+        selectedGross = Math.min(selectedGross, maximumGross);
+        selectedNet = lifeSavingsNetInsurance(
+            grossSalary,
+            selectedGross,
+            sector,
+            year
+        );
+        selectedSupergross = lifeSavingsSupergrossFromGross(
+            grossSalary,
+            selectedGross,
+            sector,
+            year
+        );
+    } else if (source === 'supergross') {
+        selectedSupergross = lifeSavingsInputValue(
+            lifeSavingsSupergrossInsuranceAmount
+        );
+        isExceeded = selectedSupergross > maximumSupergross;
+        selectedSupergross = Math.min(
+            selectedSupergross,
+            maximumSupergross
+        );
+        selectedGross = lifeSavingsGrossFromSupergross(
+            grossSalary,
+            selectedSupergross,
+            sector,
+            year
+        );
+        selectedNet = lifeSavingsNetInsurance(
+            grossSalary,
+            selectedGross,
+            sector,
+            year
+        );
+    }
+
+    const budgetResult = lifeSavingsBudgetAfterInsurance(
+        grossSalary,
+        selectedGross,
+        sector,
+        year,
+        unionRate,
+        workplace,
+        otherDeduction
+    );
+
+    lifeSavingsInsuranceAmount.max = maximumNet.toFixed(2);
+    lifeSavingsGrossInsuranceAmount.max = maximumGross.toFixed(2);
+    lifeSavingsSupergrossInsuranceAmount.max =
+        maximumSupergross.toFixed(2);
+
+    lifeSavingsSetMaximumPlaceholder(lifeSavingsInsuranceAmount, maximumNet);
+    lifeSavingsSetMaximumPlaceholder(
+        lifeSavingsGrossInsuranceAmount,
+        maximumGross
+    );
+    lifeSavingsSetMaximumPlaceholder(
+        lifeSavingsSupergrossInsuranceAmount,
+        maximumSupergross
+    );
+
+    // İlkin görünüşdə maksimum rəqəmləri xanaya yazmırıq. Onlar yalnız
+    // solğun placeholder kimi göstərilir; istifadəçi hansı istiqaməti
+    // seçirsə, digər iki xana həmin seçimin nəticəsi ilə yenilənir.
+    if (source) {
+        lifeSavingsWriteInput(
+            lifeSavingsInsuranceAmount,
+            selectedNet,
+            preserveActive
+        );
+        lifeSavingsWriteInput(
+            lifeSavingsGrossInsuranceAmount,
+            selectedGross,
+            preserveActive
+        );
+        lifeSavingsWriteInput(
+            lifeSavingsSupergrossInsuranceAmount,
+            selectedSupergross,
+            preserveActive
+        );
+    }
+    // Xana fokusda ikən artıq məbləğ qırmızı görünür. Xana tərk ediləndə
+    // dəyər maksimuma qaytarılır və xəbərdarlıq avtomatik silinir.
+    lifeSavingsSetLimitMessage(
+        isExceeded && preserveActive,
+        source
+    );
+    updateLifeSavingsInsuranceRequiredState();
+
+    setLifeSavingsResult(
+        lifeSavingsIncomeTaxResult,
+        budgetResult.incomeTax
+    );
+    setLifeSavingsResult(lifeSavingsSocialResult, budgetResult.social);
+    setLifeSavingsResult(
+        lifeSavingsUnemploymentResult,
+        budgetResult.salaryUnemployment
+    );
+    setLifeSavingsResult(lifeSavingsMedicalResult, budgetResult.salaryMedical);
+    setLifeSavingsResult(
+        lifeSavingsInsuranceUnemploymentResult,
+        budgetResult.insuranceUnemployment
+    );
+    setLifeSavingsResult(
+        lifeSavingsInsuranceMedicalResult,
+        budgetResult.insuranceMedical
+    );
+    setLifeSavingsResult(lifeSavingsUnionResult, budgetResult.union);
+    setLifeSavingsResult(
+        lifeSavingsOtherDeductionResult,
+        budgetResult.otherDeduction
+    );
+    setLifeSavingsResult(
+        lifeSavingsDeductionsResult,
+        budgetResult.total
+    );
+
+    if (lifeSavingsResultTitle) {
+        lifeSavingsResultTitle.textContent =
+            'Sığortadan sonra karta köçürüləcək net əməkhaqqı';
+    }
+    setLifeSavingsResult(
+        lifeSavingsNetResult,
+        budgetResult.netCash
+    );
+    updateLifeSavingsNote();
+}
+
+function resetLifeSavingsInsuranceInputs() {
+    [
+        lifeSavingsInsuranceAmount,
+        lifeSavingsGrossInsuranceAmount,
+        lifeSavingsSupergrossInsuranceAmount
+    ].forEach((field) => {
+        if (!field) {
+            return;
+        }
+
+        field.value = '';
+        delete field.dataset.lifeSavingsPreviousValue;
+    });
+
+    lifeSavingsEditedInsuranceField = null;
+    lifeSavingsSetLimitMessage(false);
+    updateLifeSavingsNote();
+}
+
+[
+    [lifeSavingsAmount, null],
+    [lifeSavingsWorkplace, 'preserve'],
+    [lifeSavingsYear, 'preserve'],
+    [lifeSavingsUnion, 'preserve'],
+    [lifeSavingsOtherDeductionType, 'preserve'],
+    [lifeSavingsOtherDeduction, 'preserve'],
+    [lifeSavingsInsuranceAmount, 'net'],
+    [lifeSavingsGrossInsuranceAmount, 'gross'],
+    [lifeSavingsSupergrossInsuranceAmount, 'supergross']
+].forEach(([element, source]) => {
+    ['input', 'change', 'blur'].forEach((eventName) => {
+        element?.addEventListener(eventName, () => {
+            if (
+                element === lifeSavingsAmount ||
+                element === lifeSavingsWorkplace
+            ) {
+                resetLifeSavingsInsuranceInputs();
+            }
+
+            if (
+                eventName === 'blur' &&
+                element.value === '' &&
+                element.dataset.lifeSavingsPreviousValue
+            ) {
+                element.value = element.dataset.lifeSavingsPreviousValue;
+            }
+
+            if (source !== 'preserve') {
+                lifeSavingsEditedInsuranceField = source;
+            }
+            if (element === lifeSavingsOtherDeductionType) {
+                updateLifeSavingsOtherDeductionSuffix();
+            }
+            calculateLifeSavings({
+                preserveActive: eventName === 'input',
+                source: source === 'preserve' ? null : source
+            });
+
+            if (element === lifeSavingsWorkplace) {
+                resetLifeSavingsInsuranceInputs();
+            }
+        });
+    });
+});
+
+[
+    lifeSavingsInsuranceAmount,
+    lifeSavingsGrossInsuranceAmount,
+    lifeSavingsSupergrossInsuranceAmount
+].forEach((element) => {
+    element?.addEventListener('focus', () => {
+        if (element.value) {
+            element.dataset.lifeSavingsPreviousValue = element.value;
+            element.value = '';
+        }
+    });
+
+    // Bəzi brauzerlərdə və mobil klaviaturalarda seçilmiş mətnin üzərinə
+    // yazmaq əvəzinə yeni rəqəm mövcud dəyərin sonuna əlavə oluna bilər.
+    // İlk rəqəm daxil ediləndə əvvəlki hesablanmış dəyəri təmizləyirik.
+});
+
+lifeSavingsAmount?.addEventListener('focus', () => {
+    if (
+        lifeSavingsAmount.value !== '' &&
+        Number(lifeSavingsAmount.value) === 0
+    ) {
+        lifeSavingsAmount.dataset.lifeSavingsPreviousValue =
+            lifeSavingsAmount.value;
+        lifeSavingsAmount.value = '';
+    }
+});
+
+lifeSavingsAmount?.addEventListener('blur', () => {
+    if (lifeSavingsAmount.value === '') {
+        lifeSavingsAmount.value =
+            lifeSavingsAmount.dataset.lifeSavingsPreviousValue || '0.00';
+    }
+    calculateLifeSavings();
+});
+
+updateLifeSavingsAmountLabel();
+updateLifeSavingsOtherDeductionSuffix();
+calculateLifeSavings();
