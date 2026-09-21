@@ -3588,3 +3588,657 @@ lifeSavingsAmount?.addEventListener('blur', () => {
 updateLifeSavingsAmountLabel();
 updateLifeSavingsOtherDeductionSuffix();
 calculateLifeSavings();
+
+/* =========================================
+   İDXAL MALLARININ HESABLANMASI
+   ========================================= */
+
+const importCustomsCurrency =
+    document.getElementById('import-customs-currency');
+const importCustomsDate =
+    document.getElementById('import-customs-date');
+const importCustomsRate =
+    document.getElementById('import-customs-rate');
+const importCustomsProducts =
+    document.getElementById('import-customs-products');
+const importCustomsTransport =
+    document.getElementById('import-customs-transport');
+const importCustomsTransportCurrency =
+    document.getElementById('import-customs-transport-currency');
+const importCustomsTransportRate =
+    document.getElementById('import-customs-transport-rate');
+const importCustomsTransportAZN =
+    document.getElementById('import-customs-transport-azn');
+const importCustomsAllocationMethod =
+    document.getElementById('import-customs-allocation-method');
+const importCustomsOther =
+    document.getElementById('import-customs-other');
+const importCustomsOtherCurrency =
+    document.getElementById('import-customs-other-currency');
+const importCustomsOtherRate =
+    document.getElementById('import-customs-other-rate');
+const importCustomsOtherAZN =
+    document.getElementById('import-customs-other-azn');
+const importCustomsOtherAllocationMethod =
+    document.getElementById('import-customs-other-allocation-method');
+const importCustomsOrderAZNResult =
+    document.getElementById('import-customs-order-azn-result');
+const importCustomsTransportAZNResult =
+    document.getElementById('import-customs-transport-azn-result');
+const importCustomsOtherAZNResult =
+    document.getElementById('import-customs-other-azn-result');
+const importCustomsValueResult =
+    document.getElementById('import-customs-value-result');
+const importCustomsDutyResult =
+    document.getElementById('import-customs-duty-result');
+const importCustomsVATResult =
+    document.getElementById('import-customs-vat-result');
+
+function importCustomsNumber(element) {
+    return Math.max(0, Number(element?.value) || 0);
+}
+
+function formatImportCustomsNumber(value) {
+    return new Intl.NumberFormat('az-AZ', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    }).format(Math.max(0, value));
+}
+
+function updateImportCustomsCurrencyLabels() {
+    const currency = importCustomsCurrency?.value || 'USD';
+
+    document.querySelectorAll(
+        '#import-customs-calculator-panel [data-import-currency]'
+    ).forEach((label) => {
+        label.textContent = currency;
+    });
+}
+
+function updateImportCustomsWeightFields() {
+    const useWeight = importCustomsAllocationMethod?.value === 'weight';
+
+    importCustomsProductRows().forEach((row) => {
+        const field = row.querySelector('.import-customs-weight-field');
+        const input = row.querySelector('[data-import-weight]');
+        if (field && input) {
+            field.hidden = false;
+            field.classList.toggle('is-disabled', !useWeight);
+            field.classList.toggle(
+                'is-required',
+                useWeight && importCustomsNumber(input) <= 0
+            );
+            input.disabled = !useWeight;
+        }
+    });
+}
+
+function importCustomsProductRows() {
+    return Array.from(
+        importCustomsProducts?.querySelectorAll('[data-product-row]') || []
+    );
+}
+
+function updateImportCustomsProductValues(exchangeRate) {
+    importCustomsProductRows().forEach((row) => {
+        const invoice = importCustomsNumber(
+            row.querySelector('[data-import-invoice]')
+        );
+        const output = row.querySelector('[data-import-invoice-azn]');
+
+        if (output) {
+            output.textContent = invoice > 0 && exchangeRate > 0
+                ? formatAZN(invoice * exchangeRate)
+                : '—';
+        }
+    });
+}
+
+function updateImportCustomsProductActionButtons() {
+    const rows = importCustomsProductRows();
+
+    rows.forEach((row, index) => {
+        const actions = row.querySelector('.import-customs-product-actions');
+        if (!actions) {
+            return;
+        }
+
+        actions.innerHTML = '';
+
+        if (index > 0) {
+            const removeButton = document.createElement('button');
+            removeButton.className = 'import-customs-remove-product';
+            removeButton.type = 'button';
+            removeButton.dataset.removeProduct = '';
+            removeButton.setAttribute('aria-label', `${index + 1}-ci malı sil`);
+            removeButton.textContent = '−';
+            actions.append(removeButton);
+        }
+
+        if (index === rows.length - 1) {
+            const addButton = document.createElement('button');
+            addButton.className = 'import-customs-add-product';
+            addButton.type = 'button';
+            addButton.dataset.addProduct = '';
+            addButton.setAttribute('aria-label', `${index + 2}-ci mal əlavə et`);
+            addButton.textContent = '+';
+            actions.append(addButton);
+        }
+    });
+}
+
+function removeImportCustomsProductRow(row) {
+    const rows = importCustomsProductRows();
+    if (!row || rows.length <= 1) {
+        return;
+    }
+
+    row.remove();
+    updateImportCustomsProductActionButtons();
+    calculateImportCustoms();
+}
+
+function addImportCustomsProductRow() {
+    if (!importCustomsProducts) {
+        return;
+    }
+
+    const rows = importCustomsProductRows();
+    const index = rows.length + 1;
+    const previousAddButton = importCustomsProducts.querySelector(
+        '[data-add-product]'
+    );
+
+    previousAddButton?.remove();
+
+    const row = document.createElement('div');
+    row.className = 'import-customs-product-row';
+    row.dataset.productRow = '';
+    row.innerHTML = `
+        <div class="form-group">
+            <label for="import-customs-invoice-${index}">Malın invoys dəyəri</label>
+            <div class="import-customs-money-input">
+                <input id="import-customs-invoice-${index}" class="import-customs-invoice" data-import-invoice type="number" min="0" step="0.01" placeholder="0.00" inputmode="decimal">
+                <span class="import-customs-product-currency" data-import-currency aria-hidden="true">USD</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="import-customs-invoice-azn-${index}">Malın manatla dəyəri</label>
+            <div class="import-customs-output" id="import-customs-invoice-azn-${index}" data-import-invoice-azn>—</div>
+        </div>
+        <div class="form-group">
+            <label for="import-customs-duty-rate-${index}">Gömrük rüsumu (%)</label>
+            <div class="import-customs-rate-input">
+                <input id="import-customs-duty-rate-${index}" class="import-customs-duty-rate" data-import-duty-rate type="number" min="0" step="0.01" placeholder="0.00" inputmode="decimal">
+                <span>%</span>
+            </div>
+        </div>
+        <div class="form-group import-customs-weight-field">
+            <label for="import-customs-weight-${index}">Malın çəkisi (kq)</label>
+            <input id="import-customs-weight-${index}" class="import-customs-weight" data-import-weight type="number" min="0" step="0.01" placeholder="0.00" inputmode="decimal">
+        </div>
+        <div class="import-customs-product-actions"></div>
+    `;
+
+    importCustomsProducts.append(row);
+    updateImportCustomsProductActionButtons();
+    updateImportCustomsWeightFields();
+    updateImportCustomsCurrencyLabels();
+    calculateImportCustoms();
+}
+
+function importCustomsOfficialRateUrl(dateValue) {
+    const [year, month, day] = String(dateValue).split('-');
+    return `https://cbar.az/currencies/${day}.${month}.${year}.xml`;
+}
+
+async function getImportCustomsOfficialRate(dateValue, currencyCode) {
+    const requestedDate = new Date(`${dateValue}T12:00:00Z`);
+
+    if (Number.isNaN(requestedDate.getTime())) {
+        throw new Error('Məzənnə tarixi düzgün deyil');
+    }
+
+    // AMB qeyri-iş günlərində son dərc olunmuş məzənnəni tətbiq edir.
+    // Buna görə seçilmiş tarixdən geriyə doğru bir neçə gün yoxlanılır.
+    for (let offset = 0; offset <= 7; offset += 1) {
+        const lookupDate = new Date(requestedDate);
+        lookupDate.setUTCDate(lookupDate.getUTCDate() - offset);
+        const lookupDateValue = lookupDate.toISOString().slice(0, 10);
+
+        try {
+            const response = await fetch(
+                importCustomsOfficialRateUrl(lookupDateValue),
+                { cache: 'no-store' }
+            );
+
+            if (!response.ok) {
+                continue;
+            }
+
+            const xml = await response.text();
+            const documentXml = new DOMParser().parseFromString(
+                xml,
+                'application/xml'
+            );
+            const selectedCurrency = Array.from(
+                documentXml.querySelectorAll('Valute')
+            ).find((item) =>
+                String(item.getAttribute('Code') || '').toUpperCase() === currencyCode
+            );
+            const nominal = Number(
+                selectedCurrency?.querySelector('Nominal')?.textContent?.trim() || 1
+            );
+            const value = Number(
+                selectedCurrency?.querySelector('Value')?.textContent
+                    ?.trim()
+                    ?.replace(',', '.')
+            );
+
+            if (selectedCurrency && Number.isFinite(value) && value > 0) {
+                return value / nominal;
+            }
+        } catch (error) {
+            console.warn('AMB məzənnə sorğusu uğursuz oldu:', error);
+        }
+    }
+
+    throw new Error('AMB üzrə valyuta məzənnəsi tapılmadı');
+}
+
+function importCustomsMirrorRateUrl(dateValue) {
+    return `https://cdn.jsdelivr.net/gh/AllRates-Today/central-bank-exchange-rates@main/data/cbar/daily/${dateValue}.json`;
+}
+
+async function getImportCustomsMirrorRate(dateValue, currencyCode) {
+    const requestedDate = new Date(`${dateValue}T12:00:00Z`);
+
+    if (Number.isNaN(requestedDate.getTime())) {
+        throw new Error('Məzənnə tarixi düzgün deyil');
+    }
+
+    for (let offset = 0; offset <= 7; offset += 1) {
+        const lookupDate = new Date(requestedDate);
+        lookupDate.setUTCDate(lookupDate.getUTCDate() - offset);
+        const lookupDateValue = lookupDate.toISOString().slice(0, 10);
+        const response = await fetch(
+            importCustomsMirrorRateUrl(lookupDateValue),
+            { cache: 'no-store' }
+        );
+
+        if (!response.ok) {
+            continue;
+        }
+
+        const data = await response.json();
+        const selectedRate = (data.rates || []).find((item) =>
+            String(item.base || '').toUpperCase() === currencyCode &&
+            String(item.quote || '').toUpperCase() === 'AZN' &&
+            String(item.type || '').toLowerCase() === 'reference'
+        );
+        const rate = Number(selectedRate?.value);
+
+        if (Number.isFinite(rate) && rate > 0) {
+            return rate;
+        }
+    }
+
+    throw new Error('AMB ehtiyat məzənnə mənbəyində valyuta tapılmadı');
+}
+
+async function loadImportCustomsRate() {
+    if (!importCustomsDate || !importCustomsCurrency || !importCustomsRate) {
+        return;
+    }
+
+    if (!importCustomsDate.value) {
+        importCustomsRate.value = '';
+        importCustomsRate.readOnly = true;
+        calculateImportCustoms();
+        return;
+    }
+
+    importCustomsRate.value = '';
+    importCustomsRate.readOnly = true;
+
+    try {
+        const officialRate = await getImportCustomsOfficialRate(
+            importCustomsDate.value,
+            importCustomsCurrency.value
+        );
+        importCustomsRate.value = officialRate.toFixed(4);
+    } catch (officialError) {
+        try {
+            const rate = await getImportCustomsMirrorRate(
+                importCustomsDate.value,
+                importCustomsCurrency.value
+            );
+            importCustomsRate.value = rate.toFixed(4);
+        } catch (mirrorError) {
+            try {
+                const data = await getRate(
+                    importCustomsDate.value,
+                    importCustomsCurrency.value
+                );
+                const rate = Number(data.ratePerUnit);
+                if (!Number.isFinite(rate) || rate <= 0) {
+                    throw new Error('Məzənnə məlumatı əldə olunmadı');
+                }
+                importCustomsRate.value = rate.toFixed(4);
+            } catch (apiError) {
+                console.error(
+                    'İdxal kalkulyatoru məzənnə xətası:',
+                    apiError
+                );
+                importCustomsRate.readOnly = false;
+            }
+        }
+    }
+
+    calculateImportCustoms();
+}
+
+async function loadImportCustomsTransportRate() {
+    if (
+        !importCustomsDate ||
+        !importCustomsTransportCurrency ||
+        !importCustomsTransportRate
+    ) {
+        return;
+    }
+
+    if (importCustomsTransportCurrency.value === 'AZN') {
+        importCustomsTransportRate.value = '1.0000';
+        importCustomsTransportRate.readOnly = true;
+        calculateImportCustoms();
+        return;
+    }
+
+    if (!importCustomsDate.value) {
+        importCustomsTransportRate.value = '';
+        importCustomsTransportRate.readOnly = true;
+        calculateImportCustoms();
+        return;
+    }
+
+    importCustomsTransportRate.value = '';
+    importCustomsTransportRate.readOnly = true;
+
+    try {
+        const officialRate = await getImportCustomsOfficialRate(
+            importCustomsDate.value,
+            importCustomsTransportCurrency.value
+        );
+        importCustomsTransportRate.value = officialRate.toFixed(4);
+    } catch (officialError) {
+        try {
+            const rate = await getImportCustomsMirrorRate(
+                importCustomsDate.value,
+                importCustomsTransportCurrency.value
+            );
+            importCustomsTransportRate.value = rate.toFixed(4);
+        } catch (mirrorError) {
+            try {
+                const data = await getRate(
+                    importCustomsDate.value,
+                    importCustomsTransportCurrency.value
+                );
+                const rate = Number(data.ratePerUnit);
+                if (!Number.isFinite(rate) || rate <= 0) {
+                    throw new Error('Nəqliyyat məzənnəsi əldə olunmadı');
+                }
+                importCustomsTransportRate.value = rate.toFixed(4);
+            } catch (apiError) {
+                console.error(
+                    'Nəqliyyat məzənnəsi xətası:',
+                    apiError
+                );
+                importCustomsTransportRate.readOnly = false;
+            }
+        }
+    }
+
+    calculateImportCustoms();
+}
+
+async function loadImportCustomsOtherRate() {
+    if (!importCustomsDate || !importCustomsOtherCurrency || !importCustomsOtherRate) {
+        return;
+    }
+
+    if (importCustomsOtherCurrency.value === 'AZN') {
+        importCustomsOtherRate.value = '1.0000';
+        importCustomsOtherRate.readOnly = true;
+        calculateImportCustoms();
+        return;
+    }
+
+    if (!importCustomsDate.value) {
+        importCustomsOtherRate.value = '';
+        importCustomsOtherRate.readOnly = true;
+        calculateImportCustoms();
+        return;
+    }
+
+    importCustomsOtherRate.value = '';
+    importCustomsOtherRate.readOnly = true;
+
+    try {
+        const officialRate = await getImportCustomsOfficialRate(
+            importCustomsDate.value,
+            importCustomsOtherCurrency.value
+        );
+        importCustomsOtherRate.value = officialRate.toFixed(4);
+    } catch (officialError) {
+        try {
+            const rate = await getImportCustomsMirrorRate(
+                importCustomsDate.value,
+                importCustomsOtherCurrency.value
+            );
+            importCustomsOtherRate.value = rate.toFixed(4);
+        } catch (mirrorError) {
+            try {
+                const data = await getRate(
+                    importCustomsDate.value,
+                    importCustomsOtherCurrency.value
+                );
+                const rate = Number(data.ratePerUnit);
+                if (!Number.isFinite(rate) || rate <= 0) {
+                    throw new Error('Digər xərclər üçün məzənnə əldə olunmadı');
+                }
+                importCustomsOtherRate.value = rate.toFixed(4);
+            } catch (apiError) {
+                console.error(
+                    'Digər xərclər üçün məzənnə xətası:',
+                    apiError
+                );
+                importCustomsOtherRate.readOnly = false;
+            }
+        }
+    }
+
+    calculateImportCustoms();
+}
+
+function calculateImportCustoms() {
+    if (
+        !importCustomsCurrency ||
+        !importCustomsRate ||
+        !importCustomsProducts ||
+        !importCustomsTransport ||
+        !importCustomsOther ||
+        !importCustomsTransportRate ||
+        !importCustomsAllocationMethod ||
+        !importCustomsOtherRate
+    ) {
+        return;
+    }
+
+    const products = importCustomsProductRows().map((row) => ({
+        invoice: importCustomsNumber(row.querySelector('[data-import-invoice]')),
+        dutyRate: importCustomsNumber(row.querySelector('[data-import-duty-rate]')),
+        weight: importCustomsNumber(row.querySelector('[data-import-weight]'))
+    }));
+    const invoiceTotal = products.reduce(
+        (total, product) => total + product.invoice,
+        0
+    );
+    const transport = importCustomsNumber(importCustomsTransport);
+    const other = importCustomsNumber(importCustomsOther);
+    const exchangeRate = importCustomsNumber(importCustomsRate);
+    const transportExchangeRate = importCustomsNumber(importCustomsTransportRate);
+    const otherExchangeRate = importCustomsNumber(importCustomsOtherRate);
+    const invoiceOtherTotal = invoiceTotal + other;
+    const transportAZN = transport * transportExchangeRate;
+    const invoiceAZNTotal = invoiceTotal * exchangeRate;
+    const otherAZN = other * otherExchangeRate;
+    const foreignTotal = invoiceOtherTotal + transport;
+
+    updateImportCustomsProductValues(exchangeRate);
+
+    if (importCustomsTransportAZN) {
+        importCustomsTransportAZN.textContent = transport > 0 && transportExchangeRate > 0
+            ? formatAZN(transportAZN)
+            : '—';
+    }
+
+    if (importCustomsOtherAZN) {
+        importCustomsOtherAZN.textContent = other > 0 && otherExchangeRate > 0
+            ? formatAZN(otherAZN)
+            : '—';
+    }
+
+    if (importCustomsOrderAZNResult) {
+        importCustomsOrderAZNResult.textContent = invoiceTotal > 0 && exchangeRate > 0
+            ? formatAZN(invoiceAZNTotal)
+            : '—';
+    }
+
+    if (importCustomsTransportAZNResult) {
+        importCustomsTransportAZNResult.textContent = transportExchangeRate > 0
+            ? formatAZN(transportAZN)
+            : '—';
+    }
+
+    if (importCustomsOtherAZNResult) {
+        importCustomsOtherAZNResult.textContent = otherExchangeRate > 0
+            ? formatAZN(otherAZN)
+            : '—';
+    }
+
+    if (
+        foreignTotal === 0 ||
+        (invoiceTotal > 0 && exchangeRate === 0) ||
+        (other > 0 && otherExchangeRate === 0) ||
+        (transport > 0 && transportExchangeRate === 0)
+    ) {
+        importCustomsValueResult.textContent = '—';
+        importCustomsDutyResult.textContent = '—';
+        importCustomsVATResult.textContent = '—';
+        return;
+    }
+
+    const customsValue = invoiceAZNTotal + otherAZN + transportAZN;
+    const allocationMethod = importCustomsAllocationMethod.value;
+    const totalInvoiceWeight = products.reduce(
+        (total, product) => total + product.weight,
+        0
+    );
+    const duty = products.reduce((total, product) => {
+        const invoiceAZN = product.invoice * exchangeRate;
+        const allocationBase = allocationMethod === 'weight'
+            ? (totalInvoiceWeight > 0 ? product.weight / totalInvoiceWeight : 0)
+            : (invoiceAZNTotal > 0 ? invoiceAZN / invoiceAZNTotal : 0);
+        const allocatedTransport = transportAZN * allocationBase;
+        const allocatedOther = otherAZN * allocationBase;
+        return total + (
+            (invoiceAZN + allocatedTransport + allocatedOther) * product.dutyRate / 100
+        );
+    }, 0);
+    const vat = (customsValue + duty) * 0.18;
+
+    importCustomsValueResult.textContent = formatAZN(customsValue);
+    importCustomsDutyResult.textContent = formatAZN(duty);
+    importCustomsVATResult.textContent = formatAZN(vat);
+}
+
+[
+    importCustomsCurrency,
+    importCustomsDate,
+    importCustomsRate,
+    importCustomsTransport,
+    importCustomsTransportCurrency,
+    importCustomsTransportRate,
+    importCustomsAllocationMethod,
+    importCustomsOther,
+    importCustomsOtherCurrency,
+    importCustomsOtherRate,
+    importCustomsOtherAllocationMethod
+].forEach((element) => {
+    ['input', 'change'].forEach((eventName) => {
+        element?.addEventListener(eventName, () => {
+            if (element === importCustomsCurrency) {
+                updateImportCustomsCurrencyLabels();
+            }
+            if (element === importCustomsCurrency || element === importCustomsDate) {
+                loadImportCustomsRate();
+                if (element === importCustomsDate) {
+                    loadImportCustomsTransportRate();
+                    loadImportCustomsOtherRate();
+                }
+                return;
+            }
+            if (element === importCustomsTransportCurrency) {
+                loadImportCustomsTransportRate();
+                return;
+            }
+            if (element === importCustomsOtherCurrency) {
+                loadImportCustomsOtherRate();
+                return;
+            }
+            if (element === importCustomsAllocationMethod) {
+                updateImportCustomsWeightFields();
+            }
+            calculateImportCustoms();
+        });
+    });
+});
+
+importCustomsProducts?.addEventListener('input', (event) => {
+    if (event.target.matches('[data-import-invoice], [data-import-duty-rate], [data-import-weight]')) {
+        if (event.target.matches('[data-import-weight]')) {
+            updateImportCustomsWeightFields();
+        }
+        calculateImportCustoms();
+    }
+});
+
+importCustomsProducts?.addEventListener('change', (event) => {
+    if (event.target.matches('[data-import-invoice], [data-import-duty-rate], [data-import-weight]')) {
+        if (event.target.matches('[data-import-weight]')) {
+            updateImportCustomsWeightFields();
+        }
+        calculateImportCustoms();
+    }
+});
+
+importCustomsProducts?.addEventListener('click', (event) => {
+    if (event.target.closest('[data-add-product]')) {
+        addImportCustomsProductRow();
+        return;
+    }
+
+    const removeButton = event.target.closest('[data-remove-product]');
+    if (removeButton) {
+        removeImportCustomsProductRow(
+            removeButton.closest('[data-product-row]')
+        );
+    }
+});
+
+updateImportCustomsCurrencyLabels();
+updateImportCustomsProductActionButtons();
+updateImportCustomsWeightFields();
+loadImportCustomsTransportRate();
+loadImportCustomsOtherRate();
+calculateImportCustoms();

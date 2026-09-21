@@ -12,27 +12,27 @@
 
 <meta
     name="description"
-    content="Gross və net əmək haqqını, yığım sığortası qoşulmasını və məzənnə fərqini Best Think kalkulyatorları ilə hesablayın."
+    content="Əmək haqqı, yığım sığortası, məzənnə fərqi və idxal mallarının gömrük dəyərini Best Think kalkulyatorları ilə hesablayın."
 >
 
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://besthink.az/kalkulyator.html">
 
 <title>
-    Əmək Haqqı və Yığım Sığortası Kalkulyatorları | Best Think
+    Əmək Haqqı, Yığım Sığortası və İdxal Kalkulyatorları | Best Think
 </title>
 
 <meta property="og:type" content="website">
-<meta property="og:title" content="Əmək Haqqı və Yığım Sığortası Kalkulyatorları | Best Think">
-<meta property="og:description" content="Gross və net əmək haqqını, yığım sığortası qoşulmasını və məzənnə fərqini praktik şəkildə hesablayın.">
+<meta property="og:title" content="Əmək Haqqı, Yığım Sığortası və İdxal Kalkulyatorları | Best Think">
+<meta property="og:description" content="Əmək haqqı, yığım sığortası, məzənnə fərqi və idxal mallarının gömrük dəyərini praktik şəkildə hesablayın.">
 <meta property="og:url" content="https://besthink.az/kalkulyator.html">
 <meta property="og:image" content="https://besthink.az/assets/logo.png">
 <meta property="og:site_name" content="Best Think Konsaltinq">
 <meta property="og:locale" content="az_AZ">
 
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Əmək Haqqı və Yığım Sığortası Kalkulyatorları | Best Think">
-<meta name="twitter:description" content="Gross və net əmək haqqını, yığım sığortası qoşulmasını və məzənnə fərqini praktik şəkildə hesablayın.">
+<meta name="twitter:title" content="Əmək Haqqı, Yığım Sığortası və İdxal Kalkulyatorları | Best Think">
+<meta name="twitter:description" content="Əmək haqqı, yığım sığortası, məzənnə fərqi və idxal mallarının gömrük dəyərini praktik şəkildə hesablayın.">
 <meta name="twitter:image" content="https://besthink.az/assets/logo.png">
 
 <link
@@ -951,6 +951,318 @@
             gap: 17px 18px;
         }
 
+        .import-customs-form {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .import-customs-field-full {
+            grid-column: 1 / -1;
+        }
+
+        .import-customs-inline-row {
+            display: grid;
+            grid-template-columns: 1.25fr .9fr 1fr 1fr;
+            gap: 14px;
+            align-items: start;
+        }
+
+        .import-customs-fixed-row {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 14px;
+            align-items: start;
+        }
+
+        .import-customs-divider {
+            height: 1px;
+            margin: 2px 0 4px;
+            background: #dfe6ef;
+        }
+
+        .import-customs-products {
+            display: grid;
+            gap: 10px;
+        }
+
+        .import-customs-product-row {
+            display: grid;
+            grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) minmax(0, .8fr) minmax(0, .8fr) 76px;
+            gap: 14px;
+            align-items: end;
+            padding: 10px 0;
+            border-bottom: 1px solid #e7edf4;
+        }
+
+        .import-customs-product-row:first-child {
+            padding-top: 0;
+        }
+
+        .import-customs-add-product {
+            width: 34px;
+            height: 34px;
+            border: 1px solid #d7e2ef;
+            border-radius: 10px;
+            background: #f4f7fb;
+            color: var(--blue);
+            font-size: 24px;
+            line-height: 1;
+            cursor: pointer;
+        }
+
+        .import-customs-add-product:hover,
+        .import-customs-add-product:focus-visible {
+            background: #eaf2ff;
+            outline: none;
+        }
+
+        .import-customs-product-actions {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 6px;
+            min-height: 34px;
+        }
+
+        .import-customs-remove-product {
+            width: 34px;
+            height: 34px;
+            border: 1px solid #e3c8cf;
+            border-radius: 10px;
+            background: #fff8f9;
+            color: #b04b61;
+            font-size: 22px;
+            line-height: 1;
+            cursor: pointer;
+        }
+
+        .import-customs-remove-product:hover,
+        .import-customs-remove-product:focus-visible {
+            background: #ffedf1;
+            outline: none;
+        }
+
+        .import-customs-secondary-row {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .import-customs-transport-row {
+            display: grid;
+            grid-template-columns: 1.25fr .85fr 1fr 1.05fr;
+            gap: 14px;
+            align-items: end;
+        }
+
+        .import-customs-money-input {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 76px;
+            align-items: stretch;
+            overflow: hidden;
+            border: 1px solid #d7e2ef;
+            border-radius: 12px;
+            background: #ffffff;
+        }
+
+        .import-customs-money-input input,
+        .import-customs-money-input select {
+            min-width: 0;
+            border: 0;
+            border-radius: 0;
+        }
+
+        .import-customs-money-input select {
+            border-left: 1px solid #d7e2ef;
+            background: #f4f7fb;
+            color: var(--text);
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .import-customs-transport-money {
+            grid-template-columns: minmax(0, 1fr) 96px;
+        }
+
+        .import-customs-transport-money select {
+            border: 0;
+            border-left: 1px solid #d7e2ef;
+            border-radius: 0;
+            background: #f4f7fb;
+            color: var(--text);
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .import-customs-other-row {
+            display: grid;
+            grid-template-columns: 1.25fr .85fr 1fr 1.05fr;
+            gap: 14px;
+            align-items: end;
+        }
+
+        .import-customs-product-currency {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-left: 1px solid #d7e2ef;
+            background: #f4f7fb;
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .import-customs-weight-field.is-disabled {
+            opacity: .52;
+        }
+
+        .import-customs-weight-field.is-required input {
+            border-color: #d95a6d;
+            background: #fff8f9;
+            box-shadow: 0 0 0 1px rgba(217, 90, 109, .12);
+        }
+
+        .import-customs-form .form-group small {
+            margin-top: 7px;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.45;
+        }
+
+        .import-customs-form .form-group > label {
+            margin-bottom: 0;
+            font-size: 14px;
+        }
+
+        .import-customs-form .form-group {
+            gap: 4px;
+        }
+
+        .import-customs-form input,
+        .import-customs-form select,
+        .import-customs-money-input,
+        .import-customs-rate-input,
+        .import-customs-output {
+            min-height: 34px;
+            height: 34px;
+        }
+
+        .import-customs-form input,
+        .import-customs-form select {
+            padding-top: 5px;
+            padding-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .import-customs-secondary-row .amount-input {
+            height: 34px;
+            min-height: 34px;
+        }
+
+        .import-customs-secondary-row .amount-input input,
+        .import-customs-secondary-row .amount-input span {
+            height: 34px;
+        }
+
+        .import-customs-rate-input {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 62px;
+            align-items: stretch;
+            overflow: hidden;
+            border: 1px solid #d7e2ef;
+            border-radius: 12px;
+            background: #ffffff;
+        }
+
+        .import-customs-rate-input input {
+            min-width: 0;
+            border: 0;
+            border-radius: 0;
+        }
+
+        .import-customs-rate-input span {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-left: 1px solid #d7e2ef;
+            background: #f4f7fb;
+            color: var(--muted);
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .import-customs-rate-input input[readonly] {
+            background: #f8fafc;
+            color: var(--text);
+        }
+
+        .import-customs-output {
+            display: flex;
+            align-items: center;
+            min-height: 34px;
+            padding: 0 11px;
+            border: 1px solid #d7e2ef;
+            border-radius: 12px;
+            background: #f4f7fb;
+            color: var(--text);
+            font-weight: 700;
+        }
+
+        .import-customs-result {
+            margin-top: 20px;
+            padding: 18px;
+            border: 1px solid #d8e1ed;
+            border-radius: 13px;
+            background: #f8fafc;
+        }
+
+        .import-customs-result h3 {
+            margin: 0 0 10px;
+            color: var(--text);
+            font-size: 18px;
+        }
+
+        .import-customs-row {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 18px;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            color: var(--muted);
+        }
+
+        .import-customs-row strong {
+            color: var(--text);
+            white-space: nowrap;
+        }
+
+        .import-customs-row:last-child {
+            border-bottom: 0;
+        }
+
+        .import-customs-total {
+            margin-top: 4px;
+            color: var(--text);
+            font-weight: 700;
+        }
+
+        .import-customs-note {
+            margin: 13px 0 0;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .import-customs-calculator-card .calculator-main-title {
+            font-size: 20px;
+        }
+
+        .calculator-grid .import-customs-calculator-card {
+            order: 4;
+        }
+
         .life-savings-field-full {
             grid-column: 1 / -1;
         }
@@ -1105,6 +1417,31 @@
         }
 
         @media (max-width: 700px) {
+            .import-customs-form {
+                grid-template-columns: 1fr;
+            }
+
+            .import-customs-field-full {
+                grid-column: auto;
+            }
+
+            .import-customs-fixed-row,
+            .import-customs-inline-row,
+            .import-customs-secondary-row,
+            .import-customs-transport-row,
+            .import-customs-other-row {
+                grid-template-columns: 1fr;
+            }
+
+            .import-customs-product-row {
+                grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            }
+
+            .import-customs-product-actions {
+                grid-column: 1 / -1;
+                justify-content: flex-start;
+            }
+
             .life-savings-form {
                 grid-template-columns: 1fr;
                 gap: 16px;
@@ -2934,6 +3271,210 @@
                     <div class="life-savings-row life-savings-net-row">
                         <span id="life-savings-result-title">Sığortadan sonra karta köçürüləcək net əməkhaqqı</span>
                         <strong id="life-savings-net-result">—</strong>
+                    </div>
+                </div>
+
+            </article>
+
+            <article class="calculator-card import-customs-calculator-card" id="import-customs-calculator-panel">
+
+                <div class="calculator-title">
+                    <div class="calculator-icon" aria-label="İdxal malları ikonu">▦</div>
+
+                    <div>
+                        <h2 class="calculator-main-title">İdxal mallarının hesablanması kalkulyatoru</h2>
+                        <p>Malın invoys dəyəri, daşıma və digər xərclər əsasında gömrük dəyərini və rüsumunu hesabla.</p>
+                    </div>
+
+                    <button class="calculator-card-action" type="button" aria-label="İdxal mallarının hesablanması kalkulyatorunu sına">
+                        <span class="calculator-card-action-label">Dərhal sına</span>
+                        <span aria-hidden="true">→</span>
+                    </button>
+
+                    <button
+                        class="calculator-expand"
+                        type="button"
+                        aria-expanded="false"
+                        aria-controls="import-customs-calculator-panel"
+                        aria-label="İdxal mallarının hesablanması kalkulyatorunu aç"
+                    >
+                        <span aria-hidden="true">↓</span>
+                    </button>
+                </div>
+
+                <div class="import-customs-form">
+                    <div class="import-customs-fixed-row import-customs-field-full">
+                        <div class="form-group">
+                            <label for="import-customs-date">Tarix</label>
+                            <input id="import-customs-date" type="date">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="import-customs-currency">Valyuta</label>
+                            <select id="import-customs-currency" aria-label="İnvoys valyutası">
+                                <option value="USD">USD</option>
+                                <option value="EUR">EUR</option>
+                                <option value="GBP">GBP</option>
+                                <option value="TRY">TRY</option>
+                                <option value="CNY">CNY</option>
+                                <option value="GEL">GEL</option>
+                                <option value="RUB">RUB</option>
+                                <option value="AED">AED</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="import-customs-rate">Məzənnə</label>
+                            <div class="import-customs-rate-input">
+                                <input id="import-customs-rate" type="number" min="0" step="0.0001" inputmode="decimal" readonly>
+                                <span>AZN</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="import-customs-divider import-customs-field-full" aria-hidden="true"></div>
+
+                    <div id="import-customs-products" class="import-customs-products import-customs-field-full">
+                        <div class="import-customs-product-row" data-product-row>
+                            <div class="form-group">
+                                <label for="import-customs-invoice-1">Malın invoys dəyəri</label>
+                                <div class="import-customs-money-input">
+                                    <input id="import-customs-invoice-1" class="import-customs-invoice" data-import-invoice type="number" min="0" step="0.01" placeholder="0.00" inputmode="decimal">
+                                    <span class="import-customs-product-currency" data-import-currency aria-hidden="true">USD</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="import-customs-invoice-azn-1">Malın manatla dəyəri</label>
+                                <div class="import-customs-output" id="import-customs-invoice-azn-1" data-import-invoice-azn>—</div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="import-customs-duty-rate-1">Gömrük rüsumu (%)</label>
+                                <div class="import-customs-rate-input">
+                                    <input id="import-customs-duty-rate-1" class="import-customs-duty-rate" data-import-duty-rate type="number" min="0" step="0.01" placeholder="0.00" inputmode="decimal">
+                                    <span>%</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group import-customs-weight-field">
+                                <label for="import-customs-weight-1">Malın çəkisi (kq)</label>
+                                <input id="import-customs-weight-1" class="import-customs-weight" data-import-weight type="number" min="0" step="0.01" placeholder="0.00" inputmode="decimal">
+                            </div>
+
+                            <div class="import-customs-product-actions">
+                                <button class="import-customs-add-product" type="button" data-add-product aria-label="İkinci mal əlavə et">+</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="import-customs-transport-row import-customs-field-full">
+                        <div class="form-group">
+                            <label for="import-customs-transport">Nəqliyyat xərcləri</label>
+                            <div class="import-customs-money-input import-customs-transport-money">
+                                <input id="import-customs-transport" type="number" min="0" step="0.01" placeholder="0.00" inputmode="decimal">
+                                <select id="import-customs-transport-currency" aria-label="Nəqliyyat xərclərinin valyutası">
+                                    <option value="AZN">AZN</option>
+                                    <option value="USD">USD</option>
+                                    <option value="EUR">EUR</option>
+                                    <option value="GBP">GBP</option>
+                                    <option value="TRY">TRY</option>
+                                    <option value="CNY">CNY</option>
+                                    <option value="GEL">GEL</option>
+                                    <option value="RUB">RUB</option>
+                                    <option value="AED">AED</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="import-customs-transport-rate">Məzənnə</label>
+                            <div class="import-customs-rate-input">
+                                <input id="import-customs-transport-rate" type="number" min="0" step="0.0001" inputmode="decimal" readonly>
+                                <span>AZN</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Manatla dəyər</label>
+                            <div class="import-customs-output" id="import-customs-transport-azn">—</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="import-customs-allocation-method">Bölgü üsulu</label>
+                            <select id="import-customs-allocation-method">
+                                <option value="value">Malın dəyərinə uyğun</option>
+                                <option value="weight">Malın çəkisinə uyğun</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="import-customs-other-row import-customs-field-full">
+                        <div class="form-group">
+                            <label for="import-customs-other">Digər xərclər</label>
+                            <div class="import-customs-money-input import-customs-transport-money">
+                                <input id="import-customs-other" type="number" min="0" step="0.01" placeholder="0.00" inputmode="decimal">
+                                <select id="import-customs-other-currency" aria-label="Digər xərclərin valyutası">
+                                    <option value="AZN">AZN</option>
+                                    <option value="USD">USD</option>
+                                    <option value="EUR">EUR</option>
+                                    <option value="GBP">GBP</option>
+                                    <option value="TRY">TRY</option>
+                                    <option value="CNY">CNY</option>
+                                    <option value="GEL">GEL</option>
+                                    <option value="RUB">RUB</option>
+                                    <option value="AED">AED</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="import-customs-other-rate">Məzənnə</label>
+                            <div class="import-customs-rate-input">
+                                <input id="import-customs-other-rate" type="number" min="0" step="0.0001" inputmode="decimal" readonly>
+                                <span>AZN</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Manatla dəyər</label>
+                            <div class="import-customs-output" id="import-customs-other-azn">—</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="import-customs-other-allocation-method">Bölgü üsulu</label>
+                            <select id="import-customs-other-allocation-method">
+                                <option value="value">Malın dəyərinə uyğun</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="import-customs-result">
+                    <h3>Hesablama</h3>
+                    <div class="import-customs-row">
+                        <span>Cəmi invoys dəyəri (AZN)</span>
+                        <strong id="import-customs-order-azn-result">—</strong>
+                    </div>
+                    <div class="import-customs-row">
+                        <span>Nəqliyyat xərcləri (AZN)</span>
+                        <strong id="import-customs-transport-azn-result">—</strong>
+                    </div>
+                    <div class="import-customs-row">
+                        <span>Digər xərclər (AZN)</span>
+                        <strong id="import-customs-other-azn-result">—</strong>
+                    </div>
+                    <div class="import-customs-row">
+                        <span>Statistik dəyər (AZN)</span>
+                        <strong id="import-customs-value-result">—</strong>
+                    </div>
+                    <div class="import-customs-row">
+                        <span>Cəmi gömrük rüsumları</span>
+                        <strong id="import-customs-duty-result">—</strong>
+                    </div>
+                    <div class="import-customs-row import-customs-total">
+                        <span>Ödənilməli olan ƏDV məbləği</span>
+                        <strong id="import-customs-vat-result">—</strong>
                     </div>
                 </div>
 
