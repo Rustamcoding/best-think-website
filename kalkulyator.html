@@ -839,6 +839,10 @@
             margin-bottom: 0;
         }
 
+        .calculator-grid .calculator-card:not(.is-open) .import-customs-excel-actions {
+            display: none;
+        }
+
         .calculator-grid .calculator-title {
             position: relative;
             flex: 1;
@@ -868,6 +872,175 @@
             grid-row: 1;
             width: auto;
             cursor: pointer;
+        }
+
+        .import-customs-excel-actions {
+            position: absolute;
+            top: -9px;
+            right: 0;
+            display: inline-flex;
+            align-items: center;
+            gap: 0;
+        }
+
+        .import-customs-excel-import {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            min-height: 36px;
+            padding: 7px 11px 7px 8px;
+            border: 1px solid #b8dfc9;
+            border-radius: 11px;
+            background: #f3fbf6;
+            color: #176b3c;
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 1.2;
+            cursor: pointer;
+            text-decoration: none;
+            transition: border-color .2s ease, background .2s ease, transform .2s ease;
+        }
+
+        .import-customs-excel-import:hover,
+        .import-customs-excel-import:focus-visible {
+            border-color: #6fc18d;
+            background: #e9f8ef;
+            transform: translateY(-1px);
+            outline: none;
+        }
+
+        .import-customs-excel-arrow {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            margin-left: 1px;
+            color: #176b3c;
+            font-size: 17px;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .import-customs-excel-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 21px;
+            height: 21px;
+            border-radius: 6px;
+            background: #20a464;
+            color: #ffffff;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .import-customs-excel-label strong {
+            color: #159454;
+        }
+
+        .import-customs-excel-tools {
+            margin-top: 20px;
+            padding: 18px;
+            border: 1px solid #cfe1f5;
+            border-radius: 16px;
+            background: linear-gradient(145deg, #f8fbff, #eef6ff);
+        }
+
+        .import-customs-excel-tools h3 {
+            margin: 0 0 6px;
+            color: var(--text);
+            font-size: 17px;
+        }
+
+        .import-customs-excel-tools p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .import-customs-excel-tools-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .import-customs-excel-file-label,
+        .import-customs-excel-export,
+        .import-customs-excel-template {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 38px;
+            padding: 8px 13px;
+            border: 1px solid #b8dfc9;
+            border-radius: 10px;
+            background: #f3fbf6;
+            color: #176b3c;
+            font: inherit;
+            font-size: 13px;
+            font-weight: 700;
+            line-height: 1.2;
+            cursor: pointer;
+            text-decoration: none;
+            transition: border-color .2s ease, background .2s ease, transform .2s ease;
+        }
+
+        .import-customs-excel-file-label:hover,
+        .import-customs-excel-file-label:focus-within,
+        .import-customs-excel-export:hover,
+        .import-customs-excel-export:focus-visible,
+        .import-customs-excel-template:hover,
+        .import-customs-excel-template:focus-visible {
+            border-color: #6fc18d;
+            background: #e9f8ef;
+            transform: translateY(-1px);
+            outline: none;
+        }
+
+        .import-customs-excel-file-input {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            clip: rect(0 0 0 0);
+            clip-path: inset(50%);
+            white-space: nowrap;
+        }
+
+        .import-customs-excel-tools-status {
+            min-height: 18px;
+            margin-top: 10px !important;
+            color: #176b3c !important;
+            font-size: 12px !important;
+        }
+
+        .import-customs-excel-export {
+            border-color: #c7dcf5;
+            background: #f1f6ff;
+            color: #1e5da9;
+        }
+
+        .import-customs-excel-template {
+            border-color: #dfe4ea;
+            background: #f7f8fa;
+            color: #7a8796;
+            font-weight: 600;
+        }
+
+        .import-customs-excel-export:hover,
+        .import-customs-excel-export:focus-visible {
+            border-color: #91b7ed;
+            background: #e8f1ff;
+        }
+
+        .import-customs-excel-template:hover,
+        .import-customs-excel-template:focus-visible {
+            border-color: #c5ced9;
+            background: #eef1f5;
         }
 
         .calculator-grid .calculator-card.is-open .calculator-title {
@@ -986,13 +1159,28 @@
             gap: 10px;
         }
 
-        .import-customs-product-row {
+        .import-customs-product-row,
+        .import-customs-transport-row,
+        .import-customs-other-row {
             display: grid;
-            grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) minmax(0, .8fr) minmax(0, .8fr) 76px;
+            grid-template-columns:
+                minmax(0, 1.25fr)
+                minmax(0, .98fr)
+                minmax(0, 1fr)
+                minmax(0, .9fr)
+                54px;
             gap: 14px;
             align-items: end;
+        }
+
+        .import-customs-product-row {
             padding: 10px 0;
             border-bottom: 1px solid #e7edf4;
+        }
+
+        .import-customs-transport-row .form-group:last-child,
+        .import-customs-other-row .form-group:last-child {
+            grid-column: 4 / 6;
         }
 
         .import-customs-product-row:first-child {
@@ -1000,20 +1188,25 @@
         }
 
         .import-customs-add-product {
-            width: 34px;
-            height: 34px;
-            border: 1px solid #d7e2ef;
-            border-radius: 10px;
-            background: #f4f7fb;
+            width: 29px;
+            height: 29px;
+            border: 1px solid #b9d0f1;
+            border-radius: 9px;
+            background: linear-gradient(145deg, #f4f8ff, #e3efff);
             color: var(--blue);
-            font-size: 24px;
+            font-size: 19px;
+            font-weight: 500;
             line-height: 1;
             cursor: pointer;
+            box-shadow: 0 3px 9px rgba(31, 92, 177, .12);
+            transition: background .2s ease, border-color .2s ease, transform .2s ease;
         }
 
         .import-customs-add-product:hover,
         .import-customs-add-product:focus-visible {
-            background: #eaf2ff;
+            border-color: #7fa8df;
+            background: #dceaff;
+            transform: translateY(-1px);
             outline: none;
         }
 
@@ -1022,24 +1215,29 @@
             align-items: center;
             justify-content: flex-end;
             gap: 6px;
-            min-height: 34px;
+            min-height: 29px;
         }
 
         .import-customs-remove-product {
-            width: 34px;
-            height: 34px;
-            border: 1px solid #e3c8cf;
-            border-radius: 10px;
-            background: #fff8f9;
+            width: 29px;
+            height: 29px;
+            border: 1px solid #e4c5cf;
+            border-radius: 9px;
+            background: linear-gradient(145deg, #fff9fa, #ffedf1);
             color: #b04b61;
-            font-size: 22px;
+            font-size: 18px;
+            font-weight: 500;
             line-height: 1;
             cursor: pointer;
+            box-shadow: 0 3px 9px rgba(176, 75, 97, .1);
+            transition: background .2s ease, border-color .2s ease, transform .2s ease;
         }
 
         .import-customs-remove-product:hover,
         .import-customs-remove-product:focus-visible {
-            background: #ffedf1;
+            border-color: #d68ea0;
+            background: #ffe4e9;
+            transform: translateY(-1px);
             outline: none;
         }
 
@@ -1047,13 +1245,6 @@
             display: grid;
             grid-template-columns: repeat(3, minmax(0, 1fr));
             gap: 18px;
-        }
-
-        .import-customs-transport-row {
-            display: grid;
-            grid-template-columns: 1.25fr .85fr 1fr 1.05fr;
-            gap: 14px;
-            align-items: end;
         }
 
         .import-customs-money-input {
@@ -1078,7 +1269,7 @@
             background: #f4f7fb;
             color: var(--text);
             font-size: 13px;
-            font-weight: 700;
+            font-weight: 400;
         }
 
         .import-customs-transport-money {
@@ -1092,14 +1283,7 @@
             background: #f4f7fb;
             color: var(--text);
             font-size: 12px;
-            font-weight: 700;
-        }
-
-        .import-customs-other-row {
-            display: grid;
-            grid-template-columns: 1.25fr .85fr 1fr 1.05fr;
-            gap: 14px;
-            align-items: end;
+            font-weight: 400;
         }
 
         .import-customs-product-currency {
@@ -1110,7 +1294,7 @@
             background: #f4f7fb;
             color: var(--muted);
             font-size: 13px;
-            font-weight: 700;
+            font-weight: 400;
         }
 
         .import-customs-weight-field.is-disabled {
@@ -1133,6 +1317,11 @@
         .import-customs-form .form-group > label {
             margin-bottom: 0;
             font-size: 14px;
+            font-weight: 400;
+        }
+
+        .import-customs-form .salary-field-label > label {
+            font-weight: 400;
         }
 
         .import-customs-form .form-group {
@@ -1155,6 +1344,11 @@
             font-size: 14px;
         }
 
+        .import-customs-form input[type="date"] {
+            color-scheme: light;
+            accent-color: var(--blue);
+        }
+
         .import-customs-secondary-row .amount-input {
             height: 34px;
             min-height: 34px;
@@ -1167,7 +1361,7 @@
 
         .import-customs-rate-input {
             display: grid;
-            grid-template-columns: minmax(0, 1fr) 62px;
+            grid-template-columns: minmax(0, 1fr) 54px;
             align-items: stretch;
             overflow: hidden;
             border: 1px solid #d7e2ef;
@@ -1179,6 +1373,9 @@
             min-width: 0;
             border: 0;
             border-radius: 0;
+            padding-right: 8px;
+            padding-left: 8px;
+            font-variant-numeric: tabular-nums;
         }
 
         .import-customs-rate-input span {
@@ -1189,7 +1386,32 @@
             background: #f4f7fb;
             color: var(--muted);
             font-size: 14px;
-            font-weight: 700;
+            font-weight: 400;
+        }
+
+        .import-customs-product-value,
+        .import-customs-expense-value {
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .import-customs-product-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex: 0 0 20px;
+            width: 20px;
+            height: 20px;
+            color: var(--blue);
+            font-size: 17px;
+            font-weight: 600;
+            line-height: 1;
+        }
+
+        .import-customs-manat-symbol {
+            color: var(--muted);
+            font-size: 17px;
+            font-weight: 500;
         }
 
         .import-customs-rate-input input[readonly] {
@@ -1206,21 +1428,35 @@
             border-radius: 12px;
             background: #f4f7fb;
             color: var(--text);
-            font-weight: 700;
+            font-weight: 400;
         }
 
         .import-customs-result {
             margin-top: 20px;
             padding: 18px;
-            border: 1px solid #d8e1ed;
-            border-radius: 13px;
-            background: #f8fafc;
+            border: 1px solid #d7e5f7;
+            border-radius: 17px;
+            background: linear-gradient(145deg, #f9fcff, #eef5ff);
+            box-shadow: 0 12px 28px rgba(24, 72, 130, .08);
         }
 
         .import-customs-result h3 {
-            margin: 0 0 10px;
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            grid-column: 1 / -1;
+            margin: 0 0 12px;
             color: var(--text);
             font-size: 18px;
+        }
+
+        .import-customs-result h3::before {
+            width: 8px;
+            height: 8px;
+            flex: 0 0 8px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #2466d3, #69a2ed);
+            content: "";
         }
 
         .import-customs-row {
@@ -1228,24 +1464,47 @@
             align-items: baseline;
             justify-content: space-between;
             gap: 18px;
-            padding: 10px 0;
-            border-bottom: 1px solid #e2e8f0;
+            border: 1px solid #e1eaf6;
+            border-radius: 11px;
+            margin-bottom: 8px;
+            padding: 11px 13px;
+            background: rgba(255, 255, 255, .78);
             color: var(--muted);
         }
 
         .import-customs-row strong {
             color: var(--text);
+            font-weight: 400;
             white-space: nowrap;
         }
 
+        .import-customs-result-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            min-width: 0;
+        }
+
         .import-customs-row:last-child {
-            border-bottom: 0;
+            margin-bottom: 0;
         }
 
         .import-customs-total {
             margin-top: 4px;
             color: var(--text);
-            font-weight: 700;
+            font-weight: 400;
+        }
+
+        .import-customs-duty-row {
+            grid-column: 1 / -1;
+        }
+
+        @media (min-width: 701px) {
+            .import-customs-result {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 0 12px;
+            }
         }
 
         .import-customs-note {
@@ -1437,9 +1696,25 @@
                 grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
             }
 
+            .import-customs-transport-row .form-group:last-child,
+            .import-customs-other-row .form-group:last-child {
+                grid-column: auto;
+            }
+
             .import-customs-product-actions {
                 grid-column: 1 / -1;
                 justify-content: flex-start;
+            }
+
+            .import-customs-excel-actions {
+                top: -8px;
+                right: 0;
+            }
+
+            .import-customs-excel-import {
+                min-height: 32px;
+                padding: 5px 8px 5px 6px;
+                font-size: 11px;
             }
 
             .life-savings-form {
@@ -3283,7 +3558,19 @@
 
                     <div>
                         <h2 class="calculator-main-title">İdxal mallarının hesablanması kalkulyatoru</h2>
-                        <p>Malın invoys dəyəri, daşıma və digər xərclər əsasında gömrük dəyərini və rüsumunu hesabla.</p>
+                        <p>Malın invoys dəyəri, daşıma və digər xərclər əsasında gömrük rüsumunu hesabla. Excel vasitəsilə məlumatlarını köçürməklə işlərini sürətləndir.</p>
+                    </div>
+
+                    <div class="import-customs-excel-actions">
+                        <a
+                            class="import-customs-excel-import"
+                            href="#import-customs-excel-tools"
+                            aria-label="Excel import bölməsinə keç"
+                        >
+                            <span class="import-customs-excel-icon" aria-hidden="true">▤</span>
+                            <span class="import-customs-excel-label"><strong>Excel</strong>-dən import</span>
+                            <span class="import-customs-excel-arrow" aria-hidden="true">↓</span>
+                        </a>
                     </div>
 
                     <button class="calculator-card-action" type="button" aria-label="İdxal mallarının hesablanması kalkulyatorunu sına">
@@ -3305,7 +3592,7 @@
                 <div class="import-customs-form">
                     <div class="import-customs-fixed-row import-customs-field-full">
                         <div class="form-group">
-                            <label for="import-customs-date">Tarix</label>
+                            <label for="import-customs-date">İdxal tarixi</label>
                             <input id="import-customs-date" type="date">
                         </div>
 
@@ -3327,7 +3614,7 @@
                             <label for="import-customs-rate">Məzənnə</label>
                             <div class="import-customs-rate-input">
                                 <input id="import-customs-rate" type="number" min="0" step="0.0001" inputmode="decimal" readonly>
-                                <span>AZN</span>
+                                <span class="import-customs-manat-symbol" aria-label="manat">₼</span>
                             </div>
                         </div>
                     </div>
@@ -3345,12 +3632,36 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="import-customs-invoice-azn-1">Malın manatla dəyəri</label>
-                                <div class="import-customs-output" id="import-customs-invoice-azn-1" data-import-invoice-azn>—</div>
+                                <label for="import-customs-invoice-azn-1">Manatla dəyər</label>
+                                <div class="import-customs-output import-customs-product-value" id="import-customs-invoice-azn-1" data-import-invoice-azn>
+                                    <span data-import-invoice-azn-value>—</span>
+                                    <span class="import-customs-product-icon" aria-label="manat">₼</span>
+                                </div>
                             </div>
 
                             <div class="form-group">
-                                <label for="import-customs-duty-rate-1">Gömrük rüsumu (%)</label>
+                                <div class="salary-field-label">
+                                    <label for="import-customs-duty-rate-1">Gömrük rüsumu</label>
+                                    <details class="salary-sector-info">
+                                        <summary
+                                            aria-label="Mal nomenklaturası haqqında məlumat"
+                                            title="Mal nomenklaturası haqqında məlumat"
+                                        >
+                                            i
+                                        </summary>
+                                        <div class="salary-sector-info-panel">
+                                            <strong>Mal nomenklaturası</strong>
+                                            <p>Mal üzrə gömrük rüsumu faizləri və nomenklatura məlumatları ilə tanış olun.</p>
+                                            <a
+                                                href="https://e.customs.gov.az/for-individuals/goods-nomenclature"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                            >
+                                                Mal nomenklaturası ilə tanış olun →
+                                            </a>
+                                        </div>
+                                    </details>
+                                </div>
                                 <div class="import-customs-rate-input">
                                     <input id="import-customs-duty-rate-1" class="import-customs-duty-rate" data-import-duty-rate type="number" min="0" step="0.01" placeholder="0.00" inputmode="decimal">
                                     <span>%</span>
@@ -3388,23 +3699,26 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="import-customs-transport-rate">Məzənnə</label>
-                            <div class="import-customs-rate-input">
-                                <input id="import-customs-transport-rate" type="number" min="0" step="0.0001" inputmode="decimal" readonly>
-                                <span>AZN</span>
+                            <label>Manatla dəyər</label>
+                            <div class="import-customs-output import-customs-expense-value" id="import-customs-transport-azn">
+                                <span data-import-transport-azn-value>—</span>
+                                <span class="import-customs-product-icon" aria-label="manat">₼</span>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label>Manatla dəyər</label>
-                            <div class="import-customs-output" id="import-customs-transport-azn">—</div>
+                            <label for="import-customs-transport-rate">Məzənnə</label>
+                            <div class="import-customs-rate-input">
+                                <input id="import-customs-transport-rate" type="number" min="0" step="0.0001" inputmode="decimal" readonly>
+                                <span class="import-customs-manat-symbol" aria-label="manat">₼</span>
+                            </div>
                         </div>
 
                         <div class="form-group">
                             <label for="import-customs-allocation-method">Bölgü üsulu</label>
                             <select id="import-customs-allocation-method">
-                                <option value="value">Malın dəyərinə uyğun</option>
-                                <option value="weight">Malın çəkisinə uyğun</option>
+                                <option value="weight" selected>Malın çəkisinə mütənasib</option>
+                                <option value="value">Malın dəyərinə mütənasib</option>
                             </select>
                         </div>
                     </div>
@@ -3429,54 +3743,113 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="import-customs-other-rate">Məzənnə</label>
-                            <div class="import-customs-rate-input">
-                                <input id="import-customs-other-rate" type="number" min="0" step="0.0001" inputmode="decimal" readonly>
-                                <span>AZN</span>
+                            <label>Manatla dəyər</label>
+                            <div class="import-customs-output import-customs-expense-value" id="import-customs-other-azn">
+                                <span data-import-other-azn-value>—</span>
+                                <span class="import-customs-product-icon" aria-label="manat">₼</span>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label>Manatla dəyər</label>
-                            <div class="import-customs-output" id="import-customs-other-azn">—</div>
+                            <label for="import-customs-other-rate">Məzənnə</label>
+                            <div class="import-customs-rate-input">
+                                <input id="import-customs-other-rate" type="number" min="0" step="0.0001" inputmode="decimal" readonly>
+                                <span class="import-customs-manat-symbol" aria-label="manat">₼</span>
+                            </div>
                         </div>
 
                         <div class="form-group">
                             <label for="import-customs-other-allocation-method">Bölgü üsulu</label>
                             <select id="import-customs-other-allocation-method">
-                                <option value="value">Malın dəyərinə uyğun</option>
+                                <option value="value">Malın dəyərinə mütənasib</option>
                             </select>
                         </div>
                     </div>
                 </div>
 
                 <div class="import-customs-result">
-                    <h3>Hesablama</h3>
+                    <h3>Hesablama (manatla)</h3>
                     <div class="import-customs-row">
-                        <span>Cəmi invoys dəyəri (AZN)</span>
+                        <span>Cəmi invoys dəyəri</span>
                         <strong id="import-customs-order-azn-result">—</strong>
                     </div>
                     <div class="import-customs-row">
-                        <span>Nəqliyyat xərcləri (AZN)</span>
+                        <span>Nəqliyyat xərcləri</span>
                         <strong id="import-customs-transport-azn-result">—</strong>
                     </div>
                     <div class="import-customs-row">
-                        <span>Digər xərclər (AZN)</span>
+                        <span>Digər xərclər</span>
                         <strong id="import-customs-other-azn-result">—</strong>
                     </div>
                     <div class="import-customs-row">
-                        <span>Statistik dəyər (AZN)</span>
+                        <span>Statistik dəyər</span>
                         <strong id="import-customs-value-result">—</strong>
                     </div>
                     <div class="import-customs-row">
+                        <span class="import-customs-result-label">
+                            <span>Gömrük yığımları</span>
+                            <details class="salary-sector-info">
+                                <summary
+                                    aria-label="Gömrük yığımları haqqında məlumat"
+                                    title="Gömrük yığımları haqqında məlumat"
+                                >
+                                    i
+                                </summary>
+                                <div class="salary-sector-info-panel">
+                                    <strong>Qanunvericilik</strong>
+                                    <p>Gömrük yığımlarının hesablanması qaydası ilə tanış olun.</p>
+                                    <a
+                                        href="https://e-qanun.az/framework/32656"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        Hesablamanın qanunvericiliyi ilə tanış olun →
+                                    </a>
+                                </div>
+                            </details>
+                        </span>
+                        <strong id="import-customs-collection-result">—</strong>
+                    </div>
+                    <div class="import-customs-row import-customs-total">
+                        <span>ƏDV məbləği</span>
+                        <strong id="import-customs-vat-result">—</strong>
+                    </div>
+                    <div class="import-customs-row import-customs-duty-row">
                         <span>Cəmi gömrük rüsumları</span>
                         <strong id="import-customs-duty-result">—</strong>
                     </div>
-                    <div class="import-customs-row import-customs-total">
-                        <span>Ödənilməli olan ƏDV məbləği</span>
-                        <strong id="import-customs-vat-result">—</strong>
-                    </div>
                 </div>
+
+                <section class="import-customs-excel-tools" id="import-customs-excel-tools">
+                    <h3>Excel ilə işləyin</h3>
+                    <p>Hazır məlumatları Excel-dən import edin, formu Excel-ə eksport edin və ya nümunə faylı endirib doldurun.</p>
+                    <div class="import-customs-excel-tools-actions">
+                        <label class="import-customs-excel-file-label" for="import-customs-excel-file">
+                            <span class="import-customs-excel-icon" aria-hidden="true">↑</span>
+                            Excel faylı import et
+                            <input
+                                id="import-customs-excel-file"
+                                class="import-customs-excel-file-input"
+                                type="file"
+                                accept=".xlsx,.xls,.csv"
+                                aria-label="Excel faylından import et"
+                            >
+                        </label>
+                        <button class="import-customs-excel-export" type="button" data-export-import-excel>
+                            <span class="import-customs-excel-icon" aria-hidden="true">↓</span>
+                            Excel-i eksport et
+                        </button>
+                        <a
+                            class="import-customs-excel-template"
+                            href="assets/idxal-kalkulyatoru-numune.xlsx"
+                            download="idxal-kalkulyatoru-numune.xlsx"
+                        >
+                            <span class="import-customs-excel-icon" aria-hidden="true">▣</span>
+                            Nümunə Excel-i endir
+                        </a>
+                    </div>
+                    <p class="import-customs-excel-tools-status" id="import-customs-excel-status" aria-live="polite"></p>
+                </section>
 
             </article>
 
@@ -3589,7 +3962,8 @@
 
 
 
-<script src="script.js?v=20260921-calculator-info-accordion"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="script.js?v=20260921-import-excel"></script>
 </body>
 
 </html>
