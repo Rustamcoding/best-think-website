@@ -2056,7 +2056,11 @@ calculatorCards.forEach((card) => {
     }
 
     const toggleCalculatorCard = () => {
-        const shouldOpen = !card.classList.contains('is-open');
+        if (card.classList.contains('is-open')) {
+            return;
+        }
+
+        const shouldOpen = true;
         const calculatorTitle =
             card.querySelector('.calculator-main-title');
 
@@ -2066,7 +2070,40 @@ calculatorCards.forEach((card) => {
                     return;
                 }
 
-                otherCard.querySelector('.calculator-expand')?.click();
+                otherCard.classList.remove('is-open');
+
+                const otherExpandButton =
+                    otherCard.querySelector('.calculator-expand');
+                otherExpandButton?.setAttribute('aria-expanded', 'false');
+
+                const otherTitle =
+                    otherCard.querySelector('.calculator-main-title');
+                const otherAction =
+                    otherCard.querySelector('.calculator-card-action');
+                const otherActionLabel =
+                    otherAction?.querySelector('.calculator-card-action-label');
+                const otherActionArrow =
+                    otherAction?.querySelector('span[aria-hidden="true"]');
+
+                if (otherExpandButton && otherTitle) {
+                    otherExpandButton.setAttribute(
+                        'aria-label',
+                        `${otherTitle.textContent.trim()} kalkulyatorunu aç`
+                    );
+                }
+
+                if (otherActionLabel) {
+                    otherActionLabel.textContent = 'Dərhal sına ';
+                }
+                if (otherActionArrow) {
+                    otherActionArrow.textContent = '→';
+                }
+                if (otherAction && otherTitle) {
+                    otherAction.setAttribute(
+                        'aria-label',
+                        `${otherTitle.textContent.trim()} sına`
+                    );
+                }
             });
         }
 
@@ -2098,18 +2135,14 @@ calculatorCards.forEach((card) => {
             );
 
             if (actionLabel) {
-                actionLabel.textContent = shouldOpen
-                    ? 'Bağla '
-                    : 'Dərhal sına ';
+                actionLabel.textContent = 'Dərhal sına ';
             }
             if (actionArrow) {
-                actionArrow.textContent = shouldOpen ? '↑' : '→';
+                actionArrow.textContent = '→';
             }
             calculatorAction.setAttribute(
                 'aria-label',
-                shouldOpen
-                    ? 'Kalkulyatoru bağla'
-                    : `${calculatorTitle?.textContent.trim() || 'Kalkulyatoru'} sına`
+                `${calculatorTitle?.textContent.trim() || 'Kalkulyatoru'} sına`
             );
         }
 
@@ -2134,6 +2167,24 @@ calculatorCards.forEach((card) => {
 });
 
 updateCalculatorPageIntro();
+
+const calculatorInfoDetails = document.querySelectorAll(
+    '.calculator-page .salary-sector-info'
+);
+
+calculatorInfoDetails.forEach((detail) => {
+    detail.addEventListener('toggle', () => {
+        if (!detail.open) {
+            return;
+        }
+
+        calculatorInfoDetails.forEach((otherDetail) => {
+            if (otherDetail !== detail) {
+                otherDetail.open = false;
+            }
+        });
+    });
+});
 
 if (salaryExemptionSearchInput) {
     ['input', 'search', 'keyup'].forEach((eventName) => {
