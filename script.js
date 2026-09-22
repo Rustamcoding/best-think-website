@@ -4914,3 +4914,244 @@ document.addEventListener('click', (event) => {
         showCalculatorPromo();
     }
 })();
+
+/* =========================================================
+   KALKULYATOR XƏTA BİLDİRİŞİ
+   ========================================================= */
+
+(() => {
+    const calculatorReportCards = document.querySelectorAll('.calculator-grid .calculator-card');
+    const modal = document.querySelector('#calculator-error-report-modal');
+    const dialog = modal?.querySelector('.calculator-error-report-dialog');
+    const closeButton = modal?.querySelector('.calculator-error-report-close');
+    const form = document.querySelector('#calculator-error-report-form');
+    const status = document.querySelector('#calculator-error-report-status');
+    const calculatorSelect = document.querySelector('#calculator-error-report-calculator');
+    const screenshotInput = document.querySelector('#calculator-error-report-screenshot');
+    const phoneInput = form?.querySelector('[name="reporterPhone"]');
+    const acceptedScreenshotTypes = new Set(['image/jpeg', 'image/png', 'image/gif']);
+    const acceptedScreenshotName = /\.(?:jpe?g|png|gif)$/i;
+    const maxScreenshotSize = 1024 * 1024;
+
+    if (!calculatorReportCards.length || !modal || !dialog || !closeButton || !form || !calculatorSelect || !screenshotInput || !phoneInput) {
+        return;
+    }
+
+    calculatorReportCards.forEach((card) => {
+        const title = card.querySelector('.calculator-main-title');
+        if (!title || card.querySelector('.calculator-error-report-card')) {
+            return;
+        }
+
+        const reportArea = document.createElement('div');
+        reportArea.className = 'calculator-error-report-card';
+
+        const reportButton = document.createElement('button');
+        reportButton.className = 'calculator-error-report-trigger';
+        reportButton.type = 'button';
+        reportButton.setAttribute('aria-haspopup', 'dialog');
+        reportButton.innerHTML = `
+            <span class="calculator-error-report-trigger-icon" aria-hidden="true">!</span>
+            <span>Xəta bildir</span>
+        `;
+        reportButton.addEventListener('click', () => {
+            openReportModal(title.textContent.trim().replace(/\s+/g, ' '));
+        });
+
+        reportArea.appendChild(reportButton);
+        card.appendChild(reportArea);
+    });
+
+    calculatorReportCards.forEach((card) => {
+        const title = card.querySelector('.calculator-main-title');
+        const normalizedTitle = title?.textContent.trim().replace(/\s+/g, ' ');
+        if (!normalizedTitle) {
+            return;
+        }
+
+        const option = document.createElement('option');
+        option.value = normalizedTitle;
+        option.textContent = normalizedTitle;
+        calculatorSelect.appendChild(option);
+    });
+
+    const requiredFieldMessages = {
+        reporterName: 'Zəhmət olmasa, ad və soyadınızı daxil edin.',
+        calculator: 'Zəhmət olmasa, kalkulyatoru seçin.',
+        reporterEmail: 'Zəhmət olmasa, e-poçt ünvanınızı daxil edin.',
+        reporterPhone: 'Zəhmət olmasa, əlaqə nömrənizi daxil edin.',
+        problem: 'Zəhmət olmasa, xəta haqqında məlumatı yazın.'
+    };
+
+    form.addEventListener('invalid', (event) => {
+        const field = event.target;
+        let message = '';
+
+        if (field.validity.valueMissing) {
+            message = requiredFieldMessages[field.name] || 'Bu sahəni doldurun.';
+        } else if (field.name === 'reporterEmail' && field.validity.typeMismatch) {
+            message = 'Düzgün e-poçt ünvanı daxil edin.';
+        } else if (field.name === 'reporterPhone' && field.validity.patternMismatch) {
+            message = 'Nömrəni 050 123 45 67 formatında daxil edin.';
+        }
+
+        field.setCustomValidity(message);
+    }, true);
+
+    form.addEventListener('input', (event) => {
+        event.target.setCustomValidity?.('');
+    }, true);
+
+    form.addEventListener('change', (event) => {
+        event.target.setCustomValidity?.('');
+    }, true);
+
+    function getScreenshotValidationMessage(file) {
+        if (!acceptedScreenshotName.test(file.name) || (file.type && !acceptedScreenshotTypes.has(file.type))) {
+            return 'Yalnız JPG/JPEG, PNG və GIF formatlı şəkillər əlavə edin.';
+        }
+        if (file.size > maxScreenshotSize) {
+            return 'Şəklin ölçüsü 1 MB-dan çox olmamalıdır.';
+        }
+        return '';
+    }
+
+    screenshotInput.addEventListener('change', () => {
+        const file = screenshotInput.files?.[0];
+        if (!file) {
+            return;
+        }
+
+        const message = getScreenshotValidationMessage(file);
+        if (message) {
+            screenshotInput.value = '';
+            if (status) {
+                status.textContent = message;
+            }
+            return;
+        }
+
+        if (status) {
+            status.textContent = '';
+        }
+    });
+
+    const closeModal = () => {
+        modal.hidden = true;
+        closeButton.classList.remove('is-highlighted');
+        document.body.classList.remove('calculator-report-open');
+    };
+
+    function openReportModal(calculatorName) {
+        const calculatorField = form.querySelector('[name="calculator"]');
+        const userAgentField = form.querySelector('[name="userAgent"]');
+
+        if (calculatorField) {
+            calculatorField.value = calculatorName || '';
+        }
+        if (userAgentField) {
+            userAgentField.value = navigator.userAgent;
+        }
+        if (status) {
+            status.textContent = '';
+        }
+        closeButton.classList.remove('is-highlighted');
+
+        modal.hidden = false;
+        document.body.classList.add('calculator-report-open');
+        form.querySelector('[name="reporterName"]')?.focus();
+    }
+
+    closeButton.addEventListener('click', closeModal);
+
+    phoneInput.addEventListener('input', () => {
+        const digits = phoneInput.value.replace(/\D/g, '').slice(0, 10);
+        const parts = [digits.slice(0, 3), digits.slice(3, 6), digits.slice(6, 8), digits.slice(8, 10)]
+            .filter(Boolean);
+        phoneInput.value = parts.join(' ');
+    });
+
+    modal.addEventListener('click', (event) => {
+        if (event.target === modal) {
+            closeButton.classList.add('is-highlighted');
+        }
+    });
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && !modal.hidden) {
+            closeModal();
+        }
+    });
+
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const file = screenshotInput.files?.[0];
+        const screenshotValidationMessage = file ? getScreenshotValidationMessage(file) : '';
+        if (screenshotValidationMessage) {
+            if (status) {
+                status.textContent = screenshotValidationMessage;
+            }
+            return;
+        }
+
+        if (status) {
+            status.textContent = 'Göndərilir...';
+        }
+
+        try {
+            if (file) {
+                const screenshot = await prepareScreenshot(file);
+                form.querySelector('[name="fileData"]').value = screenshot.dataUrl;
+                form.querySelector('[name="fileName"]').value = screenshot.fileName;
+                form.querySelector('[name="fileType"]').value = screenshot.fileType;
+            } else {
+                form.querySelector('[name="fileData"]').value = '';
+                form.querySelector('[name="fileName"]').value = '';
+                form.querySelector('[name="fileType"]').value = '';
+            }
+
+            HTMLFormElement.prototype.submit.call(form);
+
+            window.setTimeout(() => {
+                if (status) {
+                    status.textContent = 'Xəta bildirişiniz göndərildi. Təşəkkür edirik.';
+                }
+                form.reset();
+                window.setTimeout(closeModal, 1400);
+            }, 800);
+        } catch (error) {
+            console.error('Xəta bildirişi hazırlanarkən problem:', error);
+            if (status) {
+                status.textContent = 'Şəkil hazırlanmadı. Başqa şəkil seçib yenidən yoxlayın.';
+            }
+        }
+    });
+
+    function prepareScreenshot(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => {
+                const image = new Image();
+                image.onload = () => {
+                    const maxSide = 1600;
+                    const scale = Math.min(1, maxSide / Math.max(image.width, image.height));
+                    const canvas = document.createElement('canvas');
+                    canvas.width = Math.max(1, Math.round(image.width * scale));
+                    canvas.height = Math.max(1, Math.round(image.height * scale));
+                    canvas.getContext('2d').drawImage(image, 0, 0, canvas.width, canvas.height);
+
+                    resolve({
+                        dataUrl: canvas.toDataURL('image/jpeg', .78),
+                        fileName: 'best-think-xeta-screenshoti.jpg',
+                        fileType: 'image/jpeg'
+                    });
+                };
+                image.onerror = reject;
+                image.src = reader.result;
+            };
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+        });
+    }
+})();
