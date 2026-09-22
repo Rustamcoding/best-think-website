@@ -3647,6 +3647,8 @@ const importCustomsOtherAZNResult =
     document.getElementById('import-customs-other-azn-result');
 const importCustomsCollectionResult =
     document.getElementById('import-customs-collection-result');
+const importCustomsDutyAmountResult =
+    document.getElementById('import-customs-duty-amount-result');
 const importCustomsValueResult =
     document.getElementById('import-customs-value-result');
 const importCustomsDutyResult =
@@ -3691,6 +3693,19 @@ function formatImportCustomsNumber(value) {
     }).format(Math.max(0, value));
 }
 
+function clearImportCustomsResults() {
+    [
+        importCustomsValueResult,
+        importCustomsDutyAmountResult,
+        importCustomsDutyResult,
+        importCustomsVATResult
+    ].forEach((element) => {
+        if (element) {
+            element.textContent = '—';
+        }
+    });
+}
+
 function updateImportCustomsCurrencyLabels() {
     const currency = importCustomsCurrency?.value || 'USD';
 
@@ -3707,12 +3722,14 @@ function updateImportCustomsWeightFields() {
     importCustomsProductRows().forEach((row) => {
         const field = row.querySelector('.import-customs-weight-field');
         const input = row.querySelector('[data-import-weight]');
+        const invoice = row.querySelector('[data-import-invoice]');
+        const invoiceValue = importCustomsNumber(invoice);
         if (field && input) {
             field.hidden = false;
             field.classList.toggle('is-disabled', !useWeight);
             field.classList.toggle(
                 'is-required',
-                useWeight && importCustomsNumber(input) <= 0
+                useWeight && invoiceValue > 0 && importCustomsNumber(input) <= 0
             );
             input.disabled = !useWeight;
         }
@@ -4150,6 +4167,12 @@ function calculateImportCustoms() {
     const otherAZN = other * otherExchangeRate;
     const foreignTotal = invoiceOtherTotal + transport;
     const customsCollection = calculateImportCustomsCollection(invoiceAZNTotal);
+    const transportAllocationMethod = importCustomsAllocationMethod.value;
+    const otherAllocationMethod = importCustomsOtherAllocationMethod.value;
+    const totalProductWeight = products.reduce(
+        (total, product) => total + product.weight,
+        0
+    );
 
     updateImportCustomsProductValues(exchangeRate);
 
@@ -4205,19 +4228,19 @@ function calculateImportCustoms() {
         (other > 0 && otherExchangeRate === 0) ||
         (transport > 0 && transportExchangeRate === 0)
     ) {
-        importCustomsValueResult.textContent = '—';
-        importCustomsDutyResult.textContent = '—';
-        importCustomsVATResult.textContent = '—';
+        clearImportCustomsResults();
+        return;
+    }
+
+    if (
+        transportAllocationMethod === 'weight' &&
+        products.some((product) => product.invoice > 0 && product.weight <= 0)
+    ) {
+        clearImportCustomsResults();
         return;
     }
 
     const customsValue = invoiceAZNTotal + otherAZN + transportAZN;
-    const transportAllocationMethod = importCustomsAllocationMethod.value;
-    const otherAllocationMethod = importCustomsOtherAllocationMethod.value;
-    const totalProductWeight = products.reduce(
-        (total, product) => total + product.weight,
-        0
-    );
     const duty = products.reduce((total, product) => {
         const invoiceAZN = product.invoice * exchangeRate;
         const transportAllocationBase = transportAllocationMethod === 'weight'
@@ -4233,9 +4256,11 @@ function calculateImportCustoms() {
         );
     }, 0);
     const vat = (customsValue + duty) * 0.18;
+    const totalCustomsCharges = duty + (customsCollection || 0) + vat;
 
     importCustomsValueResult.textContent = formatImportCustomsAmount(customsValue);
-    importCustomsDutyResult.textContent = formatImportCustomsAmount(duty);
+    importCustomsDutyAmountResult.textContent = formatImportCustomsAmount(duty);
+    importCustomsDutyResult.textContent = formatImportCustomsAmount(totalCustomsCharges);
     importCustomsVATResult.textContent = formatImportCustomsAmount(vat);
 }
 
@@ -4505,13 +4530,13 @@ function importCustomsExportExcelFile() {
             productValue,
             product.weight,
             '',
-            index === 0 ? collection : '',
+            invoiceTotal > 0 ? collection * product.invoice / invoiceTotal : 0,
             allocatedTransport,
             allocatedOther,
             statisticalValue,
             product.dutyRate / 100,
             duty,
-            productValue + (index === 0 ? collection : 0) + allocatedTransport + allocatedOther + duty,
+            productValue + (invoiceTotal > 0 ? collection * product.invoice / invoiceTotal : 0) + allocatedTransport + allocatedOther + duty,
             (statisticalValue + duty) * 0.18,
             ''
         ]);
@@ -4528,7 +4553,6 @@ function importCustomsExportExcelFile() {
     };
     const productRange = `B${firstProductRow}:B${lastProductRow}`;
     const weightRange = `D${firstProductRow}:D${lastProductRow}`;
-    const valueRange = `C${firstProductRow}:C${lastProductRow}`;
 
     setFormula('B3', `SUM(${productRange})`, invoiceTotal, '0.00');
     setFormula('H3', '=B3*F3', invoiceAZNTotal, '0.00');
@@ -4553,20 +4577,59 @@ function importCustomsExportExcelFile() {
             : (totalWeight > 0 ? product.weight / totalWeight : 0));
 
         setFormula(`C${rowNumber}`, `B${rowNumber}*$F$3`, productValues[index], '0.00');
-        if (index === 0) {
-            setFormula(
-                `F${rowNumber}`,
-                '=IF($H$3<=1000,15,IF($H$3<=10000,60,IF($H$3<=50000,120,IF($H$3<=100000,200,IF($H$3<=500000,300,IF($H$3<=1000000,600,1000))))))',
-                collection,
-                '0.00'
-            );
-        }
+        const collectionFormula = `IFERROR(IF($H$3<=1000,15,IF($H$3<=10000,60,IF($H$3<=50000,120,IF($H$3<=100000,200,IF($H$3<=500000,300,IF($H$3<=1000000,600,1000))))))*B${rowNumber}/$B$3,0)`;
+        const allocatedCollection = invoiceTotal > 0
+            ? collection * product.invoice / invoiceTotal
+            : 0;
+        setFormula(`F${rowNumber}`, collectionFormula, allocatedCollection, '0.00');
         setFormula(`G${rowNumber}`, `=$H$4*${transportShareFormula}`, allocatedTransport, '0.00');
         setFormula(`H${rowNumber}`, `=$H$5*${otherShareFormula}`, allocatedOther, '0.00');
         setFormula(`I${rowNumber}`, `=C${rowNumber}+G${rowNumber}+H${rowNumber}`, productValues[index] + allocatedTransport + allocatedOther, '0.00');
         setFormula(`K${rowNumber}`, `=I${rowNumber}*J${rowNumber}`, dutyValues[index], '0.00');
-        setFormula(`L${rowNumber}`, `=C${rowNumber}+F${rowNumber}+G${rowNumber}+H${rowNumber}+K${rowNumber}`, productValues[index] + (index === 0 ? collection : 0) + allocatedTransport + allocatedOther + dutyValues[index], '0.00');
+        setFormula(`L${rowNumber}`, `=C${rowNumber}+F${rowNumber}+G${rowNumber}+H${rowNumber}+K${rowNumber}`, productValues[index] + allocatedCollection + allocatedTransport + allocatedOther + dutyValues[index], '0.00');
         setFormula(`M${rowNumber}`, `=(I${rowNumber}+K${rowNumber})*0.18`, (productValues[index] + allocatedTransport + allocatedOther + dutyValues[index]) * 0.18, '0.00');
+    });
+
+    const totalRowNumber = lastProductRow + 1;
+    for (let columnIndex = 0; columnIndex < 14; columnIndex += 1) {
+        const address = window.XLSX.utils.encode_cell({
+            r: totalRowNumber - 1,
+            c: columnIndex
+        });
+        if (!worksheet[address]) {
+            worksheet[address] = { t: 's', v: '' };
+        }
+    }
+    worksheet[`A${totalRowNumber}`] = { t: 's', v: 'Cəmi' };
+    worksheet['!ref'] = `A1:N${totalRowNumber}`;
+    const totalStatisticalValue = products.reduce((sum, product, index) => {
+        const valueShare = invoiceAZNTotal > 0 ? productValues[index] / invoiceAZNTotal : 0;
+        const weightShare = totalWeight > 0 ? product.weight / totalWeight : 0;
+        const transportShare = hasValueAllocation(transportMethod) ? valueShare : weightShare;
+        const otherShare = hasValueAllocation(otherMethod) ? valueShare : weightShare;
+        return sum + productValues[index] + transportAZN * transportShare + otherAZN * otherShare;
+    }, 0);
+    const totalDuty = dutyValues.reduce((sum, value) => sum + value, 0);
+    const totalCost = invoiceAZNTotal + collection + transportAZN + otherAZN + totalDuty;
+    const totalVAT = (totalStatisticalValue + totalDuty) * 0.18;
+    const totalFormulaColumns = {
+        B: invoiceTotal,
+        C: invoiceAZNTotal,
+        F: collection,
+        G: transportAZN,
+        H: otherAZN,
+        I: totalStatisticalValue,
+        K: totalDuty,
+        L: totalCost,
+        M: totalVAT
+    };
+    Object.entries(totalFormulaColumns).forEach(([column, value]) => {
+        setFormula(
+            `${column}${totalRowNumber}`,
+            `SUM(${column}${firstProductRow}:${column}${lastProductRow})`,
+            value,
+            '0.00'
+        );
     });
 
     worksheet['!merges'] = [
@@ -4583,9 +4646,83 @@ function importCustomsExportExcelFile() {
     ];
     worksheet['!rows'] = [
         {}, { hpt: 18 }, { hpt: 18 }, { hpt: 18 }, { hpt: 18 },
-        { hpt: 33 }, { hpt: 45 }, ...products.map(() => ({ hpt: 18 }))
+        { hpt: 33 }, { hpt: 45 }, ...products.map(() => ({ hpt: 18 })), { hpt: 20 }
     ];
     worksheet['!autofilter'] = { ref: `A7:N${lastProductRow}` };
+
+    const mergeCellStyle = (cell, nextStyle) => {
+        if (!cell) {
+            return;
+        }
+        cell.s = {
+            ...(cell.s || {}),
+            ...nextStyle,
+            alignment: {
+                ...(cell.s?.alignment || {}),
+                ...(nextStyle.alignment || {})
+            }
+        };
+    };
+    const headerStyle = {
+        fill: {
+            patternType: 'solid',
+            fgColor: { rgb: 'D9EAD3' }
+        },
+        font: {
+            bold: true,
+            color: { rgb: '1B4332' }
+        },
+        alignment: {
+            horizontal: 'center',
+            vertical: 'center',
+            wrapText: true
+        }
+    };
+    for (let rowIndex = 0; rowIndex < totalRowNumber; rowIndex += 1) {
+        for (let columnIndex = 0; columnIndex < 14; columnIndex += 1) {
+            const address = window.XLSX.utils.encode_cell({
+                r: rowIndex,
+                c: columnIndex
+            });
+            mergeCellStyle(worksheet[address], {
+                alignment: { vertical: 'center' }
+            });
+        }
+    }
+    for (let rowIndex = 7; rowIndex < totalRowNumber; rowIndex += 1) {
+        for (let columnIndex = 0; columnIndex < 14; columnIndex += 1) {
+            const address = window.XLSX.utils.encode_cell({
+                r: rowIndex,
+                c: columnIndex
+            });
+            mergeCellStyle(worksheet[address], {
+                alignment: {
+                    horizontal: 'center',
+                    vertical: 'center'
+                }
+            });
+        }
+    }
+    for (let columnIndex = 0; columnIndex < 14; columnIndex += 1) {
+        const address = window.XLSX.utils.encode_cell({ r: 6, c: columnIndex });
+        mergeCellStyle(worksheet[address], headerStyle);
+    }
+    for (let columnIndex = 0; columnIndex < 14; columnIndex += 1) {
+        const address = window.XLSX.utils.encode_cell({
+            r: totalRowNumber - 1,
+            c: columnIndex
+        });
+        mergeCellStyle(worksheet[address], {
+            font: { bold: true },
+            alignment: { horizontal: 'center', vertical: 'center' }
+        });
+    }
+    for (let rowIndex = 7; rowIndex < totalRowNumber - 1; rowIndex += 1) {
+        const address = `J${rowIndex + 1}`;
+        if (worksheet[address]) {
+            worksheet[address].z = '0%';
+        }
+    }
 
     const exportBook = window.XLSX.utils.book_new();
     window.XLSX.utils.book_append_sheet(exportBook, worksheet, 'İdxal məlumatları');
@@ -4601,7 +4738,7 @@ function importCustomsExportExcelFile() {
         forceFullCalc: true,
         calcMode: 'auto'
     };
-    window.XLSX.writeFile(exportBook, 'idxal-kalkulyatoru-melumatlari.xlsx');
+    window.XLSX.writeFile(exportBook, 'İdxal_kalkulyatoru_exsport.xlsx');
     importCustomsSetExcelStatus(
         `Kalkulyator məlumatları Excel faylına eksport edildi (${products.length} məhsul sətri).`
     );
@@ -4651,7 +4788,7 @@ function importCustomsExportExcelFile() {
 
 importCustomsProducts?.addEventListener('input', (event) => {
     if (event.target.matches('[data-import-invoice], [data-import-duty-rate], [data-import-weight]')) {
-        if (event.target.matches('[data-import-weight]')) {
+        if (event.target.matches('[data-import-invoice], [data-import-weight]')) {
             updateImportCustomsWeightFields();
         }
         calculateImportCustoms();
@@ -4660,7 +4797,7 @@ importCustomsProducts?.addEventListener('input', (event) => {
 
 importCustomsProducts?.addEventListener('change', (event) => {
     if (event.target.matches('[data-import-invoice], [data-import-duty-rate], [data-import-weight]')) {
-        if (event.target.matches('[data-import-weight]')) {
+        if (event.target.matches('[data-import-invoice], [data-import-weight]')) {
             updateImportCustomsWeightFields();
         }
         calculateImportCustoms();

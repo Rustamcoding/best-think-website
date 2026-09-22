@@ -52,12 +52,12 @@
         }
 
         .calculator-page .section-head {
-            max-width: 760px;
+            max-width: 660px;
             margin: 0 auto 31px;
-            padding: 18px 28px 16px;
+            padding: 13px 22px;
             text-align: center;
             border: 1px solid #e1eaf5;
-            border-radius: 18px;
+            border-radius: 16px;
             background: linear-gradient(135deg, #f5f9ff 0%, #ffffff 100%);
             box-shadow: 0 10px 26px rgba(19, 35, 62, .05);
         }
@@ -69,14 +69,16 @@
         .calculator-page .section-head .kicker {
             display: inline-flex;
             align-items: center;
-            margin: 0 0 10px;
+            justify-content: center;
+            margin: 0;
             padding: 6px 12px;
             border-radius: 999px;
             background: #eaf2ff;
             color: var(--blue);
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 700;
             letter-spacing: .01em;
+            line-height: 1.45;
         }
 
         .calculator-page .section-head > p:not(.kicker) {
@@ -1491,12 +1493,59 @@
 
         .import-customs-total {
             margin-top: 4px;
-            color: var(--text);
+            color: var(--muted);
             font-weight: 400;
         }
 
+        .import-customs-result-value {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            white-space: nowrap;
+        }
+
+        .import-customs-result-currency {
+            color: #111827;
+            font-size: 13px;
+            font-weight: 500;
+            line-height: 1;
+        }
+
         .import-customs-duty-row {
+            border-color: #e1eaf6;
+            background: rgba(255, 255, 255, .78);
+        }
+
+        .import-customs-duty-row > span:first-child {
+            color: #4b78ad;
+            font-size: 14px;
+            font-weight: 400;
+            white-space: nowrap;
+        }
+
+        .import-customs-duty-row strong {
+            color: #4b78ad;
+            font-weight: 400;
+        }
+
+        .import-customs-duty-row .import-customs-result-currency {
+            color: #4b78ad;
+            font-weight: 500;
+        }
+
+        .import-customs-bottom-results {
+            display: grid;
             grid-column: 1 / -1;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0 12px;
+        }
+
+        .import-customs-bottom-results .import-customs-total {
+            margin-top: 0;
+        }
+
+        .import-customs-bottom-results > .import-customs-row {
+            align-self: start;
         }
 
         @media (min-width: 701px) {
@@ -1504,6 +1553,12 @@
                 display: grid;
                 grid-template-columns: repeat(2, minmax(0, 1fr));
                 gap: 0 12px;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .import-customs-bottom-results {
+                grid-template-columns: 1fr;
             }
         }
 
@@ -2469,14 +2524,6 @@
             <div class="section-head">
 
                 <p class="kicker">
-                    Praktik mühasibat alətləri
-                </p>
-
-        
-            
-                
-
-                <p>
                     Mühasibat və biznes əməliyyatlarında istifadə edə biləcəyiniz
                     praktik hesablayıcılar.
                 </p>
@@ -3768,22 +3815,41 @@
                 </div>
 
                 <div class="import-customs-result">
-                    <h3>Hesablama (manatla)</h3>
+                    <h3>Hesablama</h3>
                     <div class="import-customs-row">
                         <span>Cəmi invoys dəyəri</span>
-                        <strong id="import-customs-order-azn-result">—</strong>
+                        <span class="import-customs-result-value">
+                            <strong id="import-customs-order-azn-result">—</strong>
+                            <span class="import-customs-result-currency" aria-label="Manat">₼</span>
+                        </span>
                     </div>
                     <div class="import-customs-row">
                         <span>Nəqliyyat xərcləri</span>
-                        <strong id="import-customs-transport-azn-result">—</strong>
+                        <span class="import-customs-result-value">
+                            <strong id="import-customs-transport-azn-result">—</strong>
+                            <span class="import-customs-result-currency" aria-label="Manat">₼</span>
+                        </span>
                     </div>
                     <div class="import-customs-row">
                         <span>Digər xərclər</span>
-                        <strong id="import-customs-other-azn-result">—</strong>
+                        <span class="import-customs-result-value">
+                            <strong id="import-customs-other-azn-result">—</strong>
+                            <span class="import-customs-result-currency" aria-label="Manat">₼</span>
+                        </span>
                     </div>
                     <div class="import-customs-row">
                         <span>Statistik dəyər</span>
-                        <strong id="import-customs-value-result">—</strong>
+                        <span class="import-customs-result-value">
+                            <strong id="import-customs-value-result">—</strong>
+                            <span class="import-customs-result-currency" aria-label="Manat">₼</span>
+                        </span>
+                    </div>
+                    <div class="import-customs-row">
+                        <span>Gömrük rüsumları</span>
+                        <span class="import-customs-result-value">
+                            <strong id="import-customs-duty-amount-result">—</strong>
+                            <span class="import-customs-result-currency" aria-label="Manat">₼</span>
+                        </span>
                     </div>
                     <div class="import-customs-row">
                         <span class="import-customs-result-label">
@@ -3808,15 +3874,26 @@
                                 </div>
                             </details>
                         </span>
-                        <strong id="import-customs-collection-result">—</strong>
+                        <span class="import-customs-result-value">
+                            <strong id="import-customs-collection-result">—</strong>
+                            <span class="import-customs-result-currency" aria-label="Manat">₼</span>
+                        </span>
                     </div>
-                    <div class="import-customs-row import-customs-total">
-                        <span>ƏDV məbləği</span>
-                        <strong id="import-customs-vat-result">—</strong>
-                    </div>
-                    <div class="import-customs-row import-customs-duty-row">
-                        <span>Cəmi gömrük rüsumları</span>
-                        <strong id="import-customs-duty-result">—</strong>
+                    <div class="import-customs-bottom-results">
+                        <div class="import-customs-row import-customs-total">
+                            <span>ƏDV məbləği</span>
+                            <span class="import-customs-result-value">
+                                <strong id="import-customs-vat-result">—</strong>
+                                <span class="import-customs-result-currency" aria-label="Manat">₼</span>
+                            </span>
+                        </div>
+                        <div class="import-customs-row import-customs-duty-row">
+                            <span>Cəmi gömrük ödənişləri</span>
+                            <span class="import-customs-result-value">
+                                <strong id="import-customs-duty-result">—</strong>
+                                <span class="import-customs-result-currency" aria-label="Manat">₼</span>
+                            </span>
+                        </div>
                     </div>
                 </div>
 
@@ -3841,8 +3918,8 @@
                         </button>
                         <a
                             class="import-customs-excel-template"
-                            href="assets/idxal-kalkulyatoru-numune.xlsx"
-                            download="idxal-kalkulyatoru-numune.xlsx"
+                            href="assets/İdxal_kalkulyatoru_nümunə.xlsx"
+                            download="İdxal_kalkulyatoru_nümunə.xlsx"
                         >
                             <span class="import-customs-excel-icon" aria-hidden="true">▣</span>
                             Nümunə Excel-i endir
@@ -3962,8 +4039,8 @@
 
 
 
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-<script src="script.js?v=20260921-import-excel"></script>
+<script src="assets/xlsx-js-style.bundle.js"></script>
+<script src="script.js?v=20260922-import-duty-breakdown"></script>
 </body>
 
 </html>
