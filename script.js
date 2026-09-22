@@ -4855,3 +4855,62 @@ document.addEventListener('click', (event) => {
         details.removeAttribute('open');
     });
 });
+
+/* =========================================================
+   İLK GİRİŞ KALKULYATOR BANNERİ
+   ========================================================= */
+
+(() => {
+    const storageKey = 'bestThinkCalculatorPromoSeen';
+
+    const hasSeenPromo = () => {
+        try {
+            return window.localStorage.getItem(storageKey) === '1';
+        } catch (error) {
+            return false;
+        }
+    };
+
+    const rememberPromo = () => {
+        try {
+            window.localStorage.setItem(storageKey, '1');
+        } catch (error) {
+            // Məhdud brauzer rejimində bannerin özü yenə işləməlidir.
+        }
+    };
+
+    const showCalculatorPromo = () => {
+        if (hasSeenPromo() || document.querySelector('.site-calculator-promo')) {
+            return;
+        }
+
+        const banner = document.createElement('aside');
+        banner.className = 'site-calculator-promo';
+        banner.setAttribute('role', 'dialog');
+        banner.setAttribute('aria-label', 'Kalkulyatorlar haqqında məlumat');
+        banner.innerHTML = `
+            <span class="site-calculator-promo-icon" aria-hidden="true">₼</span>
+            <div class="site-calculator-promo-content">
+                <h2>Kalkulyatorlardan istifadə edin</h2>
+                <p>Əmək haqqı, məzənnə və yığım sığortasını daha rahat və sürətli hesablayın.</p>
+            </div>
+            <div class="site-calculator-promo-actions">
+                <a class="site-calculator-promo-link" href="/kalkulyator.html">Kalkulyatorlara keç</a>
+                <button class="site-calculator-promo-close" type="button" aria-label="Banneri bağla">×</button>
+            </div>
+        `;
+
+        banner.querySelector('.site-calculator-promo-close')?.addEventListener('click', () => {
+            banner.remove();
+        });
+
+        document.body.appendChild(banner);
+        rememberPromo();
+    };
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', showCalculatorPromo, { once: true });
+    } else {
+        showCalculatorPromo();
+    }
+})();
