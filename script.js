@@ -1993,7 +1993,16 @@ function renderCalculatorQuickNav(activeCard) {
     const quickNavList = document.createElement('div');
     quickNavList.className = 'calculator-quick-nav-list';
 
-    calculatorCards.forEach((otherCard) => {
+    const priorityCalculatorIds = [
+        'salary-calculator-panel',
+        'import-customs-calculator-panel',
+        'life-savings-calculator-panel'
+    ];
+    const priorityCards = priorityCalculatorIds
+        .map((id) => document.getElementById(id))
+        .filter((card) => card && calculatorGrid.contains(card));
+
+    priorityCards.forEach((otherCard) => {
         if (otherCard === activeCard) {
             return;
         }
@@ -5252,6 +5261,45 @@ document.addEventListener('click', (event) => {
 
     if (!dateInput.value) dateInput.value = isoLocalDate(new Date());
 
+    const readModeSettings = () => ({
+        annualRate: annualRateInput.value,
+        term: termInput.value,
+        issueDate: dateInput.value,
+        commissionType: commissionType.value,
+        commissionValue: commissionInput.value,
+        otherExpenseType: otherExpenseType.value,
+        otherExpenseValue: otherExpenseInput.value
+    });
+    const defaultModeSettings = () => ({
+        annualRate: '',
+        term: '',
+        issueDate: dateInput.value,
+        commissionType: commissionType.querySelector('option[selected]')?.value || commissionType.options[0]?.value || 'percent',
+        commissionValue: '',
+        otherExpenseType: otherExpenseType.querySelector('option[selected]')?.value || otherExpenseType.options[0]?.value || 'amount',
+        otherExpenseValue: ''
+    });
+    const modeSettings = {
+        amount: readModeSettings(),
+        budget: defaultModeSettings()
+    };
+    let settingsMode = 'amount';
+    function switchModeSettings(nextMode) {
+        if (settingsMode === nextMode) return;
+
+        modeSettings[settingsMode] = readModeSettings();
+        const nextSettings = modeSettings[nextMode] || defaultModeSettings();
+        annualRateInput.value = nextSettings.annualRate;
+        termInput.value = nextSettings.term;
+        dateInput.value = nextSettings.issueDate;
+        commissionType.value = nextSettings.commissionType;
+        commissionInput.value = nextSettings.commissionValue;
+        otherExpenseType.value = nextSettings.otherExpenseType;
+        otherExpenseInput.value = nextSettings.otherExpenseValue;
+        modeSettings[nextMode] = nextSettings;
+        settingsMode = nextMode;
+    }
+
     function excelDays360US(start, end) {
         let y1 = start.getFullYear();
         let m1 = start.getMonth();
@@ -5735,7 +5783,7 @@ document.addEventListener('click', (event) => {
     modeButtons.forEach((button) => {
         button.addEventListener('click', () => {
             const nextMode = button.dataset.loanMode;
-            const currentMode = card.querySelector('[data-loan-mode][aria-pressed="true"]')?.dataset.loanMode || 'amount';
+            const currentMode = settingsMode;
             const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
             const animatedElements = Array.from(modeAnimatedElements);
 
@@ -5744,6 +5792,8 @@ document.addEventListener('click', (event) => {
                 modeTransitionTimer = null;
             }
             animatedElements.forEach((element) => element.getAnimations().forEach((animation) => animation.cancel()));
+
+            switchModeSettings(nextMode);
 
             if (currentMode === nextMode && !modeTransitionTimer) {
                 modeButtons.forEach((item) => item.setAttribute('aria-pressed', String(item === button)));
