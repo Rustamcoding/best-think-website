@@ -4959,7 +4959,14 @@ document.addEventListener('click', (event) => {
         });
 
         reportArea.appendChild(reportButton);
-        card.appendChild(reportArea);
+        const loanExportActions = card.matches('.credit-loan-card')
+            ? card.querySelector('.credit-loan-export-actions')
+            : null;
+        if (loanExportActions) {
+            loanExportActions.appendChild(reportArea);
+        } else {
+            card.appendChild(reportArea);
+        }
     });
 
     calculatorReportCards.forEach((card) => {
@@ -5154,4 +5161,645 @@ document.addEventListener('click', (event) => {
             reader.readAsDataURL(file);
         });
     }
+})();
+
+/* =========================================================
+   SABİT MÜDDƏTLİ KREDİT KALKULYATORU
+   Excel QRAFİK copy.xlsx əsasında: annuitet, DAYS360 faiz,
+   üç rəqəmə yuxarı yuvarlaqlaşdırılmış aylıq ödəniş.
+   ========================================================= */
+(() => {
+    const card = document.querySelector('#credit-loan-calculator-panel');
+    if (!card) return;
+
+    const modeButtons = card.querySelectorAll('[data-loan-mode]');
+    const modeAnimatedElements = card.querySelectorAll(
+        '.credit-loan-form > .form-group, .credit-loan-message, .credit-loan-results, .credit-loan-schedule-wrap'
+    );
+    const amountGroup = card.querySelector('[data-loan-amount-group]');
+    const budgetGroup = card.querySelector('[data-loan-budget-group]');
+    const amountInput = card.querySelector('#credit-loan-amount');
+    const budgetInput = card.querySelector('#credit-loan-budget');
+    const annualRateInput = card.querySelector('#credit-loan-rate');
+    const termInput = card.querySelector('#credit-loan-term');
+    const dateInput = card.querySelector('#credit-loan-date');
+    const commissionType = card.querySelector('#credit-loan-commission-type');
+    const commissionInput = card.querySelector('#credit-loan-commission-value');
+    const commissionSuffix = card.querySelector('#credit-loan-commission-suffix');
+    const otherExpenseType = card.querySelector('#credit-loan-other-type');
+    const otherExpenseInput = card.querySelector('#credit-loan-other-value');
+    const otherExpenseSuffix = card.querySelector('#credit-loan-other-suffix');
+    const message = card.querySelector('#credit-loan-message');
+    const primaryLabel = card.querySelector('#credit-loan-primary-label');
+    const scheduleBody = card.querySelector('#credit-loan-schedule-body');
+    const excelExportButton = card.querySelector('#credit-loan-export-excel');
+    const pdfExportButton = card.querySelector('#credit-loan-export-pdf');
+    const exportStatus = card.querySelector('#credit-loan-export-status');
+    const effectiveRateLabel = card.querySelector('#credit-loan-effective-rate-label');
+    let currentCalculation = null;
+    let modeTransitionTimer = null;
+    const incompleteFieldTargets = [
+        { input: annualRateInput, container: annualRateInput.closest('.credit-loan-input-affix') },
+        { input: termInput, container: termInput.closest('.credit-loan-input-affix') },
+        { input: commissionInput, container: commissionInput.closest('.credit-loan-inline-cost') },
+        { input: otherExpenseInput, container: otherExpenseInput.closest('.credit-loan-inline-cost') }
+    ];
+    const outputIds = {
+        principal: '#credit-loan-primary-result',
+        monthly: '#credit-loan-monthly-result',
+        first: '#credit-loan-first-result',
+        interest: '#credit-loan-interest-result',
+        total: '#credit-loan-total-result',
+        deductions: '#credit-loan-deductions-result',
+        contractRate: '#credit-loan-contract-rate-result',
+        effectiveRate: '#credit-loan-effective-rate-result',
+        net: '#credit-loan-net-result'
+    };
+    const outputs = Object.fromEntries(
+        Object.entries(outputIds).map(([key, selector]) => [key, card.querySelector(selector)])
+    );
+    const azn = new Intl.NumberFormat('az-AZ', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
+    const oneDecimal = new Intl.NumberFormat('az-AZ', {
+        minimumFractionDigits: 1,
+        maximumFractionDigits: 1
+    });
+    const money = (value) => `${azn.format(value)} ₼`;
+    const numberValue = (input) => {
+        const value = Number(String(input?.value ?? '').trim().replace(',', '.'));
+        return Number.isFinite(value) ? value : NaN;
+    };
+    const optionalNumberValue = (input) => String(input?.value ?? '').trim() === ''
+        ? 0
+        : numberValue(input);
+    const localDate = (value) => {
+        if (!value) return null;
+        const [year, month, day] = value.split('-').map(Number);
+        if (!year || !month || !day) return null;
+        return new Date(year, month - 1, day, 12);
+    };
+    const isoLocalDate = (date) => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
+    const displayDate = (date) => new Intl.DateTimeFormat('az-AZ', {
+        day: '2-digit', month: '2-digit', year: 'numeric'
+    }).format(date);
+
+    if (!dateInput.value) dateInput.value = isoLocalDate(new Date());
+
+    function excelDays360US(start, end) {
+        let y1 = start.getFullYear();
+        let m1 = start.getMonth();
+        let y2 = end.getFullYear();
+        let m2 = end.getMonth();
+        let d1 = start.getDate();
+        let d2 = end.getDate();
+        const lastDay = (date) => new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+        const startIsFebEnd = m1 === 1 && d1 === lastDay(start);
+        const endIsFebEnd = m2 === 1 && d2 === lastDay(end);
+
+        if (startIsFebEnd) d1 = 30;
+        if (endIsFebEnd && startIsFebEnd) d2 = 30;
+        if (d1 === 31) d1 = 30;
+        if (d2 === 31) {
+            if (d1 >= 30) d2 = 30;
+            else {
+                d2 = 1;
+                m2 += 1;
+                if (m2 > 11) { m2 = 0; y2 += 1; }
+            }
+        }
+
+        return (y2 - y1) * 360 + (m2 - m1) * 30 + d2 - d1;
+    }
+
+    function roundedUpPayment(principal, annualRate, months) {
+        const monthlyRate = annualRate / 12;
+        const rawPayment = monthlyRate === 0
+            ? principal / months
+            : principal * monthlyRate / (1 - Math.pow(1 + monthlyRate, -months));
+        return Math.ceil((rawPayment - 1e-10) * 1000) / 1000;
+    }
+
+    function createSchedule(principal, annualRate, months, issueDate) {
+        const regularPayment = roundedUpPayment(principal, annualRate, months);
+        const firstDueDate = new Date(
+            issueDate.getFullYear(),
+            issueDate.getMonth() + 1 + (issueDate.getDate() > 24 ? 1 : 0),
+            1,
+            12
+        );
+        let balance = principal;
+        let previousDate = issueDate;
+        const rows = [];
+
+        for (let index = 0; index < months; index += 1) {
+            const dueDate = new Date(
+                firstDueDate.getFullYear(), firstDueDate.getMonth() + index, 1, 12
+            );
+            const days = excelDays360US(previousDate, dueDate);
+            const interest = balance * annualRate * days / 360;
+            const finalPayment = index === months - 1;
+            const principalPart = finalPayment
+                ? balance
+                : Math.min(balance, regularPayment - balance * annualRate / 12);
+            const payment = finalPayment
+                ? balance + interest
+                : principalPart + interest;
+            balance = Math.max(0, balance - principalPart);
+            rows.push({
+                number: index + 1,
+                date: dueDate,
+                payment,
+                principal: principalPart,
+                interest,
+                balance
+            });
+            previousDate = dueDate;
+        }
+
+        return {
+            regularPayment,
+            firstPayment: rows[0]?.payment || 0,
+            totalInterest: rows.reduce((sum, row) => sum + row.interest, 0),
+            totalPayment: rows.reduce((sum, row) => sum + row.payment, 0),
+            rows
+        };
+    }
+
+    function calculateMaximumPrincipal(paymentCap, annualRate, months, issueDate) {
+        let low = 0;
+        let high = paymentCap * months;
+
+        for (let iteration = 0; iteration < 64; iteration += 1) {
+            const mid = (low + high) / 2;
+            const schedule = createSchedule(mid, annualRate, months, issueDate);
+            const highestInstallment = schedule.rows.reduce(
+                (max, row) => Math.max(max, row.payment), 0
+            );
+            if (highestInstallment <= paymentCap + 1e-9) low = mid;
+            else high = mid;
+        }
+
+        let principal = Math.floor((low + 1e-8) * 100) / 100;
+        let schedule = createSchedule(principal, annualRate, months, issueDate);
+        let maxInstallment = schedule.rows.reduce((max, row) => Math.max(max, row.payment), 0);
+        while (principal > 0 && maxInstallment > paymentCap + 1e-9) {
+            principal = Math.max(0, principal - 0.01);
+            schedule = createSchedule(principal, annualRate, months, issueDate);
+            maxInstallment = schedule.rows.reduce((max, row) => Math.max(max, row.payment), 0);
+        }
+        return { principal, schedule };
+    }
+
+    function commissionFor(principal) {
+        const entered = optionalNumberValue(commissionInput);
+        return commissionType.value === 'percent'
+            ? principal * entered / 100
+            : entered;
+    }
+
+    function otherExpensesFor(principal) {
+        return otherExpenseType.value === 'percent'
+            ? principal * optionalNumberValue(otherExpenseInput) / 100
+            : optionalNumberValue(otherExpenseInput);
+    }
+
+    function setOutputs(result) {
+        currentCalculation = result;
+        if (excelExportButton) excelExportButton.disabled = false;
+        if (pdfExportButton) pdfExportButton.disabled = false;
+        if (exportStatus) exportStatus.textContent = '';
+        outputs.principal.textContent = money(result.principal);
+        outputs.monthly.textContent = money(result.schedule.regularPayment);
+        outputs.first.textContent = money(result.schedule.firstPayment);
+        outputs.interest.textContent = money(result.schedule.totalInterest);
+        outputs.total.textContent = money(result.schedule.totalPayment);
+        const totalCosts = result.fee + result.otherExpenses;
+        outputs.deductions.textContent = money(totalCosts);
+        outputs.contractRate.textContent = `${azn.format(result.annualRatePercent)}%`;
+        const effectiveRatePercent = result.principal > 0
+            ? result.schedule.totalInterest / result.principal * 100
+            : 0;
+        outputs.effectiveRate.textContent = `${oneDecimal.format(effectiveRatePercent)}%`;
+        if (effectiveRateLabel) {
+            effectiveRateLabel.textContent = `Effektiv (real) faiz — ${result.months} ay müddətində`;
+        }
+        outputs.net.textContent = money(result.principal - totalCosts);
+
+        const rowsHtml = result.schedule.rows.map((row) => `
+            <tr>
+                <td>${row.number}</td>
+                <td>${displayDate(row.date)}</td>
+                <td>${money(row.payment)}</td>
+                <td>${money(row.principal)}</td>
+                <td>${money(row.interest)}</td>
+                <td>${money(row.balance)}</td>
+            </tr>`).join('');
+        scheduleBody.innerHTML = `${rowsHtml}
+            <tr class="credit-loan-table-total"><td colspan="2">Cəmi</td><td>${money(result.schedule.totalPayment)}</td><td>${money(result.principal)}</td><td>${money(result.schedule.totalInterest)}</td><td>—</td></tr>`;
+    }
+
+    function clearOutputs() {
+        currentCalculation = null;
+        if (excelExportButton) excelExportButton.disabled = true;
+        if (pdfExportButton) pdfExportButton.disabled = true;
+        if (exportStatus) exportStatus.textContent = '';
+        Object.values(outputs).forEach((output) => { output.textContent = '—'; });
+        scheduleBody.innerHTML = '<tr><td colspan="6">Məlumatları yoxlayıb yenidən cəhd edin.</td></tr>';
+    }
+
+    function updateVisibility() {
+        const mode = card.querySelector('[data-loan-mode][aria-pressed="true"]')?.dataset.loanMode || 'amount';
+        amountGroup.hidden = mode !== 'amount';
+        budgetGroup.hidden = mode !== 'budget';
+        primaryLabel.textContent = mode === 'budget' ? 'Bu aylıq ödənişlə maksimum kredit məbləği' : 'Kredit məbləği';
+        commissionSuffix.textContent = commissionType.value === 'percent' ? '%' : 'AZN';
+        otherExpenseSuffix.textContent = otherExpenseType.value === 'percent' ? '%' : 'AZN';
+    }
+
+    function updateIncompleteFieldHighlights(mode) {
+        const primaryInput = mode === 'budget' ? budgetInput : amountInput;
+        const primaryHasValue = primaryInput.value.trim() !== '' && Number.isFinite(numberValue(primaryInput));
+        incompleteFieldTargets.forEach(({ input, container }) => {
+            container?.classList.toggle(
+                'credit-loan-incomplete',
+                primaryHasValue && input.value.trim() === ''
+            );
+        });
+    }
+
+    function calculate() {
+        const mode = card.querySelector('[data-loan-mode][aria-pressed="true"]')?.dataset.loanMode || 'amount';
+        updateIncompleteFieldHighlights(mode);
+        const annualRatePercent = numberValue(annualRateInput);
+        const months = numberValue(termInput);
+        const issueDate = localDate(dateInput.value);
+        const inputPrincipal = mode === 'amount' ? numberValue(amountInput) : null;
+        const paymentCap = mode === 'budget' ? numberValue(budgetInput) : null;
+        const enteredCommission = optionalNumberValue(commissionInput);
+        const enteredOtherExpense = optionalNumberValue(otherExpenseInput);
+
+        message.textContent = '';
+        clearOutputs();
+
+        const inputAmount = mode === 'amount' ? inputPrincipal : paymentCap;
+        if (!Number.isFinite(inputAmount) || inputAmount <= 0) {
+            if (mode === 'amount' && amountInput.value.trim() === '') return;
+            if (mode === 'budget' && budgetInput.value.trim() === '') return;
+            message.textContent = mode === 'amount'
+                ? 'Kredit məbləğini sıfırdan böyük daxil edin.'
+                : 'Aylıq ödəyə biləcəyiniz məbləği sıfırdan böyük daxil edin.';
+            return;
+        }
+        if (!Number.isFinite(annualRatePercent) || annualRatePercent < 0) {
+            if (annualRateInput.value.trim() === '') return;
+            message.textContent = 'İllik faiz dərəcəsini sıfır və ya daha böyük daxil edin.';
+            return;
+        }
+        if (annualRateInput.value.trim() === '') {
+            return;
+        }
+        if (!Number.isInteger(months) || months < 1) {
+            if (termInput.value.trim() === '') return;
+            message.textContent = 'Kredit müddətini tam ay sayı kimi daxil edin.';
+            return;
+        }
+        if (!issueDate) {
+            message.textContent = 'Kreditin verilmə tarixini seçin.';
+            return;
+        }
+        if (!Number.isFinite(enteredCommission) || enteredCommission < 0) {
+            message.textContent = 'Komissiya dərəcəsi və ya məbləği mənfi ola bilməz.';
+            return;
+        }
+        if (!Number.isFinite(enteredOtherExpense) || enteredOtherExpense < 0) {
+            message.textContent = 'Digər xərclərin dərəcəsi və ya məbləği mənfi ola bilməz.';
+            return;
+        }
+        const annualRate = annualRatePercent / 100;
+        let principal;
+        let schedule;
+        if (mode === 'budget') {
+            const maximum = calculateMaximumPrincipal(paymentCap, annualRate, months, issueDate);
+            principal = maximum.principal;
+            schedule = maximum.schedule;
+        } else {
+            principal = inputPrincipal;
+            schedule = createSchedule(principal, annualRate, months, issueDate);
+        }
+
+        const fee = commissionFor(principal);
+        const otherExpenses = otherExpensesFor(principal);
+        if (!Number.isFinite(fee) || fee < 0) {
+            message.textContent = 'Komissiya məlumatını yoxlayın.';
+            return;
+        }
+        if (!Number.isFinite(otherExpenses) || otherExpenses < 0) {
+            message.textContent = 'Digər xərclər məlumatını yoxlayın.';
+            return;
+        }
+        if (fee + otherExpenses > principal) {
+            message.textContent = 'Komissiya və digər xərclərin cəmi kredit məbləğindən çox ola bilməz.';
+            return;
+        }
+
+        setOutputs({
+            principal,
+            schedule,
+            fee,
+            otherExpenses,
+            mode,
+            inputPrincipal,
+            paymentCap,
+            annualRatePercent,
+            months,
+            issueDate,
+            commissionType: commissionType.value,
+            commissionInput: enteredCommission,
+            otherExpenseType: otherExpenseType.value,
+            otherExpenseInput: enteredOtherExpense
+        });
+    }
+
+    const exportDate = (date) => new Intl.DateTimeFormat('az-AZ', {
+        day: '2-digit', month: '2-digit', year: 'numeric'
+    }).format(date);
+    const escapeHtml = (value) => String(value).replace(/[&<>"']/g, (character) => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    })[character]);
+    const exportAmount = (value) => `${azn.format(value)} ₼`;
+    function getLoanSummary(result) {
+        const totalCosts = result.fee + result.otherExpenses;
+        return [
+            { label: 'Hesablama istiqaməti', value: result.mode === 'budget' ? 'Aylıq ödənişə görə' : 'Kredit məbləğinə görə', display: result.mode === 'budget' ? 'Aylıq ödənişə görə' : 'Kredit məbləğinə görə', format: '@' },
+            { label: result.mode === 'budget' ? 'Daxil edilmiş aylıq ödəniş limiti' : 'Daxil edilmiş kredit məbləği', value: result.mode === 'budget' ? result.paymentCap : result.inputPrincipal, display: exportAmount(result.mode === 'budget' ? result.paymentCap : result.inputPrincipal), format: '#,##0.00 "₼"' },
+            { label: 'Hesablanan kredit məbləği', value: result.principal, display: exportAmount(result.principal), format: '#,##0.00 "₼"' },
+            { label: 'Müqavilə üzrə illik faiz dərəcəsi', value: result.annualRatePercent / 100, display: `${azn.format(result.annualRatePercent)}%`, format: '0.00%' },
+            { label: 'Kredit müddəti', value: result.months, display: `${result.months} ay`, format: '0 "ay"' },
+            { label: 'Kreditin alınma tarixi', value: result.issueDate, display: exportDate(result.issueDate), format: 'dd/mm/yyyy' },
+            { label: 'İlk ödəniş tarixi', value: result.schedule.rows[0]?.date || result.issueDate, display: exportDate(result.schedule.rows[0]?.date || result.issueDate), format: 'dd/mm/yyyy' },
+            { label: 'Standart aylıq ödəniş', value: result.schedule.regularPayment, display: exportAmount(result.schedule.regularPayment), format: '#,##0.00 "₼"' },
+            { label: 'İlk ayın ödənişi', value: result.schedule.firstPayment, display: exportAmount(result.schedule.firstPayment), format: '#,##0.00 "₼"' },
+            { label: 'Ümumi faiz məbləği', value: result.schedule.totalInterest, display: exportAmount(result.schedule.totalInterest), format: '#,##0.00 "₼"' },
+            { label: 'Ümumi ödəniş', value: result.schedule.totalPayment, display: exportAmount(result.schedule.totalPayment), format: '#,##0.00 "₼"' },
+            { label: 'Komissiya üsulu', value: result.commissionType === 'percent' ? 'Faiz' : 'Sabit məbləğ', display: result.commissionType === 'percent' ? 'Faiz' : 'Sabit məbləğ', format: '@' },
+            { label: 'Daxil edilmiş komissiya', value: result.commissionType === 'percent' ? result.commissionInput / 100 : result.commissionInput, display: result.commissionType === 'percent' ? `${azn.format(result.commissionInput)}%` : exportAmount(result.commissionInput), format: result.commissionType === 'percent' ? '0.00%' : '#,##0.00 "₼"' },
+            { label: 'Hesablanan komissiya', value: result.fee, display: exportAmount(result.fee), format: '#,##0.00 "₼"' },
+            { label: 'Digər xərclərin üsulu', value: result.otherExpenseType === 'percent' ? 'Faiz' : 'Sabit məbləğ', display: result.otherExpenseType === 'percent' ? 'Faiz' : 'Sabit məbləğ', format: '@' },
+            { label: 'Daxil edilmiş digər xərclər', value: result.otherExpenseType === 'percent' ? result.otherExpenseInput / 100 : result.otherExpenseInput, display: result.otherExpenseType === 'percent' ? `${azn.format(result.otherExpenseInput)}%` : exportAmount(result.otherExpenseInput), format: result.otherExpenseType === 'percent' ? '0.00%' : '#,##0.00 "₼"' },
+            { label: 'Hesablanan digər xərclər', value: result.otherExpenses, display: exportAmount(result.otherExpenses), format: '#,##0.00 "₼"' },
+            { label: 'Tutulacaq komissiya və xərclər', value: totalCosts, display: exportAmount(totalCosts), format: '#,##0.00 "₼"' },
+            { label: `Effektiv (real) faiz — ${result.months} ay müddətində`, value: result.principal > 0 ? result.schedule.totalInterest / result.principal : 0, display: `${oneDecimal.format(result.principal > 0 ? result.schedule.totalInterest / result.principal * 100 : 0)}%`, format: '0.0%' },
+            { label: 'Kassadan net alınacaq məbləğ', value: result.principal - totalCosts, display: exportAmount(result.principal - totalCosts), format: '#,##0.00 "₼"' }
+        ];
+    }
+
+    function exportLoanToExcel() {
+        if (!currentCalculation) return;
+        if (!window.XLSX) {
+            if (exportStatus) exportStatus.textContent = 'Excel ixracı hazırda əlçatan deyil. Səhifəni yeniləyib yenidən yoxlayın.';
+            return;
+        }
+        const result = currentCalculation;
+        const summary = getLoanSummary(result);
+        const workbook = window.XLSX.utils.book_new();
+        const summaryRows = [
+            ['BEST THINK KONSALTİNQ', ''],
+            ['Kredit kalkulyatoru – nəticə', ''],
+            ['Kredit məlumatları', ''],
+            ['Göstərici', 'Dəyər'],
+            ...summary.map((item) => [item.label, item.value])
+        ];
+        const summarySheet = window.XLSX.utils.aoa_to_sheet(summaryRows);
+        summarySheet['!merges'] = [
+            { s: { r: 0, c: 0 }, e: { r: 0, c: 1 } },
+            { s: { r: 1, c: 0 }, e: { r: 1, c: 1 } },
+            { s: { r: 2, c: 0 }, e: { r: 2, c: 1 } }
+        ];
+        summarySheet['!cols'] = [{ wch: 39 }, { wch: 29 }];
+        summarySheet['!rows'] = [{ hpt: 28 }, { hpt: 25 }, { hpt: 22 }, { hpt: 22 }, ...summary.map(() => ({ hpt: 22 }))];
+        const setCellStyle = (sheet, address, style) => {
+            if (sheet[address]) sheet[address].s = style;
+        };
+        const titleStyle = {
+            fill: { patternType: 'solid', fgColor: { rgb: '173F70' } },
+            font: { name: 'Arial', bold: true, color: { rgb: 'FFFFFF' }, sz: 15 },
+            alignment: { horizontal: 'center', vertical: 'center', wrapText: true }
+        };
+        const sectionStyle = {
+            fill: { patternType: 'solid', fgColor: { rgb: 'E7EFF8' } },
+            font: { name: 'Arial', bold: true, color: { rgb: '244F82' }, sz: 11 },
+            alignment: { horizontal: 'center', vertical: 'center', wrapText: true }
+        };
+        const headerStyle = {
+            fill: { patternType: 'solid', fgColor: { rgb: 'D9E4F1' } },
+            font: { name: 'Arial', bold: true, color: { rgb: '26384D' }, sz: 10 },
+            alignment: { horizontal: 'center', vertical: 'center', wrapText: true }
+        };
+        const cellStyle = {
+            font: { name: 'Arial', color: { rgb: '26384D' }, sz: 10 },
+            alignment: { horizontal: 'center', vertical: 'center', wrapText: true },
+            border: {
+                bottom: { style: 'thin', color: { rgb: 'E2E8F0' } }
+            }
+        };
+        ['A1', 'A2'].forEach((address) => setCellStyle(summarySheet, address, titleStyle));
+        setCellStyle(summarySheet, 'A3', sectionStyle);
+        ['A4', 'B4'].forEach((address) => setCellStyle(summarySheet, address, headerStyle));
+        for (let row = 4; row < summaryRows.length; row += 1) {
+            ['A', 'B'].forEach((column) => setCellStyle(summarySheet, `${column}${row + 1}`, cellStyle));
+            const item = summary[row - 4];
+            if (summarySheet[`B${row + 1}`]) summarySheet[`B${row + 1}`].z = item.format;
+        }
+        const emphasizedLabels = new Set([
+            'Hesablanan kredit məbləği',
+            'Tutulacaq komissiya və xərclər',
+            'Kassadan net alınacaq məbləğ'
+        ]);
+        summary.forEach((item, index) => {
+            if (!emphasizedLabels.has(item.label)) return;
+            const row = index + 5;
+            ['A', 'B'].forEach((column) => setCellStyle(summarySheet, `${column}${row}`, {
+                ...cellStyle,
+                font: { name: 'Arial', bold: true, color: { rgb: '173F70' }, sz: 10 },
+                fill: { patternType: 'solid', fgColor: { rgb: 'F0F5FA' } }
+            }));
+        });
+        window.XLSX.utils.book_append_sheet(workbook, summarySheet, 'Kredit məlumatları');
+
+        const scheduleRows = [
+            ['Aylıq ödəniş qrafiki'],
+            ['№', 'Ödəniş tarixi', 'Aylıq ödəniş', 'Əsas borc', 'Faiz məbləği', 'Qalıq borc'],
+            ...result.schedule.rows.map((row) => [
+                row.number, row.date, row.payment, row.principal, row.interest, row.balance
+            ]),
+            ['Cəmi', '', result.schedule.totalPayment, result.principal, result.schedule.totalInterest, '—']
+        ];
+        const scheduleSheet = window.XLSX.utils.aoa_to_sheet(scheduleRows);
+        scheduleSheet['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 5 } }];
+        scheduleSheet['!cols'] = [
+            { wch: 8 }, { wch: 18 }, { wch: 20 }, { wch: 20 }, { wch: 20 }, { wch: 20 }
+        ];
+        scheduleSheet['!rows'] = [{ hpt: 28 }, { hpt: 34 }, ...result.schedule.rows.map(() => ({ hpt: 21 })), { hpt: 23 }];
+        setCellStyle(scheduleSheet, 'A1', titleStyle);
+        for (let column = 0; column < 6; column += 1) {
+            const address = window.XLSX.utils.encode_cell({ r: 1, c: column });
+            setCellStyle(scheduleSheet, address, headerStyle);
+        }
+        for (let row = 2; row < scheduleRows.length; row += 1) {
+            for (let column = 0; column < 6; column += 1) {
+                const address = window.XLSX.utils.encode_cell({ r: row, c: column });
+                setCellStyle(scheduleSheet, address, row === scheduleRows.length - 1
+                    ? { ...cellStyle, font: { name: 'Arial', bold: true, color: { rgb: '173F70' }, sz: 10 }, fill: { patternType: 'solid', fgColor: { rgb: 'F0F5FA' } } }
+                    : cellStyle);
+            }
+        }
+        for (let row = 2; row < result.schedule.rows.length + 2; row += 1) {
+            const address = `B${row + 1}`;
+            if (scheduleSheet[address]) scheduleSheet[address].z = 'dd/mm/yyyy';
+            for (const column of ['C', 'D', 'E', 'F']) {
+                const amountAddress = `${column}${row + 1}`;
+                if (scheduleSheet[amountAddress]) scheduleSheet[amountAddress].z = '#,##0.00';
+            }
+        }
+        const scheduleTotalRow = result.schedule.rows.length + 3;
+        ['C', 'D', 'E'].forEach((column) => {
+            const address = `${column}${scheduleTotalRow}`;
+            if (scheduleSheet[address]) scheduleSheet[address].z = '#,##0.00';
+        });
+        window.XLSX.utils.book_append_sheet(workbook, scheduleSheet, 'Ödəniş qrafiki');
+        workbook.Props = {
+            ...(workbook.Props || {}),
+            Title: 'Kredit ödəniş qrafiki',
+            Subject: 'Kredit kalkulyatoru hesablaması',
+            Author: 'Best Think Konsaltinq'
+        };
+        window.XLSX.writeFile(workbook, 'BestThink_kredit_odenis_qrafiki.xlsx', {
+            bookType: 'xlsx', cellStyles: true
+        });
+        if (exportStatus) exportStatus.textContent = 'Excel hesabatı yükləndi.';
+    }
+
+    function exportLoanToPdf() {
+        if (!currentCalculation) return;
+        const printWindow = window.open('', '_blank');
+        if (!printWindow) {
+            if (exportStatus) exportStatus.textContent = 'PDF pəncərəsi açılmadı. Brauzerdə açılan pəncərələrə icazə verib yenidən cəhd edin.';
+            return;
+        }
+        const result = currentCalculation;
+        const summaryRows = getLoanSummary(result).map((item) => `
+            <tr><th>${escapeHtml(item.label)}</th><td>${escapeHtml(item.display)}</td></tr>`).join('');
+        const scheduleRows = result.schedule.rows.map((row) => `
+            <tr><td>${row.number}</td><td>${escapeHtml(exportDate(row.date))}</td><td>${escapeHtml(exportAmount(row.payment))}</td><td>${escapeHtml(exportAmount(row.principal))}</td><td>${escapeHtml(exportAmount(row.interest))}</td><td>${escapeHtml(exportAmount(row.balance))}</td></tr>`).join('');
+        const totalCosts = result.fee + result.otherExpenses;
+        const html = `<!doctype html><html lang="az"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Best Think - Kredit ödəniş qrafiki</title>
+            <style>
+                @page { size: A4 landscape; margin: 12mm; }
+                * { box-sizing: border-box; }
+                body { margin: 0; color: #243447; font: 10pt Arial, sans-serif; }
+                h1 { margin: 0 0 4px; color: #173f70; font-size: 20pt; text-align: center; }
+                .brand { margin: 0 0 18px; color: #68788b; font-size: 9pt; text-align: center; }
+                h2 { margin: 18px 0 8px; color: #244f82; font-size: 12pt; }
+                table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+                th, td { padding: 6px 8px; border: 1px solid #dce3eb; text-align: center; vertical-align: middle; }
+                .summary th { width: 42%; background: #f2f6fb; font-weight: 600; }
+                .summary td { width: 58%; }
+                .schedule { margin-top: 4px; font-size: 8.5pt; font-variant-numeric: tabular-nums; }
+                .schedule thead { display: table-header-group; }
+                .schedule th { background: #e8eff7; color: #244f82; }
+                .schedule tr { break-inside: avoid; page-break-inside: avoid; }
+                .total-row { background: #f2f6fb; font-weight: 700; }
+                @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+            </style></head><body>
+            <h1>Kredit ödəniş qrafiki</h1><p class="brand">Best Think Konsaltinq</p>
+            <h2>Kredit məlumatları</h2><table class="summary"><tbody>${summaryRows}</tbody></table>
+            <h2>Aylıq ödəniş qrafiki</h2><table class="schedule"><thead><tr><th>№</th><th>Ödəniş tarixi</th><th>Aylıq ödəniş</th><th>Əsas borc</th><th>Faiz məbləği</th><th>Qalıq borc</th></tr></thead><tbody>${scheduleRows}
+            <tr class="total-row"><td colspan="2">Cəmi</td><td>${escapeHtml(exportAmount(result.schedule.totalPayment))}</td><td>${escapeHtml(exportAmount(result.principal))}</td><td>${escapeHtml(exportAmount(result.schedule.totalInterest))}</td><td>—</td></tr>
+            </tbody></table><script>window.addEventListener('load', function(){ setTimeout(function(){ window.focus(); window.print(); }, 300); });</script></body></html>`;
+        printWindow.document.open();
+        printWindow.document.write(html);
+        printWindow.document.close();
+        if (exportStatus) exportStatus.textContent = 'Çap pəncərəsində “PDF kimi saxla” seçin.';
+    }
+
+    excelExportButton?.addEventListener('click', exportLoanToExcel);
+    pdfExportButton?.addEventListener('click', exportLoanToPdf);
+
+    modeButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+            const nextMode = button.dataset.loanMode;
+            const currentMode = card.querySelector('[data-loan-mode][aria-pressed="true"]')?.dataset.loanMode || 'amount';
+            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            const animatedElements = Array.from(modeAnimatedElements);
+
+            if (modeTransitionTimer) {
+                window.clearTimeout(modeTransitionTimer);
+                modeTransitionTimer = null;
+            }
+            animatedElements.forEach((element) => element.getAnimations().forEach((animation) => animation.cancel()));
+
+            if (currentMode === nextMode && !modeTransitionTimer) {
+                modeButtons.forEach((item) => item.setAttribute('aria-pressed', String(item === button)));
+                updateVisibility();
+                calculate();
+                return;
+            }
+
+            if (reduceMotion) {
+                modeButtons.forEach((item) => item.setAttribute('aria-pressed', String(item === button)));
+                updateVisibility();
+                calculate();
+                return;
+            }
+
+            const exitOffset = nextMode === 'budget' ? -26 : 26;
+            animatedElements.filter((element) => !element.hidden).forEach((element) => {
+                element.animate(
+                    [{ transform: 'translateX(0)', opacity: 1 }, { transform: `translateX(${exitOffset}px)`, opacity: 0 }],
+                    { duration: 145, easing: 'ease-in', fill: 'forwards' }
+                );
+            });
+            modeButtons.forEach((item) => item.setAttribute('aria-pressed', String(item === button)));
+            modeTransitionTimer = window.setTimeout(() => {
+                animatedElements.forEach((element) => element.getAnimations().forEach((animation) => animation.cancel()));
+                updateVisibility();
+                calculate();
+
+                const enterOffset = nextMode === 'budget' ? 26 : -26;
+                animatedElements.filter((element) => !element.hidden).forEach((element) => {
+                    element.animate(
+                        [{ transform: `translateX(${enterOffset}px)`, opacity: 0 }, { transform: 'translateX(0)', opacity: 1 }],
+                        { duration: 255, easing: 'cubic-bezier(.22,.61,.36,1)' }
+                    );
+                });
+                modeTransitionTimer = window.setTimeout(() => {
+                    animatedElements.forEach((element) => element.getAnimations().forEach((animation) => animation.cancel()));
+                    modeTransitionTimer = null;
+                }, 270);
+            }, 145);
+        });
+    });
+    commissionType.addEventListener('change', () => {
+        updateVisibility();
+        calculate();
+    });
+    otherExpenseType.addEventListener('change', () => {
+        updateVisibility();
+        calculate();
+    });
+    [amountInput, budgetInput, annualRateInput, termInput, dateInput,
+        commissionInput, otherExpenseInput].forEach((input) => {
+        input.addEventListener('input', calculate);
+        input.addEventListener('change', calculate);
+    });
+
+    updateVisibility();
+    calculate();
 })();

@@ -2723,6 +2723,371 @@
 
         }
 
+        /* Sabit müddətli kredit kalkulyatoru */
+        .credit-loan-card { order: 4; }
+        .credit-loan-card [hidden] { display: none !important; }
+        .credit-loan-form {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 17px 18px;
+        }
+        .credit-loan-mode-switch {
+            grid-column: 1 / -1;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 5px;
+            border: 1px solid #e1e8f1;
+            border-radius: 13px;
+            background: #f7f9fc;
+        }
+        .credit-loan-mode-button {
+            flex: 1 1 220px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            min-height: 42px;
+            padding: 9px 14px;
+            border: 1px solid transparent;
+            border-radius: 9px;
+            background: transparent;
+            color: #45566b;
+            font: inherit;
+            font-size: 14px;
+            font-weight: 650;
+            line-height: 1.25;
+            text-align: left;
+            cursor: pointer;
+        }
+        .credit-loan-mode-icon {
+            width: 22px;
+            height: 22px;
+            flex: 0 0 22px;
+            color: #55718f;
+        }
+        .credit-loan-mode-copy {
+            display: grid;
+            gap: 2px;
+        }
+        .credit-loan-mode-copy small {
+            color: #778699;
+            font-size: 11px;
+            font-weight: 500;
+            line-height: 1.25;
+        }
+        .credit-loan-mode-button[aria-pressed="true"] {
+            border-color: #d8e4f3;
+            background: #fff;
+            color: #173f70;
+            box-shadow: 0 2px 8px rgba(26, 53, 86, .07);
+        }
+        .credit-loan-mode-button[aria-pressed="true"] .credit-loan-mode-icon {
+            color: #2466b4;
+        }
+        .credit-loan-form .form-group { min-width: 0; }
+        .credit-loan-form label {
+            display: block;
+            margin-bottom: 6px;
+            color: #263548;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .credit-loan-form > .form-group,
+        .credit-loan-form > .credit-loan-cost-fields {
+            gap: 7px;
+        }
+        .credit-loan-form input,
+        .credit-loan-form select {
+            box-sizing: border-box;
+            width: 100%;
+            height: 42px;
+            min-height: 42px;
+            padding: 10px 12px;
+            border: 1px solid #d8e1eb;
+            border-radius: 10px;
+            background: #fff;
+            color: #1e2937;
+            font: inherit;
+            font-size: 15px;
+        }
+        .credit-loan-form input:focus,
+        .credit-loan-form select:focus {
+            border-color: #6d9bd7;
+            outline: 3px solid rgba(63, 124, 202, .13);
+        }
+        #credit-loan-amount::placeholder,
+        #credit-loan-rate::placeholder,
+        #credit-loan-term::placeholder {
+            color: #7a8795;
+            opacity: .72;
+        }
+        #credit-loan-amount:focus::placeholder,
+        #credit-loan-rate:focus::placeholder,
+        #credit-loan-term:focus::placeholder {
+            opacity: 0;
+        }
+        .credit-loan-full { grid-column: 1 / -1; }
+        .credit-loan-field-help {
+            display: block;
+            margin-top: 5px;
+            color: #687789;
+            font-size: 12px;
+            line-height: 1.45;
+        }
+        .credit-loan-cost-fields {
+            min-width: 0;
+            grid-column: auto;
+        }
+        .credit-loan-input-affix {
+            width: 100%;
+            height: 42px;
+            box-sizing: border-box;
+            display: grid;
+            grid-template-columns: 42px minmax(0, 1fr);
+            overflow: hidden;
+            border: 1px solid #d8e1eb;
+            border-radius: 10px;
+            background: #fff;
+        }
+        .credit-loan-input-prefix {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f5f7fa;
+            color: #526174;
+            font-size: 15px;
+            font-weight: 650;
+        }
+        .credit-loan-input-affix input {
+            min-width: 0;
+            min-height: 0 !important;
+            height: 100%;
+            padding: 8px 11px !important;
+            border: 0 !important;
+            border-radius: 0 !important;
+            background: transparent !important;
+            box-shadow: none;
+        }
+        .credit-loan-input-affix:focus-within {
+            border-color: #6d9bd7;
+            outline: 3px solid rgba(63, 124, 202, .13);
+        }
+        .credit-loan-input-affix input:focus {
+            border: 0 !important;
+            outline: 0 !important;
+            box-shadow: none !important;
+        }
+        .credit-loan-inline-cost {
+            height: 42px;
+            grid-template-columns: 88px minmax(0, 1fr) 46px;
+        }
+        .credit-loan-form .credit-loan-inline-cost select,
+        .credit-loan-form .credit-loan-inline-cost input {
+            width: 100%;
+            height: 100%;
+            min-height: 0;
+            padding: 0 8px;
+            border: 0;
+            border-radius: 0;
+            outline: 0;
+            background: transparent;
+            font-size: 14px;
+        }
+        .credit-loan-form .credit-loan-inline-cost select {
+            border-right: 0;
+            background: #f5f7fa;
+            font-weight: 700;
+        }
+        .credit-loan-form .credit-loan-inline-cost input:focus {
+            border: 0;
+            outline: 0;
+            box-shadow: inset 0 0 0 2px rgba(36, 102, 211, .16);
+        }
+        .credit-loan-inline-cost span {
+            border-left: 0;
+        }
+        .credit-loan-input-affix.credit-loan-incomplete,
+        .credit-loan-inline-cost.credit-loan-incomplete {
+            border-color: #d9534f !important;
+            box-shadow: 0 0 0 2px rgba(217, 83, 79, .11);
+        }
+        .credit-loan-input-affix.credit-loan-incomplete:focus-within {
+            outline-color: rgba(217, 83, 79, .2);
+        }
+        .credit-loan-results {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid #dce4ee;
+        }
+        .credit-loan-result {
+            min-width: 0;
+            padding: 11px 13px;
+            border: 1px solid #e2e8ef;
+            border-radius: 12px;
+            background: #fff;
+        }
+        .credit-loan-result-label {
+            display: block;
+            margin-bottom: 6px;
+            color: #667587;
+            font-size: 13px;
+            line-height: 1.35;
+        }
+        #credit-loan-effective-rate-label {
+            white-space: nowrap;
+            font-size: 11px;
+            letter-spacing: -.02em;
+        }
+        .credit-loan-result strong {
+            color: #1c2c3e;
+            font-size: 18px;
+            font-weight: 650;
+            overflow-wrap: anywhere;
+        }
+        .credit-loan-message {
+            min-height: 0;
+            margin: 13px 0 0;
+            color: #a12e32;
+            font-size: 13px;
+            line-height: 1.45;
+        }
+        .credit-loan-message:empty { display: none; }
+        .credit-loan-schedule-wrap {
+            margin-top: 24px;
+            overflow: hidden;
+            border: 1px solid #e1e7ef;
+            border-radius: 13px;
+            background: #fff;
+        }
+        .credit-loan-schedule-title {
+            margin: 0;
+            padding: 14px 16px;
+            color: #253548;
+            font-size: 16px;
+            font-weight: 650;
+        }
+        .credit-loan-table-scroll { max-height: 440px; overflow: auto; }
+        .credit-loan-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            font-variant-numeric: tabular-nums;
+        }
+        .credit-loan-table th,
+        .credit-loan-table td {
+            padding: 10px 12px;
+            border-top: 1px solid #e9edf2;
+            text-align: right;
+            white-space: nowrap;
+        }
+        .credit-loan-table th {
+            position: sticky;
+            top: 0;
+            z-index: 1;
+            background: #f3f6fa;
+            color: #43546a;
+            font-weight: 650;
+        }
+        .credit-loan-table th:first-child,
+        .credit-loan-table td:first-child,
+        .credit-loan-table th:nth-child(2),
+        .credit-loan-table td:nth-child(2) { text-align: left; }
+        .credit-loan-table tfoot td {
+            background: #f8fafc;
+            font-weight: 700;
+        }
+        .credit-loan-table-total td {
+            background: #f8fafc;
+            font-weight: 700;
+        }
+        .credit-loan-export-actions {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 14px;
+        }
+        .credit-loan-export-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            min-height: 36px;
+            padding: 7px 12px;
+            border: 1px solid #cbd9ea;
+            border-radius: 10px;
+            background: #fff;
+            color: #244f82;
+            font: inherit;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color .18s ease, border-color .18s ease, transform .18s ease;
+        }
+        .credit-loan-export-button:hover:not(:disabled) {
+            transform: translateY(-1px);
+            border-color: #8eacd0;
+            background: #f5f8fc;
+        }
+        .credit-loan-export-button:focus-visible {
+            outline: 3px solid rgba(43, 105, 178, .2);
+            outline-offset: 2px;
+        }
+        .credit-loan-export-button:disabled {
+            opacity: .48;
+            cursor: not-allowed;
+        }
+        .credit-loan-export-button svg {
+            width: 15px;
+            height: 15px;
+            flex: 0 0 auto;
+        }
+        .credit-loan-export-actions .calculator-error-report-card {
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 32px;
+            margin: 0 0 0 2px;
+            padding: 0 0 0 12px;
+            border-top: 0;
+            border-left: 1px solid #dce4ee;
+        }
+        .credit-loan-export-actions .calculator-error-report-trigger {
+            min-height: 32px;
+            margin-left: 0;
+            padding: 6px 10px;
+            font-size: 12px;
+        }
+        .credit-loan-export-status {
+            min-height: 0;
+            margin: 8px 0 0;
+            color: #5e6e81;
+            font-size: 12px;
+            text-align: right;
+        }
+        .credit-loan-export-status:empty { display: none; }
+        @media (max-width: 760px) {
+            .credit-loan-form { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .credit-loan-results { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .credit-loan-export-actions { justify-content: flex-start; }
+        }
+        @media (max-width: 520px) {
+            .credit-loan-form,
+            .credit-loan-results { grid-template-columns: 1fr; }
+            .credit-loan-form > .form-group,
+            .credit-loan-full,
+            .credit-loan-cost-fields,
+            .credit-loan-result-primary { grid-column: 1; }
+            .credit-loan-export-actions { justify-content: stretch; }
+            .credit-loan-export-button { flex: 0 1 auto; }
+            .credit-loan-export-actions .calculator-error-report-card { margin-left: auto; }
+            .credit-loan-export-status { text-align: left; }
+        }
+
     </style>
 
 </head>
@@ -4156,6 +4521,158 @@
 
             </article>
 
+            <article class="calculator-card credit-loan-calculator-card credit-loan-card" id="credit-loan-calculator-panel">
+                <div class="calculator-title">
+                    <div class="calculator-icon" aria-label="Kredit kalkulyatoru ikonu">↗</div>
+                    <div>
+                        <h2 class="calculator-main-title">Kredit kalkulyatoru</h2>
+                        <p>Kredit məbləği və şərtləri üzrə aylıq ödənişi, əsas borc və faiz bölgüsünü hesabla. Büdcənə uyğun aylıq ödənişlə əldə edə biləcəyin maksimum kredit məbləğini də müəyyən et.</p>
+                    </div>
+                    <button class="calculator-card-action" type="button" aria-label="Kredit kalkulyatorunu sına">
+                        <span class="calculator-card-action-label">Dərhal sına</span>
+                        <span aria-hidden="true">→</span>
+                    </button>
+                    <button class="calculator-expand" type="button" aria-expanded="false" aria-controls="credit-loan-calculator-panel" aria-label="Kredit kalkulyatorunu aç">
+                        <span aria-hidden="true">↓</span>
+                    </button>
+                </div>
+
+                <div class="credit-loan-tool">
+                    <div class="credit-loan-form">
+                        <div class="credit-loan-mode-switch" role="group" aria-label="Hesablama istiqaməti">
+                            <button class="credit-loan-mode-button" type="button" data-loan-mode="amount" aria-pressed="true">
+                                <svg class="credit-loan-mode-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2.5" y="5" width="12.5" height="14" rx="2" stroke="currentColor" stroke-width="1.7"/><path d="M5.5 8.5h6.5M5.5 15.5h6.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="9" cy="12" r="2" stroke="currentColor" stroke-width="1.6"/><path d="M15.5 12H22m-2.5-2.5L22 12l-2.5 2.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                <span class="credit-loan-mode-copy"><span>Kredit məbləğinə görə</span><small>Aylıq ödənişi hesabla</small></span>
+                            </button>
+                            <button class="credit-loan-mode-button" type="button" data-loan-mode="budget" aria-pressed="false">
+                                <svg class="credit-loan-mode-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="9" y="5" width="12.5" height="14" rx="2" stroke="currentColor" stroke-width="1.7"/><path d="M12 8.5h6.5M12 15.5h6.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="15.5" cy="12" r="2" stroke="currentColor" stroke-width="1.6"/><path d="M8.5 12H2m2.5-2.5L2 12l2.5 2.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                <span class="credit-loan-mode-copy"><span>Aylıq ödənişə görə</span><small>Kredit məbləğini hesabla</small></span>
+                            </button>
+                        </div>
+
+                        <div class="form-group" data-loan-amount-group>
+                            <label for="credit-loan-amount">Kredit məbləği</label>
+                            <div class="credit-loan-input-affix">
+                                <span class="credit-loan-input-prefix" aria-hidden="true">₼</span>
+                                <input id="credit-loan-amount" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="10 000" aria-label="Kredit məbləği, manatla">
+                            </div>
+                        </div>
+                        <div class="form-group" data-loan-budget-group hidden>
+                            <label for="credit-loan-budget">Aylıq ödənişim (faiz daxil)</label>
+                            <div class="credit-loan-input-affix">
+                                <span class="credit-loan-input-prefix" aria-hidden="true">₼</span>
+                                <input id="credit-loan-budget" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="200" aria-label="Ödəyə biləcəyin aylıq məbləğ, manatla">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="credit-loan-rate">İllik faiz dərəcəsi</label>
+                            <div class="credit-loan-input-affix">
+                                <span class="credit-loan-input-prefix" aria-hidden="true">%</span>
+                                <input id="credit-loan-rate" type="number" min="0" step="0.01" inputmode="decimal" placeholder="10" aria-label="İllik faiz dərəcəsi, faizlə">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="credit-loan-term">Kredit müddəti</label>
+                            <div class="credit-loan-input-affix">
+                                <span class="credit-loan-input-prefix" aria-hidden="true">ay</span>
+                                <input id="credit-loan-term" type="number" min="1" step="1" inputmode="numeric" placeholder="12" aria-label="Kredit müddəti, aylarla">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="credit-loan-date">Kreditin alınma tarixi</label>
+                            <input id="credit-loan-date" type="date">
+                            <small class="credit-loan-field-help">İlk ödəniş tarixi bu tarixə əsasən qurulur.</small>
+                        </div>
+
+                        <div class="form-group credit-loan-cost-fields">
+                            <label id="credit-loan-commission-title" for="credit-loan-commission-type">Komissiya</label>
+                            <div class="salary-deduction-input credit-loan-inline-cost">
+                                <select id="credit-loan-commission-type" aria-label="Komissiyanın hesablanma üsulu">
+                                    <option value="amount">Məbləğ</option>
+                                    <option value="percent" selected>Faiz</option>
+                                </select>
+                                <input id="credit-loan-commission-value" type="number" min="0" step="0.01" inputmode="decimal" aria-label="Komissiya dəyəri">
+                                <span id="credit-loan-commission-suffix">%</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group credit-loan-cost-fields">
+                            <label id="credit-loan-other-title" for="credit-loan-other-type">Digər xərclər</label>
+                            <div class="salary-deduction-input credit-loan-inline-cost">
+                                <select id="credit-loan-other-type" aria-label="Digər xərclərin hesablanma üsulu">
+                                    <option value="amount" selected>Məbləğ</option>
+                                    <option value="percent">Faiz</option>
+                                </select>
+                                <input id="credit-loan-other-value" type="number" min="0" step="0.01" inputmode="decimal" aria-label="Digər xərclərin dəyəri">
+                                <span id="credit-loan-other-suffix">AZN</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="credit-loan-message" id="credit-loan-message" role="status" aria-live="polite"></p>
+
+                    <div class="credit-loan-results" aria-live="polite">
+                        <div class="credit-loan-result credit-loan-result-primary">
+                            <span class="credit-loan-result-label" id="credit-loan-primary-label">Kredit məbləği</span>
+                            <strong id="credit-loan-primary-result">—</strong>
+                        </div>
+                        <div class="credit-loan-result">
+                            <span class="credit-loan-result-label">Standart aylıq ödəniş</span>
+                            <strong id="credit-loan-monthly-result">—</strong>
+                        </div>
+                        <div class="credit-loan-result">
+                            <span class="credit-loan-result-label">İlk ayın ödənişi</span>
+                            <strong id="credit-loan-first-result">—</strong>
+                        </div>
+                        <div class="credit-loan-result">
+                            <span class="credit-loan-result-label">Ümumi faiz məbləği</span>
+                            <strong id="credit-loan-interest-result">—</strong>
+                        </div>
+                        <div class="credit-loan-result">
+                            <span class="credit-loan-result-label">Ümumi ödəniş</span>
+                            <strong id="credit-loan-total-result">—</strong>
+                        </div>
+                        <div class="credit-loan-result">
+                            <span class="credit-loan-result-label">Tutulacaq komissiya və xərclər</span>
+                            <strong id="credit-loan-deductions-result">—</strong>
+                        </div>
+                        <div class="credit-loan-result">
+                            <span class="credit-loan-result-label">Müqavilə üzrə illik faiz dərəcəsi</span>
+                            <strong id="credit-loan-contract-rate-result">—</strong>
+                        </div>
+                        <div class="credit-loan-result">
+                            <span class="credit-loan-result-label" id="credit-loan-effective-rate-label">Effektiv (real) faiz</span>
+                            <strong id="credit-loan-effective-rate-result">—</strong>
+                        </div>
+                        <div class="credit-loan-result">
+                            <span class="credit-loan-result-label">Kassadan net alınacaq məbləğ</span>
+                            <strong id="credit-loan-net-result">—</strong>
+                        </div>
+                    </div>
+
+                    <section class="credit-loan-schedule-wrap" aria-labelledby="credit-loan-schedule-title">
+                        <h3 class="credit-loan-schedule-title" id="credit-loan-schedule-title">Aylıq ödəniş qrafiki</h3>
+                        <div class="credit-loan-table-scroll">
+                            <table class="credit-loan-table">
+                                <thead><tr><th>№</th><th>Ödəniş tarixi</th><th>Ödəniş</th><th>Əsas borc</th><th>Faiz</th><th>Qalıq borc</th></tr></thead>
+                                <tbody id="credit-loan-schedule-body"><tr><td colspan="6">Hesablama üçün məbləği daxil edin.</td></tr></tbody>
+                            </table>
+                        </div>
+                    </section>
+                    <div class="credit-loan-export-actions" aria-label="Kredit hesablamasını endir">
+                        <button class="credit-loan-export-button" id="credit-loan-export-excel" type="button" disabled>
+                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v11m0 0 4-4m-4 4-4-4M5 16v4h14v-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            <span>Excel-ə ixrac et</span>
+                        </button>
+                        <button class="credit-loan-export-button" id="credit-loan-export-pdf" type="button" disabled>
+                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v11m0 0 4-4m-4 4-4-4M5 16v4h14v-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            <span>PDF-ə ixrac et</span>
+                        </button>
+                    </div>
+                    <p class="credit-loan-export-status" id="credit-loan-export-status" role="status" aria-live="polite"></p>
+                </div>
+            </article>
+
             </div>
 
         </div>
@@ -4338,7 +4855,7 @@
 
 
 <script src="assets/xlsx-js-style.bundle.js"></script>
-<script src="script.js?v=20260922-import-duty-breakdown"></script>
+<script src="script.js?v=20260923-credit-loan-export14"></script>
 </body>
 
 </html>
