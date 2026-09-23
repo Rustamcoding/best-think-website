@@ -604,6 +604,23 @@
     max-width: 1100px;
 }
 
+.article-business-program .article-intro p,
+.article-business-program .article-content p:not(.article-source) {
+    text-align: justify;
+}
+
+.article-business-program .article-source {
+    margin-top: 34px;
+    font-size: 15px;
+}
+
+.article-business-program .article-source a {
+    color: var(--blue);
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
 
 /* GİRİŞ MƏTNİ */
 
