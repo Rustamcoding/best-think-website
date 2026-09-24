@@ -135,13 +135,15 @@ async function loadFooter() {
     }
 
     try {
-        const response = await fetch('/footer.html?v=20260919-tools-menu');
+        const response = await fetch('/footer.html?v=20260924-import-employee-sliders-v31');
 
         if (!response.ok) {
             throw new Error(`footer.html yüklənmədi: ${response.status}`);
         }
 
         footer.outerHTML = await response.text();
+        initializeFooterContactForm();
+        initializeFooterQuoteForm();
     }
 
     catch (error) {
@@ -150,6 +152,993 @@ async function loadFooter() {
 }
 
 loadFooter();
+
+/* =========================================================
+   FOOTER ƏLAQƏ FORMASI
+   ========================================================= */
+
+function initializeFooterContactForm() {
+    const modal = document.querySelector('#footer-contact-modal');
+    const dialog = modal?.querySelector('.footer-contact-dialog');
+    const trigger = document.querySelector('.footer-contact-trigger');
+    const closeButton = modal?.querySelector('.footer-contact-close');
+    const form = modal?.querySelector('#footer-contact-form');
+    const purpose = modal?.querySelector('#footer-contact-purpose');
+    const details = modal?.querySelector('#footer-contact-details');
+    const nameInput = form?.querySelector('[name="reporterName"]');
+    const emailInput = form?.querySelector('[name="reporterEmail"]');
+    const message = form?.querySelector('[name="problem"]');
+    const attachmentInput = modal?.querySelector('#footer-contact-attachment');
+    const status = modal?.querySelector('#footer-contact-status');
+    const frame = modal?.querySelector('iframe[name="footer-contact-frame"]');
+    const maxFileSize = 1024 * 1024;
+    const acceptedTypes = new Set(['image/jpeg', 'image/png', 'image/gif']);
+    const acceptedName = /\.(?:jpe?g|png|gif)$/i;
+
+    if (!modal || !dialog || !trigger || !closeButton || !form || !purpose || !details || !message || !attachmentInput || !status || !frame || form.dataset.initialized === 'true') {
+        return;
+    }
+    form.dataset.initialized = 'true';
+    function updateComposerAccess() {
+        const ready = Boolean(
+            nameInput?.value.trim() &&
+            emailInput?.value.trim() &&
+            emailInput.validity.valid &&
+            purpose.value
+        );
+
+        message.disabled = !ready;
+        attachmentInput.disabled = !ready;
+        message.required = ready;
+        message.placeholder = '';
+    }
+
+    updateComposerAccess();
+
+    const closeModal = () => {
+        modal.hidden = true;
+        closeButton.classList.remove('is-highlighted');
+        document.body.classList.remove('footer-contact-open');
+        trigger.focus();
+    };
+
+    trigger.addEventListener('click', () => {
+        modal.hidden = false;
+        document.body.classList.add('footer-contact-open');
+        status.textContent = '';
+        status.classList.remove('is-error');
+        closeButton.classList.remove('is-highlighted');
+        updateComposerAccess();
+        nameInput?.focus();
+    });
+
+    closeButton.addEventListener('click', closeModal);
+    modal.addEventListener('click', (event) => {
+        if (event.target === modal) closeButton.classList.add('is-highlighted');
+    });
+
+    form.addEventListener('input', (event) => {
+        event.target.setCustomValidity?.('');
+        updateComposerAccess();
+    }, true);
+    form.addEventListener('change', (event) => {
+        event.target.setCustomValidity?.('');
+        updateComposerAccess();
+    }, true);
+
+    form.addEventListener('invalid', (event) => {
+        const field = event.target;
+        if (field.validity.valueMissing) {
+            const messages = {
+                reporterName: 'Adınızı və soyadınızı daxil edin.',
+                reporterEmail: 'E-poçt ünvanınızı daxil edin.',
+                purpose: 'Müraciətin məqsədini seçin.',
+                problem: 'Mesajınızı yazın.'
+            };
+            field.setCustomValidity(messages[field.name] || 'Bu sahəni doldurun.');
+        } else if (field.name === 'reporterEmail' && field.validity.typeMismatch) {
+            field.setCustomValidity('Düzgün e-poçt ünvanı daxil edin.');
+        }
+    }, true);
+
+    function validateAttachment(file) {
+        if (!acceptedName.test(file.name) || (file.type && !acceptedTypes.has(file.type))) {
+            return 'JPG, JPEG, PNG və ya GIF formatında şəkil seçin.';
+        }
+        if (file.size > maxFileSize) {
+            return 'Şəklin ölçüsü 1 MB-dan çox olmamalıdır.';
+        }
+        return '';
+    }
+
+    attachmentInput.addEventListener('change', () => {
+        const file = attachmentInput.files?.[0];
+        if (!file) return;
+        const error = validateAttachment(file);
+        if (error) {
+            attachmentInput.value = '';
+            status.textContent = error;
+        } else {
+            status.textContent = '';
+        }
+    });
+
+    let activeRequestId = '';
+    let responseTimer = 0;
+
+    window.addEventListener('message', (event) => {
+        if (event.source !== frame.contentWindow || !event.data || event.data.type !== 'best-think-contact-result' || event.data.requestId !== activeRequestId) return;
+        window.clearTimeout(responseTimer);
+        status.textContent = event.data.message || (event.data.ok ? 'Müraciətiniz qəbul edildi.' : 'Müraciət göndərilmədi. Yenidən cəhd edin.');
+        status.classList.toggle('is-error', !event.data.ok);
+        if (event.data.ok) {
+            form.reset();
+            updateComposerAccess();
+            window.setTimeout(closeModal, 1700);
+        }
+        activeRequestId = '';
+    });
+
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        status.classList.remove('is-error');
+
+        if (['localhost', '127.0.0.1', '::1'].includes(window.location.hostname)) {
+            status.textContent = 'Bu yerli preview-dir. E-poçt göndərişi server yenilənib saytda yayımlandıqdan sonra aktiv olacaq.';
+            status.classList.add('is-error');
+            return;
+        }
+
+        const file = attachmentInput.files?.[0];
+        const fileError = file ? validateAttachment(file) : '';
+        if (fileError) {
+            status.textContent = fileError;
+            return;
+        }
+
+        status.textContent = 'Müraciət göndərilir…';
+        form.querySelector('[name="userAgent"]').value = navigator.userAgent;
+
+        try {
+            if (file) {
+                const dataUrl = await readContactFile(file);
+                form.querySelector('[name="fileData"]').value = dataUrl;
+                form.querySelector('[name="fileName"]').value = file.name;
+                form.querySelector('[name="fileType"]').value = file.type || 'image/jpeg';
+            } else {
+                form.querySelector('[name="fileData"]').value = '';
+                form.querySelector('[name="fileName"]').value = '';
+                form.querySelector('[name="fileType"]').value = '';
+            }
+
+            activeRequestId = (window.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`).replace(/[^a-zA-Z0-9-]/g, '');
+            form.querySelector('[name="requestId"]').value = activeRequestId;
+            HTMLFormElement.prototype.submit.call(form);
+
+            responseTimer = window.setTimeout(() => {
+                if (activeRequestId) {
+                    status.textContent = 'Göndərişin cavabı alınmadı. Bir az sonra yenidən cəhd edin və ya info@besthink.az ünvanına yazın.';
+                    status.classList.add('is-error');
+                    activeRequestId = '';
+                }
+            }, 25000);
+        } catch (error) {
+            console.error('Əlaqə müraciəti hazırlanarkən problem:', error);
+            status.textContent = 'Şəkil oxunmadı. Başqa fayl seçib yenidən yoxlayın.';
+            status.classList.add('is-error');
+        }
+    });
+
+    function readContactFile(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(String(reader.result || ''));
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+        });
+    }
+}
+
+function initializeFooterQuoteForm() {
+    const modal = document.querySelector('#footer-quote-modal');
+    const dialog = modal?.querySelector('.footer-quote-dialog');
+    const trigger = document.querySelector('.footer-quote-trigger');
+    const closeButton = modal?.querySelector('.footer-contact-close');
+    const form = modal?.querySelector('#footer-quote-form');
+    const status = modal?.querySelector('#footer-quote-status');
+    const taxError = modal?.querySelector('#footer-quote-tax-error');
+    const taxOptions = [...(form?.querySelectorAll('[name="taxes"]') || [])];
+    const activityOptions = [...(form?.querySelectorAll('[name="activityOption"]') || [])];
+    const activitySummaryInput = form?.querySelector('[name="activity"]');
+    const activityError = modal?.querySelector('#footer-quote-activity-error');
+    const frame = modal?.querySelector('iframe[name="footer-quote-frame"]');
+    const turnoverAmountInput = form?.querySelector('[name="turnoverInput"]');
+    const turnoverRange = modal?.querySelector('#footer-quote-turnover-range');
+    const turnoverThumb = modal?.querySelector('#footer-quote-turnover-thumb');
+    const turnoverOutput = modal?.querySelector('#footer-quote-turnover-output');
+    const turnoverError = modal?.querySelector('#footer-quote-turnover-error');
+    const turnoverMarkers = [...(modal?.querySelectorAll('[data-turnover-marker]') || [])];
+    const turnoverEditButton = modal?.querySelector('#footer-quote-turnover-edit');
+    const turnoverCustomEditor = modal?.querySelector('#footer-quote-turnover-custom');
+    const turnoverCustomInput = modal?.querySelector('#footer-quote-turnover-custom-input');
+    const turnoverCustomApply = modal?.querySelector('#footer-quote-turnover-custom-apply');
+    const turnoverCustomCancel = modal?.querySelector('#footer-quote-turnover-custom-cancel');
+    const turnoverCustomError = modal?.querySelector('#footer-quote-turnover-custom-error');
+    const turnoverSummaryInput = form?.querySelector('[name="turnover"]');
+    const employeeRange = modal?.querySelector('#footer-quote-employee-range');
+    const employeeOutput = modal?.querySelector('#footer-quote-employee-output');
+    const employeeThumb = modal?.querySelector('#footer-quote-employee-thumb');
+    const employeeEditButton = modal?.querySelector('#footer-quote-employee-edit');
+    const employeeCustomEditor = modal?.querySelector('#footer-quote-employee-custom');
+    const employeeCustomInput = modal?.querySelector('#footer-quote-employee-custom-input');
+    const employeeCustomApply = modal?.querySelector('#footer-quote-employee-custom-apply');
+    const employeeCustomCancel = modal?.querySelector('#footer-quote-employee-custom-cancel');
+    const employeeCustomError = modal?.querySelector('#footer-quote-employee-custom-error');
+    const employeeSummaryInput = form?.querySelector('[name="employeeCount"]');
+    const employeeError = modal?.querySelector('#footer-quote-employee-error');
+    const employeeMarkers = [...(modal?.querySelectorAll('.footer-quote-employee-markers [data-category-marker]') || [])];
+    const importRange = modal?.querySelector('#footer-quote-import-range');
+    const importOutput = modal?.querySelector('#footer-quote-import-output');
+    const importThumb = modal?.querySelector('#footer-quote-import-thumb');
+    const importSummaryInput = form?.querySelector('[name="importVolume"]');
+    const importError = modal?.querySelector('#footer-quote-import-error');
+    const importMarkers = [...(modal?.querySelectorAll('.footer-quote-import-markers [data-category-marker]') || [])];
+    const importEditButton = modal?.querySelector('#footer-quote-import-edit');
+    const importCustomEditor = modal?.querySelector('#footer-quote-import-custom');
+    const importCustomInput = modal?.querySelector('#footer-quote-import-custom-input');
+    const importCustomApply = modal?.querySelector('#footer-quote-import-custom-apply');
+    const importCustomCancel = modal?.querySelector('#footer-quote-import-custom-cancel');
+    const importCustomError = modal?.querySelector('#footer-quote-import-custom-error');
+    const turnoverMin = 5000;
+    const turnoverMax = 35000000;
+    const turnoverStops = [];
+    const addTurnoverStops = (start, end, step) => {
+        for (let amount = start; amount <= end; amount += step) {
+            if (turnoverStops.at(-1) !== amount) turnoverStops.push(amount);
+        }
+        if (turnoverStops.at(-1) !== end) turnoverStops.push(end);
+    };
+    addTurnoverStops(5000, 100000, 5000);
+    addTurnoverStops(100000, 200000, 10000);
+    addTurnoverStops(200000, 500000, 20000);
+    addTurnoverStops(500000, 1000000, 50000);
+    addTurnoverStops(1000000, 10000000, 1000000);
+    addTurnoverStops(10000000, 30000000, 3000000);
+    addTurnoverStops(30000000, turnoverMax, 5000000);
+    const standardTurnoverStops = [...turnoverStops];
+    let customTurnoverStop = null;
+    let sliderMax = turnoverStops.length - 1;
+    const formatTurnoverNumber = (value) => String(value).replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    const turnoverSliderPosition = (amount) => {
+        const boundedAmount = Math.max(turnoverMin, Math.min(turnoverMax, amount));
+        const nextStopIndex = turnoverStops.findIndex((stop) => stop >= boundedAmount);
+        if (nextStopIndex <= 0) return 0;
+        const previousStop = turnoverStops[nextStopIndex - 1];
+        const nextStop = turnoverStops[nextStopIndex];
+        const fraction = (boundedAmount - previousStop) / (nextStop - previousStop);
+        return (nextStopIndex - 1 + fraction) / sliderMax;
+    };
+    const standardEmployeeCounts = [...Array.from({ length: 10 }, (_, index) => index + 1), 12, 14, 16, 18, 20, 25, 30, 35, 40, 45, 50];
+    let employeeCounts = [...standardEmployeeCounts];
+    let customEmployeeCount = null;
+    let employeeOptions = employeeCounts.map((count) => `${count} nəfər`);
+    let employeeDisplayOptions = employeeCounts.map((count) => `${count} nəfər`);
+    const importMinimum = 10000;
+    const importMaximum = 1000000;
+    const importAmounts = [
+        ...Array.from({ length: 10 }, (_, index) => (index + 1) * 10000),
+        ...Array.from({ length: 8 }, (_, index) => 150000 + index * 50000),
+        ...Array.from({ length: 5 }, (_, index) => 600000 + index * 100000)
+    ];
+    const standardImportAmounts = [...importAmounts];
+    const sharedMarkerTurnoverAmounts = [200000, 500000, 1000000];
+    let customImportAmount = null;
+    let importOptions = importAmounts.map((amount) => `${formatTurnoverNumber(amount)} ABŞ dolları`);
+    let importThumbOptions = importAmounts.map((amount) => amount >= 1000000 ? '$1M' : `$${amount / 1000}K`);
+
+    if (!modal || !dialog || !trigger || !closeButton || !form || !status || !taxError || !taxOptions.length || !activityOptions.length || !activitySummaryInput || !activityError || !frame || !turnoverAmountInput || !turnoverRange || !turnoverThumb || !turnoverOutput || !turnoverError || !turnoverSummaryInput || !turnoverEditButton || !turnoverCustomEditor || !turnoverCustomInput || !turnoverCustomApply || !turnoverCustomCancel || !turnoverCustomError || !employeeRange || !employeeOutput || !employeeThumb || !employeeEditButton || !employeeCustomEditor || !employeeCustomInput || !employeeCustomApply || !employeeCustomCancel || !employeeCustomError || !employeeSummaryInput || !employeeError || !employeeMarkers.length || !importRange || !importOutput || !importThumb || !importSummaryInput || !importError || !importMarkers.length || !importEditButton || !importCustomEditor || !importCustomInput || !importCustomApply || !importCustomCancel || !importCustomError || form.dataset.initialized === 'true') return;
+    form.dataset.initialized = 'true';
+
+    let activeRequestId = '';
+    let responseTimer = 0;
+    let turnoverPointerX = null;
+
+    const updateTurnoverSlider = () => {
+        const selectedIndex = Number(turnoverRange.value) - 1;
+        const position = selectedIndex < 0 ? 0 : selectedIndex / sliderMax;
+        const stage = turnoverRange.parentElement;
+        const progress = position * 100;
+        const rangeWidth = turnoverRange.clientWidth;
+        const travel = Math.max(0, rangeWidth - 28);
+        const halfThumb = turnoverThumb.offsetWidth / 2;
+        const maxCenter = Math.max(halfThumb, rangeWidth - halfThumb);
+        const thumbCenter = Math.max(halfThumb, Math.min(maxCenter, 14 + travel * position));
+        stage.style.setProperty('--quote-range-progress', `${progress}%`);
+        stage.style.setProperty('--quote-thumb-position', `${thumbCenter}px`);
+        stage.style.setProperty('--quote-thumb-half-width', `${halfThumb}px`);
+        stage.classList.toggle('is-at-start', position <= 0.001);
+        stage.classList.toggle('is-at-end', position >= 0.999);
+        turnoverMarkers.forEach((marker) => {
+            const markerPosition = turnoverSliderPosition(Number(marker.dataset.turnoverMarker));
+            marker.style.left = `${travel * markerPosition}px`;
+        });
+    };
+    const updateTurnoverSelection = (committed = false) => {
+        const selectedIndex = Number(turnoverRange.value) - 1;
+        const amount = selectedIndex >= 0 ? turnoverStops[selectedIndex] : 0;
+        const formattedAmount = amount ? formatTurnoverNumber(amount) : '';
+        turnoverAmountInput.value = formattedAmount;
+        turnoverThumb.textContent = '₼';
+        turnoverOutput.textContent = amount ? `${committed ? '✓ ' : ''}${formattedAmount} manat` : '';
+        turnoverOutput.classList.toggle('has-value', Boolean(amount));
+        turnoverOutput.classList.toggle('is-committed', Boolean(amount && committed));
+        turnoverThumb.classList.toggle('is-committed', Boolean(amount && committed));
+        turnoverError.textContent = '';
+        turnoverMarkers.forEach((marker) => {
+            const isActive = amount === Number(marker.dataset.turnoverMarker);
+            marker.classList.toggle('is-active', isActive);
+            marker.setAttribute('aria-pressed', String(isActive));
+        });
+        turnoverRange.setAttribute('aria-valuetext', amount ? `${formattedAmount} manat` : 'Məbləğ seçilməyib');
+        updateTurnoverSlider();
+    };
+    const openTurnoverEditor = () => {
+        if (!turnoverCustomEditor.hidden) {
+            closeTurnoverEditor();
+            return;
+        }
+        closeOtherInlineEditors('turnover');
+        const selectedIndex = Number(turnoverRange.value) - 1;
+        const amount = selectedIndex >= 0 ? turnoverStops[selectedIndex] : 0;
+        turnoverCustomInput.value = amount ? formatTurnoverNumber(amount) : '';
+        turnoverCustomError.textContent = '';
+        turnoverCustomError.hidden = true;
+        turnoverCustomInput.removeAttribute('aria-invalid');
+        turnoverCustomEditor.hidden = false;
+        turnoverRange.parentElement.classList.add('is-editing');
+        turnoverThumb.hidden = true;
+        turnoverCustomInput.focus();
+        turnoverCustomInput.select();
+    };
+    const closeTurnoverEditor = (restoreFocus = true) => {
+        turnoverCustomEditor.hidden = true;
+        turnoverCustomError.textContent = '';
+        turnoverCustomError.hidden = true;
+        turnoverCustomInput.removeAttribute('aria-invalid');
+        turnoverThumb.hidden = false;
+        turnoverRange.parentElement.classList.remove('is-editing', 'is-moving');
+        if (restoreFocus) turnoverThumb.focus();
+    };
+    const applyCustomTurnoverAmount = () => {
+        const compactAmount = turnoverCustomInput.value.trim().replace(/[\s\u00a0]/g, '');
+        const numericAmount = /^\d+$/.test(compactAmount)
+            ? compactAmount
+            : /^\d{1,3}(?:[.,]\d{3})+$/.test(compactAmount)
+                ? compactAmount.replace(/[.,]/g, '')
+                : '';
+        const amount = numericAmount ? Number(numericAmount) : NaN;
+        if (!Number.isSafeInteger(amount) || amount < turnoverMin || amount > turnoverMax) {
+            turnoverCustomError.textContent = '5 000–35 000 000 ₼ aralığında tam məbləğ daxil edin.';
+            turnoverCustomError.hidden = false;
+            turnoverCustomInput.setAttribute('aria-invalid', 'true');
+            turnoverCustomInput.focus();
+            return;
+        }
+        if (customTurnoverStop !== null) {
+            const previousCustomIndex = turnoverStops.indexOf(customTurnoverStop);
+            if (previousCustomIndex >= 0) turnoverStops.splice(previousCustomIndex, 1);
+            customTurnoverStop = null;
+        }
+        if (!turnoverStops.includes(amount)) {
+            turnoverStops.push(amount);
+            turnoverStops.sort((left, right) => left - right);
+            if (!standardTurnoverStops.includes(amount)) customTurnoverStop = amount;
+        }
+        sliderMax = turnoverStops.length - 1;
+        turnoverRange.max = String(sliderMax + 1);
+        turnoverRange.value = String(turnoverStops.indexOf(amount) + 1);
+        turnoverCustomInput.value = formatTurnoverNumber(amount);
+        turnoverCustomEditor.hidden = true;
+        turnoverCustomError.textContent = '';
+        turnoverCustomError.hidden = true;
+        turnoverCustomInput.removeAttribute('aria-invalid');
+        turnoverThumb.hidden = false;
+        turnoverRange.parentElement.classList.remove('is-editing', 'is-moving');
+        updateTurnoverSelection(true);
+        updateEmployeeSlider();
+        updateImportSlider();
+        turnoverThumb.focus();
+    };
+    const updateCategorySlider = (range, output, summaryInput, options, thumb, committed = thumb.classList.contains('is-committed'), markers = [], markerStops = [], displayOptions = options, sharedTurnoverStops = []) => {
+        const selectedIndex = Number(range.value) - 1;
+        const selected = selectedIndex >= 0 ? options[selectedIndex] : '';
+        const displayed = selectedIndex >= 0 ? displayOptions[selectedIndex] : '';
+        const selectedMarkerValue = selectedIndex >= 0 ? Number(markerStops[selectedIndex]) : NaN;
+        const selectedMarkerIndex = markers.findIndex((marker) => Number(marker.dataset.categoryMarker) === selectedMarkerValue);
+        const position = selectedMarkerIndex >= 0 && sharedTurnoverStops[selectedMarkerIndex] !== undefined
+            ? turnoverSliderPosition(sharedTurnoverStops[selectedMarkerIndex])
+            : Number(range.value) / options.length;
+        const stage = range.parentElement;
+        const rangeWidth = range.clientWidth;
+        const travel = Math.max(0, rangeWidth - 28);
+        const halfThumb = thumb.offsetWidth / 2;
+        const maxCenter = Math.max(halfThumb, rangeWidth - halfThumb);
+        const thumbCenter = Math.max(halfThumb, Math.min(maxCenter, 14 + travel * position));
+        stage.style.setProperty('--quote-range-progress', `${position * 100}%`);
+        stage.style.setProperty('--quote-thumb-position', `${thumbCenter}px`);
+        stage.style.setProperty('--quote-thumb-half-width', `${halfThumb}px`);
+        stage.classList.toggle('is-at-start', position <= 0.001);
+        stage.classList.toggle('is-at-end', position >= 0.999);
+        markers.forEach((marker) => {
+            const markerValue = Number(marker.dataset.categoryMarker);
+            const markerIndex = markerStops.indexOf(markerValue);
+            if (markerIndex < 0) return;
+            const markerPosition = sharedTurnoverStops[markers.indexOf(marker)] !== undefined
+                ? turnoverSliderPosition(sharedTurnoverStops[markers.indexOf(marker)])
+                : (markerIndex + 1) / options.length;
+            marker.style.left = `${travel * markerPosition}px`;
+            const isActive = selectedIndex === markerIndex;
+            marker.classList.toggle('is-active', isActive);
+            marker.setAttribute('aria-pressed', String(isActive));
+        });
+        if (output) {
+            output.textContent = displayed ? `${committed ? '✓ ' : ''}${displayed}` : '';
+            output.classList.toggle('has-value', Boolean(selected));
+            output.classList.toggle('is-committed', Boolean(selected && committed));
+        }
+        summaryInput.value = selected;
+        thumb.classList.toggle('is-committed', Boolean(selected && committed));
+        range.setAttribute('aria-valuetext', displayed || 'Hələ seçim edilməyib');
+    };
+    const updateEmployeeSlider = (committed = employeeThumb.classList.contains('is-committed')) => updateCategorySlider(employeeRange, employeeOutput, employeeSummaryInput, employeeOptions, employeeThumb, committed, employeeMarkers, employeeCounts, employeeDisplayOptions, sharedMarkerTurnoverAmounts);
+    const updateImportSlider = (committed = importThumb.classList.contains('is-committed')) => updateCategorySlider(importRange, importOutput, importSummaryInput, importOptions, importThumb, committed, importMarkers, importAmounts, importOptions, sharedMarkerTurnoverAmounts);
+    const openEmployeeEditor = () => {
+        if (!employeeCustomEditor.hidden) {
+            closeEmployeeEditor();
+            return;
+        }
+        closeOtherInlineEditors('employee');
+        const selectedIndex = Number(employeeRange.value) - 1;
+        employeeCustomInput.value = selectedIndex >= 0 ? String(employeeCounts[selectedIndex]) : '';
+        employeeCustomError.textContent = '';
+        employeeCustomError.hidden = true;
+        employeeCustomInput.removeAttribute('aria-invalid');
+        employeeCustomEditor.hidden = false;
+        employeeRange.parentElement.classList.add('is-editing');
+        employeeThumb.hidden = true;
+        employeeCustomInput.focus();
+        employeeCustomInput.select();
+    };
+    const closeEmployeeEditor = () => {
+        employeeCustomEditor.hidden = true;
+        employeeCustomError.textContent = '';
+        employeeCustomError.hidden = true;
+        employeeCustomInput.removeAttribute('aria-invalid');
+        employeeThumb.hidden = false;
+        employeeRange.parentElement.classList.remove('is-editing', 'is-moving');
+    };
+    const applyCustomEmployeeCount = () => {
+        const compactCount = employeeCustomInput.value.trim();
+        const count = /^\d+$/.test(compactCount) ? Number(compactCount) : NaN;
+        if (!Number.isInteger(count) || count < 1 || count > 50) {
+            employeeCustomError.textContent = '1–50 aralığında tam işçi sayı daxil edin.';
+            employeeCustomError.hidden = false;
+            employeeCustomInput.setAttribute('aria-invalid', 'true');
+            employeeCustomInput.focus();
+            return;
+        }
+        if (customEmployeeCount !== null) {
+            const previousCustomIndex = employeeCounts.indexOf(customEmployeeCount);
+            if (previousCustomIndex >= 0) employeeCounts.splice(previousCustomIndex, 1);
+            customEmployeeCount = null;
+        }
+        if (!employeeCounts.includes(count)) {
+            employeeCounts.push(count);
+            employeeCounts.sort((left, right) => left - right);
+            if (!standardEmployeeCounts.includes(count)) customEmployeeCount = count;
+        }
+        employeeOptions = employeeCounts.map((value) => `${value} nəfər`);
+        employeeDisplayOptions = employeeCounts.map((value) => `${value} nəfər`);
+        employeeRange.max = String(employeeOptions.length);
+        employeeRange.value = String(employeeCounts.indexOf(count) + 1);
+        closeEmployeeEditor();
+        updateEmployeeSlider(true);
+    };
+    const openImportEditor = () => {
+        if (!importCustomEditor.hidden) {
+            closeImportEditor();
+            return;
+        }
+        closeOtherInlineEditors('import');
+        const selectedIndex = Number(importRange.value) - 1;
+        importCustomInput.value = selectedIndex >= 0 ? formatTurnoverNumber(importAmounts[selectedIndex]) : '';
+        importCustomError.textContent = '';
+        importCustomError.hidden = true;
+        importCustomInput.removeAttribute('aria-invalid');
+        importCustomEditor.hidden = false;
+        importRange.parentElement.classList.add('is-editing');
+        importThumb.hidden = true;
+        importCustomInput.focus();
+        importCustomInput.select();
+    };
+    const closeImportEditor = () => {
+        importCustomEditor.hidden = true;
+        importCustomError.textContent = '';
+        importCustomError.hidden = true;
+        importCustomInput.removeAttribute('aria-invalid');
+        importThumb.hidden = false;
+        importRange.parentElement.classList.remove('is-editing', 'is-moving');
+    };
+    const closeOtherInlineEditors = (except) => {
+        if (except !== 'turnover' && !turnoverCustomEditor.hidden) closeTurnoverEditor(false);
+        if (except !== 'employee' && !employeeCustomEditor.hidden) closeEmployeeEditor();
+        if (except !== 'import' && !importCustomEditor.hidden) closeImportEditor();
+    };
+    const applyCustomImportAmount = () => {
+        const compactAmount = importCustomInput.value.trim().replace(/[\s\u00a0]/g, '');
+        const numericAmount = /^\d+$/.test(compactAmount)
+            ? compactAmount
+            : /^\d{1,3}(?:[.,]\d{3})+$/.test(compactAmount)
+                ? compactAmount.replace(/[.,]/g, '')
+                : '';
+        const amount = numericAmount ? Number(numericAmount) : NaN;
+        if (!Number.isSafeInteger(amount) || amount < importMinimum || amount > importMaximum) {
+            importCustomError.textContent = '10 000–1 000 000 ABŞ dolları aralığında tam məbləğ daxil edin.';
+            importCustomError.hidden = false;
+            importCustomInput.setAttribute('aria-invalid', 'true');
+            importCustomInput.focus();
+            return;
+        }
+        if (customImportAmount !== null) {
+            const previousCustomIndex = importAmounts.indexOf(customImportAmount);
+            if (previousCustomIndex >= 0) importAmounts.splice(previousCustomIndex, 1);
+            customImportAmount = null;
+        }
+        if (!importAmounts.includes(amount)) {
+            importAmounts.push(amount);
+            importAmounts.sort((left, right) => left - right);
+            if (!standardImportAmounts.includes(amount)) customImportAmount = amount;
+        }
+        importOptions = importAmounts.map((value) => `${formatTurnoverNumber(value)} ABŞ dolları`);
+        importThumbOptions = importAmounts.map((value) => value >= 1000000
+            ? '$1M'
+            : value % 1000 === 0
+                ? `$${value / 1000}K`
+                : `$${formatTurnoverNumber(value)}`);
+        importRange.max = String(importOptions.length);
+        importRange.value = String(importAmounts.indexOf(amount) + 1);
+        closeImportEditor();
+        updateImportSlider(true);
+    };
+    const bindCategorySlider = (range, update, markers, markerStops) => {
+        const stage = range.parentElement;
+        let pointerX = null;
+        let pointerId = null;
+        const snapToMarker = () => {
+            if (pointerX === null) return;
+            const closest = markers.reduce((best, marker) => {
+                const amount = Number(marker.dataset.categoryMarker);
+                const markerIndex = markerStops.indexOf(amount);
+                const markerX = marker.getBoundingClientRect().left + marker.getBoundingClientRect().width / 2;
+                const distance = Math.abs(pointerX - markerX);
+                return distance < best.distance ? { amount, distance } : best;
+            }, { amount: 0, distance: Infinity });
+            if (closest.distance > 14) return;
+            const stopIndex = markerStops.indexOf(closest.amount);
+            if (stopIndex >= 0) range.value = String(stopIndex + 1);
+        };
+        range.addEventListener('pointerdown', (event) => {
+            pointerId = event.pointerId;
+            pointerX = event.clientX;
+            stage.classList.add('is-moving');
+        });
+        range.addEventListener('pointermove', (event) => {
+            if (pointerId === event.pointerId && (event.buttons || event.pointerType !== 'mouse')) pointerX = event.clientX;
+        });
+        range.addEventListener('input', () => {
+            stage.classList.add('is-moving');
+            snapToMarker();
+            update(false);
+        });
+        range.addEventListener('change', () => {
+            update(true);
+            stage.classList.remove('is-moving');
+            pointerX = null;
+            pointerId = null;
+        });
+        window.addEventListener('pointerup', (event) => {
+            if (pointerId !== event.pointerId) return;
+            stage.classList.remove('is-moving');
+            pointerX = null;
+            pointerId = null;
+            update(true);
+        });
+        window.addEventListener('pointercancel', (event) => {
+            if (pointerId !== event.pointerId) return;
+            stage.classList.remove('is-moving');
+            pointerX = null;
+            pointerId = null;
+        });
+        markers.forEach((marker) => marker.addEventListener('click', () => {
+            const stopIndex = markerStops.indexOf(Number(marker.dataset.categoryMarker));
+            if (stopIndex < 0) return;
+            range.value = String(stopIndex + 1);
+            update(true);
+        }));
+    };
+    const bindRangeDoubleClickEditor = (range, thumb, update, openEditor) => {
+        let firstPressAt = 0;
+        let startingValue = range.value;
+        let startingCommit = thumb.classList.contains('is-committed');
+        range.addEventListener('pointerdown', () => {
+            const now = Date.now();
+            if (!firstPressAt || now - firstPressAt > 600) {
+                startingValue = range.value;
+                startingCommit = thumb.classList.contains('is-committed');
+            }
+            firstPressAt = now;
+        });
+        range.addEventListener('dblclick', (event) => {
+            event.preventDefault();
+            if (firstPressAt && Date.now() - firstPressAt <= 700) {
+                range.value = startingValue;
+                update(startingCommit);
+            }
+            firstPressAt = 0;
+            openEditor();
+        });
+    };
+
+    const playQuoteOpenSound = () => {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContextClass) return;
+        try {
+            const audio = new AudioContextClass();
+            const tone = audio.createOscillator();
+            const volume = audio.createGain();
+            const now = audio.currentTime;
+            tone.type = 'sine';
+            tone.frequency.setValueAtTime(680, now);
+            tone.frequency.exponentialRampToValueAtTime(430, now + 0.1);
+            volume.gain.setValueAtTime(0.0001, now);
+            volume.gain.exponentialRampToValueAtTime(0.016, now + 0.012);
+            volume.gain.exponentialRampToValueAtTime(0.0001, now + 0.12);
+            tone.connect(volume);
+            volume.connect(audio.destination);
+            tone.start(now);
+            tone.stop(now + 0.13);
+            tone.onended = () => audio.close().catch(() => {});
+        } catch (error) {
+            // Səs dəstəklənməyən brauzerdə pəncərənin açılması bloklanmır.
+        }
+    };
+
+    turnoverRange.max = String(sliderMax + 1);
+    updateTurnoverSelection(false);
+    employeeRange.max = String(employeeOptions.length);
+    updateEmployeeSlider();
+    importRange.max = String(importOptions.length);
+    updateImportSlider();
+    window.addEventListener('resize', () => {
+        updateTurnoverSlider();
+        updateEmployeeSlider();
+        updateImportSlider();
+    });
+    const snapTurnoverToNearbyMarker = () => {
+        if (turnoverPointerX === null) return;
+        const rangeRect = turnoverRange.getBoundingClientRect();
+        const travel = Math.max(0, turnoverRange.clientWidth - 28);
+        const closestMarker = turnoverMarkers.reduce((closest, marker) => {
+            const amount = Number(marker.dataset.turnoverMarker);
+            const markerX = rangeRect.left + 14 + travel * turnoverSliderPosition(amount);
+            const distance = Math.abs(turnoverPointerX - markerX);
+            return distance < closest.distance ? { amount, distance } : closest;
+        }, { amount: 0, distance: Infinity });
+        if (closestMarker.distance > 14) return;
+        const stopIndex = turnoverStops.indexOf(closestMarker.amount);
+        if (stopIndex >= 0) turnoverRange.value = String(stopIndex + 1);
+    };
+    turnoverRange.addEventListener('pointerdown', (event) => {
+        turnoverRange.parentElement.classList.add('is-moving');
+        turnoverPointerX = event.clientX;
+    });
+    turnoverRange.addEventListener('pointermove', (event) => {
+        if (event.buttons || event.pointerType !== 'mouse') turnoverPointerX = event.clientX;
+    });
+    window.addEventListener('pointerup', () => {
+        turnoverPointerX = null;
+        turnoverRange.parentElement.classList.remove('is-moving');
+    });
+    window.addEventListener('pointercancel', () => {
+        turnoverPointerX = null;
+        turnoverRange.parentElement.classList.remove('is-moving');
+    });
+    turnoverRange.addEventListener('input', () => {
+        turnoverRange.parentElement.classList.add('is-moving');
+        snapTurnoverToNearbyMarker();
+        updateTurnoverSelection(false);
+    });
+    turnoverRange.addEventListener('change', () => {
+        updateTurnoverSelection(true);
+        turnoverRange.parentElement.classList.remove('is-moving');
+    });
+    turnoverEditButton.addEventListener('click', openTurnoverEditor);
+    turnoverThumb.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            openTurnoverEditor();
+        }
+    });
+    bindRangeDoubleClickEditor(turnoverRange, turnoverThumb, updateTurnoverSelection, openTurnoverEditor);
+    turnoverMarkers.forEach((marker) => marker.addEventListener('dblclick', (event) => {
+        event.preventDefault();
+        openTurnoverEditor();
+    }));
+    turnoverCustomApply.addEventListener('click', applyCustomTurnoverAmount);
+    turnoverCustomCancel.addEventListener('click', closeTurnoverEditor);
+    turnoverCustomInput.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            event.stopPropagation();
+            applyCustomTurnoverAmount();
+        } else if (event.key === 'Escape') {
+            event.preventDefault();
+            event.stopPropagation();
+            closeTurnoverEditor();
+        }
+    });
+    turnoverCustomInput.addEventListener('input', () => {
+        turnoverCustomError.textContent = '';
+        turnoverCustomError.hidden = true;
+        turnoverCustomInput.removeAttribute('aria-invalid');
+    });
+    turnoverMarkers.forEach((marker) => marker.addEventListener('click', () => {
+        const targetAmount = Number(marker.dataset.turnoverMarker);
+        const targetIndex = turnoverStops.indexOf(targetAmount);
+        if (targetIndex < 0) return;
+        turnoverRange.value = String(targetIndex + 1);
+        updateTurnoverSelection(true);
+    }));
+    activityOptions.forEach((option) => option.addEventListener('change', () => {
+        activitySummaryInput.value = activityOptions.filter((item) => item.checked).map((item) => item.value).join(', ');
+        activityError.textContent = '';
+    }));
+    bindCategorySlider(employeeRange, updateEmployeeSlider, employeeMarkers, employeeCounts);
+    bindRangeDoubleClickEditor(employeeRange, employeeThumb, updateEmployeeSlider, openEmployeeEditor);
+    employeeEditButton.addEventListener('click', openEmployeeEditor);
+    employeeCustomApply.addEventListener('click', applyCustomEmployeeCount);
+    employeeCustomCancel.addEventListener('click', closeEmployeeEditor);
+    employeeCustomInput.addEventListener('input', () => {
+        employeeCustomError.textContent = '';
+        employeeCustomError.hidden = true;
+        employeeCustomInput.removeAttribute('aria-invalid');
+    });
+    employeeCustomInput.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            event.stopPropagation();
+            applyCustomEmployeeCount();
+        } else if (event.key === 'Escape') {
+            event.preventDefault();
+            event.stopPropagation();
+            closeEmployeeEditor();
+        }
+    });
+    employeeRange.addEventListener('input', () => {
+        if (employeeSummaryInput.value) employeeError.textContent = '';
+    });
+    bindCategorySlider(importRange, updateImportSlider, importMarkers, importAmounts);
+    bindRangeDoubleClickEditor(importRange, importThumb, updateImportSlider, openImportEditor);
+    importRange.addEventListener('input', () => {
+        if (importSummaryInput.value) importError.textContent = '';
+    });
+    importEditButton.addEventListener('click', openImportEditor);
+    importCustomApply.addEventListener('click', applyCustomImportAmount);
+    importCustomCancel.addEventListener('click', closeImportEditor);
+    importCustomInput.addEventListener('input', () => {
+        importCustomError.textContent = '';
+        importCustomError.hidden = true;
+        importCustomInput.removeAttribute('aria-invalid');
+    });
+    importCustomInput.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            event.stopPropagation();
+            applyCustomImportAmount();
+        } else if (event.key === 'Escape') {
+            event.preventDefault();
+            event.stopPropagation();
+            closeImportEditor();
+        }
+    });
+
+    const closeModal = () => {
+        modal.hidden = true;
+        closeButton.classList.remove('is-highlighted');
+        document.body.classList.remove('footer-contact-open');
+        trigger.focus();
+    };
+
+    trigger.addEventListener('click', () => {
+        modal.hidden = false;
+        playQuoteOpenSound();
+        document.body.classList.add('footer-contact-open');
+        status.textContent = '';
+        status.classList.remove('is-error');
+        taxError.textContent = '';
+        activityError.textContent = '';
+        turnoverError.textContent = '';
+        employeeError.textContent = '';
+        importError.textContent = '';
+        closeButton.classList.remove('is-highlighted');
+        updateTurnoverSelection(Number(turnoverRange.value) > 0);
+        updateEmployeeSlider();
+        updateImportSlider();
+        form.querySelector('[name="activity"]')?.focus();
+    });
+
+    closeButton.addEventListener('click', closeModal);
+    modal.addEventListener('click', (event) => {
+        if (event.target === modal) closeButton.classList.add('is-highlighted');
+    });
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && !modal.hidden) closeModal();
+    });
+
+    form.addEventListener('change', () => {
+        if (taxOptions.some((option) => option.checked)) taxError.textContent = '';
+    });
+
+    form.addEventListener('invalid', (event) => {
+        const field = event.target;
+        const messages = {
+            activity: 'Şirkətin fəaliyyət sahəsini seçin.',
+            employeeCount: 'Şirkətin orta işçi sayı aralığını seçin.',
+            importVolume: 'İdxal olunan malların illik həcmini seçin.',
+            reporterPhone: 'Mobil nömrənizi daxil edin.',
+            reporterEmail: 'E-poçt ünvanınızı daxil edin.'
+        };
+        if (field.validity.valueMissing) field.setCustomValidity(messages[field.name] || 'Bu sahəni doldurun.');
+        else if (field.name === 'reporterEmail' && field.validity.typeMismatch) field.setCustomValidity('Düzgün e-poçt ünvanı daxil edin.');
+        else if (field.name === 'reporterPhone' && field.validity.patternMismatch) field.setCustomValidity('Mobil nömrəni düzgün formatda daxil edin.');
+    }, true);
+    form.addEventListener('input', (event) => event.target.setCustomValidity?.(''), true);
+    form.addEventListener('change', (event) => event.target.setCustomValidity?.(''), true);
+
+    window.addEventListener('message', (event) => {
+        if (event.source !== frame.contentWindow || !event.data || event.data.type !== 'best-think-contact-result' || event.data.requestId !== activeRequestId) return;
+        window.clearTimeout(responseTimer);
+        status.textContent = event.data.message || (event.data.ok ? 'Təklif sorğunuz qəbul edildi.' : 'Sorğu göndərilmədi. Yenidən cəhd edin.');
+        status.classList.toggle('is-error', !event.data.ok);
+        if (event.data.ok) {
+            form.reset();
+            taxError.textContent = '';
+            activityError.textContent = '';
+            turnoverError.textContent = '';
+            employeeError.textContent = '';
+            importError.textContent = '';
+            if (customTurnoverStop !== null) {
+                const customIndex = turnoverStops.indexOf(customTurnoverStop);
+                if (customIndex >= 0) turnoverStops.splice(customIndex, 1);
+                customTurnoverStop = null;
+                sliderMax = turnoverStops.length - 1;
+                turnoverRange.max = String(sliderMax + 1);
+            }
+            turnoverCustomEditor.hidden = true;
+            turnoverCustomInput.value = '';
+            turnoverCustomError.textContent = '';
+            turnoverCustomError.hidden = true;
+            turnoverThumb.hidden = false;
+            turnoverRange.value = '0';
+            updateTurnoverSelection(false);
+            if (customEmployeeCount !== null) {
+                const customIndex = employeeCounts.indexOf(customEmployeeCount);
+                if (customIndex >= 0) employeeCounts.splice(customIndex, 1);
+                customEmployeeCount = null;
+                employeeOptions = employeeCounts.map((value) => `${value} nəfər`);
+                employeeDisplayOptions = employeeCounts.map((value) => `${value} nəfər`);
+                employeeRange.max = String(employeeOptions.length);
+            }
+            closeEmployeeEditor();
+            employeeRange.value = '0';
+            updateEmployeeSlider(false);
+            if (customImportAmount !== null) {
+                const customIndex = importAmounts.indexOf(customImportAmount);
+                if (customIndex >= 0) importAmounts.splice(customIndex, 1);
+                customImportAmount = null;
+                importOptions = importAmounts.map((value) => `${formatTurnoverNumber(value)} ABŞ dolları`);
+                importThumbOptions = importAmounts.map((value) => value >= 1000000 ? '$1M' : `$${value / 1000}K`);
+                importRange.max = String(importOptions.length);
+            }
+            closeImportEditor();
+            importRange.value = '0';
+            updateImportSlider(false);
+            window.setTimeout(closeModal, 1700);
+        }
+        activeRequestId = '';
+    });
+
+    form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        status.classList.remove('is-error');
+
+        const selectedTaxes = taxOptions.filter((option) => option.checked).map((option) => option.value);
+        if (!selectedTaxes.length) {
+            taxError.textContent = 'Ən azı bir vergi öhdəliyi seçin.';
+            taxOptions[0].focus();
+            return;
+        }
+
+        const selectedActivities = activityOptions.filter((option) => option.checked).map((option) => option.value);
+        if (!selectedActivities.length) {
+            activityError.textContent = 'Ən azı bir fəaliyyət sahəsi seçin.';
+            activityOptions[0].focus();
+            return;
+        }
+        if (Number(turnoverRange.value) <= 0) {
+            turnoverError.textContent = 'Gözlənilən illik dövriyyəni sürüşdürərək seçin.';
+            turnoverRange.focus();
+            return;
+        }
+        if (Number(employeeRange.value) <= 0) {
+            employeeError.textContent = 'Şirkətin orta işçi sayını sürüşdürərək seçin.';
+            employeeRange.focus();
+            return;
+        }
+        if (Number(importRange.value) <= 0) {
+            importError.textContent = 'İdxal dövriyyəsinin illik həcmini sürüşdürərək seçin.';
+            importRange.focus();
+            return;
+        }
+
+        const activity = selectedActivities.join(', ');
+        const turnoverDigits = String(turnoverStops[Number(turnoverRange.value) - 1] || '');
+        turnoverAmountInput.value = formatTurnoverNumber(turnoverDigits);
+        const turnover = `${formatTurnoverNumber(turnoverDigits)} AZN`;
+        const employeeCount = employeeOptions[Number(employeeRange.value) - 1];
+        const importVolume = importOptions[Number(importRange.value) - 1];
+        activitySummaryInput.value = activity;
+        employeeSummaryInput.value = employeeCount;
+        importSummaryInput.value = importVolume;
+
+        if (['localhost', '127.0.0.1', '::1'].includes(window.location.hostname)) {
+            status.textContent = 'Bu yerli preview-dir. Sorğunun e-poçta göndərilməsi real saytda aktiv olacaq.';
+            status.classList.add('is-error');
+            return;
+        }
+
+        const phone = form.querySelector('[name="reporterPhone"]').value.trim();
+        const email = form.querySelector('[name="reporterEmail"]').value.trim();
+        const message = form.querySelector('[name="quoteMessage"]').value.trim();
+        const summary = [
+            'TƏKLİF ƏLDƏ ET SORĞUSU',
+            `Fəaliyyət sahəsi: ${activity}`,
+            `Gözlənilən illik dövriyyə: ${turnover}`,
+            `Şirkətin orta işçi sayı: ${employeeCount}`,
+            `İdxal olunan malların illik həcmi: ${importVolume}`,
+            `Vergi öhdəlikləri: ${selectedTaxes.join(', ')}`,
+            `Mobil nömrə: ${phone}`,
+            `E-poçt: ${email}`,
+            `Əlavə məlumat: ${message || 'Qeyd edilməyib'}`
+        ].join('\n');
+
+        status.textContent = 'Sorğu göndərilir…';
+        turnoverSummaryInput.value = turnover;
+        form.querySelector('[name="problem"]').value = summary;
+        form.querySelector('[name="userAgent"]').value = navigator.userAgent;
+        activeRequestId = (window.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`).replace(/[^a-zA-Z0-9-]/g, '');
+        form.querySelector('[name="requestId"]').value = activeRequestId;
+        HTMLFormElement.prototype.submit.call(form);
+
+        responseTimer = window.setTimeout(() => {
+            if (activeRequestId) {
+                status.textContent = 'Göndərişin cavabı alınmadı. Bir az sonra yenidən cəhd edin və ya info@besthink.az ünvanına yazın.';
+                status.classList.add('is-error');
+                activeRequestId = '';
+            }
+        }, 25000);
+    });
+}
 
 /* =========================================================
    2. MƏZƏNNƏ FƏRQİ KALKULYATORU

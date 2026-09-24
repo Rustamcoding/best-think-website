@@ -1046,6 +1046,7 @@
 .footer-grid>div>a{margin:6px 0}
 .footer-brand p{max-width:220px;margin-top:18px}
 .footer-logo{width:145px;background:transparent;border-radius:0;padding:0}
+.footer .footer-grid .footer-logo-home{display:inline-block!important;margin:0!important;color:inherit;text-decoration:none}
 .footer-logo-wrap{position:relative;width:145px;height:98px;overflow:hidden}
 .footer-logo-tagline{position:absolute;left:0;right:0;bottom:0;padding:2px 0 1px;background:#08172f;color:#fff;text-align:center;font-size:8px;font-weight:800;letter-spacing:.35px;line-height:13px}
 .footer-contact-item{display:flex;align-items:flex-start;gap:9px;margin:9px 0}
@@ -1056,12 +1057,149 @@
 .footer-icon-location{position:relative;width:16px;height:19px;flex:0 0 16px;margin:0 1px 0 1px;background:#7fb0ff;clip-path:polygon(50% 100%,8% 48%,3% 35%,5% 22%,14% 10%,29% 3%,50% 0,71% 3%,86% 10%,95% 22%,97% 35%,92% 48%)}
 .footer-icon-location:after{content:"";position:absolute;top:4px;left:5px;width:6px;height:6px;border-radius:50%;background:#08172f}
 .footer-contact-item a:hover,.footer-grid>div>a:hover{color:#fff}
-.footer-form-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.contact-form-visual{display:grid!important;gap:8px}
-.contact-form-visual input,.contact-form-visual textarea{box-sizing:border-box}
-.contact-form-visual button{padding:11px 14px}
+.footer-contact-trigger{display:flex;align-items:center;gap:9px;margin:0;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;color:#9fb1c8!important;font:600 13px Inter,"Segoe UI",Arial,sans-serif;cursor:pointer;transition:color .18s}
+.footer-contact-trigger:hover{background:transparent!important;color:#fff!important}
+.footer-contact-trigger-icon{display:inline-flex;align-items:center;justify-content:center;width:17px;height:17px;color:#7fb0ff}
+.footer-contact-trigger-icon svg{display:block;width:15px;height:15px;fill:currentColor;stroke:#08172f;stroke-width:.7;stroke-linejoin:round}
+.footer-contact-modal[hidden]{display:none!important}
+.footer-contact-modal{position:fixed;inset:0;z-index:1500;display:grid;place-items:center;padding:22px;background:rgba(7,18,36,.64);backdrop-filter:blur(5px)}
+.footer-contact-dialog{width:min(560px,100%);max-height:min(90vh,820px);overflow:auto;padding:30px;border:1px solid #dce5f0;border-radius:20px;background:#fff;color:var(--text);box-shadow:0 28px 90px rgba(4,18,40,.3);animation:footer-contact-in .28s cubic-bezier(.2,.8,.2,1)}
+@keyframes footer-contact-in{from{opacity:0;transform:translateY(12px) scale(.975)}to{opacity:1;transform:translateY(0) scale(1)}}
+.footer-contact-dialog-head{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;margin-bottom:23px}
+.footer-contact-kicker{font-size:10px;font-weight:800;letter-spacing:1.3px;color:var(--blue)}
+.footer-contact-dialog-head h2{margin:5px 0 2px;color:var(--navy);font-size:26px;line-height:1.25}
+.footer-contact-dialog-head p{margin:0;color:var(--muted);font-size:13px}
+.footer-contact-close{width:36px;height:36px;flex:0 0 36px;padding:0!important;border:1px solid #e2e8f0!important;border-radius:50%!important;background:#f8fafc!important;color:#52637a!important;font-size:25px;line-height:1;cursor:pointer}
+.footer-contact-close:hover,.footer-contact-close.is-highlighted{border-color:#ef4444!important;background:#fff1f2!important;color:#dc2626!important}
+.footer .footer-contact-form{display:grid;gap:15px}
+.footer-contact-form label{display:grid;gap:6px;color:#24344d;font-size:13px;font-weight:600}
+.footer-contact-form label i{color:#df3548;font-style:normal}
+.footer-contact-form input:not([type=file]),.footer-contact-form select,.footer-contact-form textarea{width:100%;min-height:44px;padding:10px 12px;border:1px solid #d6dfeb;border-radius:9px;background:#fff;color:var(--text);font:400 14px Inter,"Segoe UI",Arial,sans-serif;outline:none;transition:border-color .15s,box-shadow .15s}
+.footer-contact-form textarea{min-height:125px;resize:vertical}
+.footer-contact-form textarea:disabled,.footer-contact-file-label input:disabled{background:#f4f6f9;color:#8793a3;cursor:not-allowed;opacity:.82}
+.footer-contact-form input:focus,.footer-contact-form select:focus,.footer-contact-form textarea:focus{border-color:#6b9bea;box-shadow:0 0 0 3px rgba(36,102,211,.12)}
+.footer-contact-details{display:grid;gap:15px;padding-top:2px}
+.footer-contact-file-label input[type=file]{width:100%;padding:10px;border:1px dashed #cbd7e6;border-radius:9px;background:#f9fbfe;color:#52637a;font:400 12px Inter,"Segoe UI",Arial,sans-serif}
+.footer-contact-file-label small{font-size:11px;font-weight:400;color:#76869b}
+.footer-contact-file-help{margin-top:-3px}
+.footer-contact-status{min-height:18px;margin:0;color:#315c99;font-size:12px}
+.footer-contact-status.is-error{color:#c6283c}
+.footer-contact-submit{display:flex;justify-content:center;align-items:center;gap:10px;min-height:46px!important;padding:11px 18px!important;border:0!important;border-radius:10px!important;background:var(--blue)!important;color:#fff!important;font:700 14px Inter,"Segoe UI",Arial,sans-serif;cursor:pointer}
+.footer-contact-submit:hover{background:#1857bd!important}
+.footer-quote-trigger{display:block;margin:10px 0 0;padding:0;border:0;background:none;color:#9fb1c8;font:600 13px Inter,"Segoe UI",Arial,sans-serif;text-align:left;cursor:pointer;transition:color .18s}
+.footer-quote-trigger:hover{color:#fff}
+.footer-quote-dialog{width:min(900px,100%);max-height:min(88vh,820px)}
+#footer-quote-modal{background:rgba(31,38,48,.48);backdrop-filter:blur(4px)}
+#footer-quote-modal .footer-quote-dialog{background:#fff;color:#293747;font-family:Inter,"Segoe UI",Arial,sans-serif}
+#footer-quote-modal .footer-contact-kicker{color:#526579}
+#footer-quote-modal .footer-contact-dialog-head h2{color:#202b38;font:600 24px/1.25 Inter,"Segoe UI",Arial,sans-serif}
+#footer-quote-modal .footer-quote-activity-option:has(input:checked){border-color:#8b98a7;background:#f5f6f8;color:#2f3a48!important;box-shadow:0 0 0 2px rgba(91,105,123,.08)}
+#footer-quote-modal .footer-quote-activity-option:has(input:checked) .footer-quote-activity-icon{color:#46596c}
+#footer-quote-modal .footer-quote-activity-check{background:#627a70}
+#footer-quote-modal .footer-quote-activity-option:focus-within{outline-color:rgba(91,105,123,.24)}
+.footer-quote-form{grid-template-columns:repeat(2,minmax(0,1fr));align-items:start;column-gap:22px;row-gap:13px}
+.footer-quote-form>.footer-quote-activity-field,.footer-quote-form>.footer-quote-turnover-field,.footer-quote-form>.footer-quote-range-field,.footer-quote-form>.footer-quote-message-field,.footer-quote-form>.footer-quote-taxes,.footer-quote-form>.footer-contact-status,.footer-quote-form>.footer-contact-submit{grid-column:1/-1}
+.footer-quote-form>.footer-quote-contact-details{grid-column:1/-1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start;column-gap:22px;row-gap:13px}
+.footer-quote-contact-details>.footer-quote-message-field{grid-column:1/-1}
+.footer-quote-turnover-control{display:grid;grid-template-columns:minmax(190px,.72fr) minmax(0,1.65fr);align-items:center;gap:22px;margin-top:2px}
+.footer-quote-turnover-title{color:#24344d;font-size:13px;font-weight:600;line-height:1.35}
+.footer-quote-turnover-title i{color:#df3548;font-style:normal}
+.footer-quote-turnover-field>.footer-quote-field-error{margin-top:4px}
+.footer-quote-amount-wrap{position:relative}
+.footer-quote-amount-wrap input{padding-right:42px!important}
+.footer-quote-amount-wrap>span{position:absolute;top:50%;right:14px;transform:translateY(-50%);color:#25364f;font-size:16px;font-weight:600;pointer-events:none}
+.footer-quote-slider-wrap{display:grid;gap:5px;min-width:0}
+.footer-quote-slider-labels{display:flex;justify-content:space-between;gap:12px;color:#687991;font-size:11px;font-weight:500}
+.footer-quote-slider-labels span:last-child{text-align:right}
+.footer-quote-slider-stage{position:relative;height:38px;--quote-range-progress:0%;--quote-thumb-position:14px;--quote-thumb-half-width:16px}
+.footer-quote-slider-stage::before,.footer-quote-slider-stage::after{position:absolute;top:50%;left:14px;right:14px;height:6px;transform:translateY(-50%);border-radius:99px;content:""}
+.footer-quote-slider-stage::before{z-index:0;background:#e1e8f1}
+.footer-quote-slider-stage::after{z-index:1;background:linear-gradient(90deg,#c7ddfa 0%,#79a8e8 46%,#3e73c3 72%,#153a7d 100%);clip-path:inset(0 calc(100% - var(--quote-range-progress)) 0 0 round 99px)}
+.footer-quote-slider-stage input[type=range]{position:absolute;inset:0;width:100%;height:38px;min-height:38px;margin:0;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;appearance:none;-webkit-appearance:none;cursor:pointer;z-index:2}
+.footer-quote-slider-stage input[type=range]::-webkit-slider-runnable-track{height:6px;border-radius:99px;background:transparent}
+.footer-quote-slider-stage input[type=range]::-moz-range-track{height:6px;border-radius:99px;background:transparent}
+.footer-quote-slider-stage input[type=range]::-webkit-slider-thumb{width:30px;height:30px;margin-top:-12px;border:0;border-radius:8px;background:transparent;appearance:none;-webkit-appearance:none}
+.footer-quote-slider-stage input[type=range]::-moz-range-thumb{width:30px;height:30px;border:0;border-radius:8px;background:transparent}
+.footer-quote-slider-thumb-icon{position:absolute;top:50%;left:var(--quote-thumb-position);z-index:3;display:grid;place-items:center;width:32px;height:30px;transform:translate(-50%,-50%);border:1px solid #3a72c4;border-radius:8px 8px 8px 3px;background:linear-gradient(145deg,#fff,#e7f0ff);color:#174b96;font-family:Arial,"Segoe UI Symbol",sans-serif;font-size:17px;font-weight:800;box-shadow:0 3px 9px rgba(27,76,151,.2);pointer-events:none}
+.footer-quote-slider-direction{position:absolute;top:50%;z-index:4;display:grid;place-items:center;width:14.4px;height:14.4px;transform:translate(-50%,-50%);color:#21834c;opacity:.95;pointer-events:none;transition:opacity .12s ease}
+.footer-quote-slider-direction svg{display:block;width:100%;height:100%;fill:currentColor;stroke:none}
+.footer-quote-slider-direction-left{left:calc(var(--quote-thumb-position) - var(--quote-thumb-half-width) - 9px)}
+.footer-quote-slider-direction-right{left:calc(var(--quote-thumb-position) + var(--quote-thumb-half-width) + 9px)}
+.footer-quote-slider-stage.is-at-start .footer-quote-slider-direction-left,.footer-quote-slider-stage.is-at-end .footer-quote-slider-direction-right,.footer-quote-slider-stage.is-moving .footer-quote-slider-direction,.footer-quote-slider-stage.is-editing .footer-quote-slider-direction{opacity:0}
+.footer-quote-slider-stage:focus-within .footer-quote-slider-thumb-icon{box-shadow:0 0 0 4px rgba(44,107,212,.16),0 3px 9px rgba(27,76,151,.2)}
+.footer-quote-turnover-field .footer-quote-slider-thumb-icon{width:max-content;min-width:32px;max-width:180px;padding:0 8px;font-size:11px;white-space:nowrap;transition:color .15s,border-color .15s,background .15s,box-shadow .15s}
+.footer-quote-turnover-field .footer-quote-slider-thumb-icon:focus-visible{outline:2px solid rgba(58,114,196,.45);outline-offset:3px}
+.footer-quote-slider-thumb-icon.has-value{width:max-content;min-width:32px;max-width:180px;padding:0 8px;font-size:10px;white-space:nowrap}
+.footer-quote-slider-thumb-value{display:none}
+.footer-quote-slider-thumb-icon.has-value .footer-quote-slider-thumb-value{display:inline}
+.footer-quote-slider-thumb-icon.has-value svg,.footer-quote-slider-thumb-icon.has-value .footer-quote-slider-thumb-symbol{display:none}
+.footer-quote-slider-thumb-icon.is-committed{border-color:#61a77e;background:linear-gradient(145deg,#f7fff9,#e2f4e8);color:#21834c;box-shadow:0 3px 9px rgba(33,131,76,.16)}
+.footer-quote-turnover-field{display:grid;gap:6px;color:#24344d;font-size:13px;font-weight:600}
+.footer-quote-turnover-markers{position:relative;height:27px;margin:-5px 14px 0}
+.footer .footer-quote-turnover-marker{position:absolute;top:0;display:grid;grid-template-rows:6px auto 2px;justify-items:center;gap:3px;transform:translateX(-50%);padding:0;border:0;border-radius:0;background:transparent;color:#718198;font:500 10px/1.1 Inter,"Segoe UI",Arial,sans-serif;white-space:nowrap;cursor:pointer;box-shadow:none}
+.footer .footer-quote-turnover-marker::before{width:1px;height:6px;background:#9aacc2;content:""}
+.footer .footer-quote-turnover-marker::after{width:calc(100% + 8px);min-width:18px;height:1.7px;border-radius:2px;background:#b8dcff;content:""}
+.footer .footer-quote-turnover-marker:hover,.footer .footer-quote-turnover-marker.is-active{background:transparent;color:#285fa7;font-weight:700;box-shadow:none}
+.footer .footer-quote-turnover-marker.is-active::before{background:#21834c}
+.footer .footer-quote-turnover-marker:focus-visible{outline:2px solid rgba(58,114,196,.45);outline-offset:2px;border-radius:2px}
+.footer .footer-quote-turnover-edit{position:absolute;top:50%;left:-22px;z-index:4;display:grid;place-items:center;width:19px;height:19px;min-height:19px;padding:0;transform:translateY(-50%);border:1px solid #cbd9e9;border-radius:50%;background:#fff;color:#55739a;box-shadow:none;cursor:pointer}
+.footer .footer-quote-turnover-edit:hover{border-color:#83b7ed;background:#f5faff;color:#285fa7}
+.footer-quote-turnover-edit svg{width:11px;height:11px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.footer-quote-turnover-inline-editor{position:absolute;top:50%;left:clamp(0px,calc(var(--quote-thumb-position) - 86px),calc(100% - 174px));z-index:5;display:flex;align-items:center;gap:3px;width:174px;height:30px;box-sizing:border-box;padding:2px 4px;transform:translateY(-50%);border:1px solid #a8c4e7;border-radius:8px;background:#fff;box-shadow:0 3px 10px rgba(31,72,130,.17)}
+.footer-quote-turnover-inline-editor[hidden],.footer-quote-turnover-inline-error[hidden]{display:none!important}
+.footer-quote-form .footer-quote-turnover-inline-editor input{flex:1;min-width:0;width:auto;min-height:24px;padding:2px 4px;border:0;border-radius:4px;background:#fff;color:#263a55;font:500 12px Inter,"Segoe UI",Arial,sans-serif;box-shadow:none}
+.footer-quote-form .footer-quote-turnover-inline-editor input:focus{outline:0}
+.footer-quote-form .footer-quote-turnover-inline-editor input[aria-invalid="true"]{color:#b42332}
+.footer-quote-turnover-inline-editor button{display:grid;place-items:center;width:23px;height:23px;min-height:23px;padding:0;border:1px solid #d6e2f0;border-radius:6px;background:#f7faff;color:#385a85;font:600 14px/1 Inter,"Segoe UI",Arial,sans-serif;cursor:pointer}
+.footer-quote-turnover-inline-editor button:first-of-type{border-color:#bcd4ef;background:#f0f6fd;color:#285fa7}
+.footer-quote-turnover-inline-editor button:last-of-type{font-size:16px}
+.footer-quote-turnover-inline-error{margin:-3px 14px 0;color:#c6283c;font-size:10px;font-weight:400}
+.footer-quote-slider-wrap>small{color:#77869a;font-size:11px;font-weight:400}
+.footer-quote-taxes{min-width:0;margin:0}
+.footer-quote-tax-hint{display:block;margin:0;color:#77869a;font-size:11px;font-weight:400}
+.footer-quote-tax-options{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}
+.footer-quote-tax-error{grid-column:1/-1;display:block;min-height:15px;margin-top:5px;color:#c6283c;font-size:11px;font-weight:400}
+.footer-quote-form textarea{min-height:88px}
+.footer-quote-form input[type=hidden]{display:none}
+.footer-quote-activity-field{display:grid;grid-template-columns:minmax(150px,.72fr) minmax(0,1.65fr);align-items:center;gap:8px 22px;padding:2px 0 4px}
+.footer-quote-section-card{box-sizing:border-box;padding:13px 15px;border:1px solid #e1e8f1;border-radius:12px;background:#fff;box-shadow:0 2px 9px rgba(31,61,99,.035)}
+.footer-quote-activity-copy{display:grid;gap:6px;align-content:center}
+.footer-quote-activity-copy>span{color:#24344d;font-size:13px;font-weight:600}
+.footer-quote-activity-copy i{color:#df3548;font-style:normal}
+.footer-quote-activity-copy small{color:#77869a;font-size:11px;font-weight:400}
+.footer-quote-activity-options{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}
+.footer-quote-activity-option{position:relative;display:grid!important;grid-template-rows:24px auto;justify-items:center;align-content:center;gap:4px!important;min-width:0;min-height:68px;padding:7px 5px!important;border:1px solid #d6dfeb;border-radius:10px;background:#fff;color:#3a4b63!important;font-size:10.5px!important;font-weight:500!important;line-height:1.2;text-align:center;cursor:pointer;transition:border-color .16s,background .16s,box-shadow .16s,color .16s}
+.footer-quote-activity-option>input{position:absolute;width:1px!important;height:1px!important;min-height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0!important;opacity:0}
+.footer-quote-activity-option:has(input:checked){border-color:#4d82cf;background:#f1f6ff;color:#1d4e91!important;box-shadow:0 0 0 2px rgba(65,119,198,.1)}
+.footer-quote-activity-option:focus-within{outline:2px solid rgba(58,114,196,.3);outline-offset:2px}
+.footer-quote-activity-icon{display:grid;place-items:center;width:25px;height:25px;color:#4775b5}
+.footer-quote-activity-icon svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.65;stroke-linecap:round;stroke-linejoin:round}
+.footer-quote-activity-option:has(input:checked) .footer-quote-activity-icon{color:#2057a4}
+.footer-quote-activity-check{position:absolute;top:4px;right:5px;display:grid;place-items:center;width:14px;height:14px;border-radius:50%;background:#2867bb;color:white;font-size:9px;opacity:0;transform:scale(.75);transition:opacity .15s,transform .15s}
+.footer-quote-activity-option:has(input:checked) .footer-quote-activity-check{opacity:1;transform:scale(1)}
+.footer-quote-field-error{grid-column:1/-1;display:block;min-height:0;color:#c6283c;font-size:11px;font-weight:400}
+.footer-quote-range-field{align-content:start}
+.footer-quote-slider-copy{display:grid;gap:5px;align-content:center;min-width:0}
+.footer-quote-range-current{display:inline-flex;align-items:center;width:fit-content;max-width:100%;min-height:22px;box-sizing:border-box;padding:3px 7px;border:1px solid transparent;border-radius:6px;background:transparent;color:#344b6a;font-size:12px;font-weight:500;line-height:1.3;white-space:normal}
+.footer-quote-range-current.has-value{border-color:#dbe4ee;background:#fff}
+.footer-quote-range-current.is-committed{color:#21834c}
+.footer-quote-category-slider{margin-top:3px}
+.footer-quote-category-slider .footer-quote-slider-labels{font-size:10px}
+.footer-quote-category-slider .footer-quote-slider-thumb-icon svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.footer-quote-category-slider .footer-quote-slider-thumb-icon svg circle{fill:currentColor;stroke:none}
+.footer-quote-category-slider .footer-quote-slider-thumb-icon svg path{fill:currentColor;stroke:none}
+.footer-quote-category-slider .footer-quote-slider-thumb-icon{font-size:16px}
+.footer-quote-category-slider .footer-quote-slider-thumb-icon.has-value{font-size:14px}
+.footer-quote-category-control .footer-quote-turnover-control{width:100%;margin-top:0}
+.footer-quote-category-control .footer-quote-slider-copy{align-self:center}
+.footer-quote-category-control .footer-quote-field-error{margin-top:4px}
+.footer-quote-activity-error{min-height:15px}
+body.footer-contact-open{overflow:hidden}
 .copyright{margin-top:30px;padding-top:16px}
-@media(max-width:600px){.footer-form-row{grid-template-columns:1fr}}
+@media(max-width:700px){.footer-quote-turnover-control{grid-template-columns:minmax(112px,.72fr) minmax(0,1.65fr);gap:12px}}
+@media(max-width:700px){.footer-quote-activity-field{grid-template-columns:1fr;gap:8px}.footer-quote-activity-options{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:600px){.footer-contact-dialog{padding:23px 19px;border-radius:16px}.footer-contact-dialog-head h2{font-size:23px}.footer-contact-modal{padding:12px}.footer-quote-form{grid-template-columns:1fr}.footer-quote-form>label,.footer-quote-form>.footer-quote-activity-field,.footer-quote-form>.footer-quote-taxes,.footer-quote-form>.footer-contact-status,.footer-quote-form>.footer-contact-submit{grid-column:1}.footer-quote-form>.footer-quote-contact-details{grid-template-columns:1fr}.footer-quote-contact-details>.footer-quote-message-field{grid-column:1}.footer-quote-tax-options{grid-template-columns:repeat(2,minmax(0,1fr))}.footer-quote-activity-options{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(prefers-reduced-motion:reduce){.footer-contact-dialog{animation:none}}
 .cta{padding:42px 0}
 .cta h2{font-size:34px}
 .cta-inner{align-items:flex-end}
