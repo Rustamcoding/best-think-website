@@ -1226,13 +1226,18 @@ body.footer-contact-open{overflow:hidden}
 .service-offer-visual{position:relative;display:grid;place-items:center;align-self:stretch;isolation:isolate}
 .service-offer-visual:before{position:absolute;z-index:-1;width:102px;height:102px;border:1px solid #edf2f8;border-radius:50%;background:radial-gradient(circle,#f1f6fc 0%,#f8fafd 66%,transparent 68%);content:""}
 .service-offer-visual img{display:block;width:96px;height:132px;object-fit:contain;object-position:center bottom}
-.service-offer-copy{min-width:0}
-.service-offer-copy h3{margin:0;color:var(--navy);font-size:22px;font-weight:600;line-height:1.32;letter-spacing:-.02em}
-.service-offer-copy p{margin:8px 0 0;color:var(--muted);font-size:14px;line-height:1.5}
+.service-offer-copy{display:grid;grid-template-columns:minmax(0,1fr) 190px;column-gap:24px;align-items:center;min-width:0}
+.service-offer-copy h3,.service-offer-copy p{grid-column:1}
+.service-offer-copy h3{grid-row:1;margin:0;color:var(--navy);font-size:25px;font-weight:600;line-height:1.32;letter-spacing:-.02em}
+.service-offer-copy p{grid-row:2;margin:8px 0 0;color:var(--muted);font-size:17px;line-height:1.5}
+.service-offer-benefits{grid-column:2;grid-row:1 / span 2;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:9px;margin:0;padding:0;list-style:none;color:var(--muted);font-size:14px;line-height:1.45}
+.service-offer-benefits li{display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
+.service-offer-benefits li span{display:grid;width:16px;height:16px;place-items:center;border:1px solid #cfe0f6;border-radius:50%;color:var(--blue);font-size:10px;font-weight:700}
 .service-offer-banner .service-offer-button{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:44px;margin:0;padding:0 17px;border:1px solid var(--navy);border-radius:8px;background:var(--navy);color:#fff;font:500 13px Inter,"Segoe UI",Arial,sans-serif;white-space:nowrap;cursor:pointer;transition:background-color .18s,border-color .18s}
 .service-offer-banner .service-offer-button:hover{border-color:var(--blue);background:var(--blue)}
 .service-offer-button span{color:#cfe0f6;font-size:18px;line-height:1}
-@media(max-width:760px){.service-offer-banner{grid-template-columns:86px minmax(0,1fr);gap:14px;padding:12px 16px 16px 12px}.service-offer-visual img{width:78px;height:112px}.service-offer-visual:before{width:76px;height:76px}.service-offer-copy h3{font-size:18px}.service-offer-copy p{font-size:13px}.service-offer-banner .service-offer-button{grid-column:2;justify-self:start;min-height:42px}}
+@media(max-width:900px){.service-offer-copy{display:block}.service-offer-benefits{justify-content:flex-start;gap:7px;margin:12px 0 0}}
+@media(max-width:760px){.service-offer-banner{grid-template-columns:86px minmax(0,1fr);gap:14px;padding:12px 16px 16px 12px}.service-offer-visual img{width:78px;height:112px}.service-offer-visual:before{width:76px;height:76px}.service-offer-copy h3{font-size:20px}.service-offer-copy p{font-size:15px}.service-offer-benefits{align-items:flex-start;flex-direction:column;gap:7px;font-size:13px}.service-offer-banner .service-offer-button{grid-column:2;justify-self:start;min-height:42px}}
 
 @media(max-width:600px){
   .footer-grid{grid-template-columns:1fr}
