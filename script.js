@@ -342,7 +342,8 @@ function initializeFooterContactForm() {
 function initializeFooterQuoteForm() {
     const modal = document.querySelector('#footer-quote-modal');
     const dialog = modal?.querySelector('.footer-quote-dialog');
-    const trigger = document.querySelector('.footer-quote-trigger');
+    const triggers = [...document.querySelectorAll('.footer-quote-trigger')];
+    let activeTrigger = triggers[0] || null;
     const closeButton = modal?.querySelector('.footer-contact-close');
     const form = modal?.querySelector('#footer-quote-form');
     const status = modal?.querySelector('#footer-quote-status');
@@ -436,7 +437,7 @@ function initializeFooterQuoteForm() {
     let importOptions = importAmounts.map((amount) => `${formatTurnoverNumber(amount)} ABŞ dolları`);
     let importThumbOptions = importAmounts.map((amount) => amount >= 1000000 ? '$1M' : `$${amount / 1000}K`);
 
-    if (!modal || !dialog || !trigger || !closeButton || !form || !status || !taxError || !taxOptions.length || !activityOptions.length || !activitySummaryInput || !activityError || !frame || !turnoverAmountInput || !turnoverRange || !turnoverThumb || !turnoverOutput || !turnoverError || !turnoverSummaryInput || !turnoverEditButton || !turnoverCustomEditor || !turnoverCustomInput || !turnoverCustomApply || !turnoverCustomCancel || !turnoverCustomError || !employeeRange || !employeeOutput || !employeeThumb || !employeeEditButton || !employeeCustomEditor || !employeeCustomInput || !employeeCustomApply || !employeeCustomCancel || !employeeCustomError || !employeeSummaryInput || !employeeError || !employeeMarkers.length || !importRange || !importOutput || !importThumb || !importSummaryInput || !importError || !importMarkers.length || !importEditButton || !importCustomEditor || !importCustomInput || !importCustomApply || !importCustomCancel || !importCustomError || form.dataset.initialized === 'true') return;
+    if (!modal || !dialog || !triggers.length || !closeButton || !form || !status || !taxError || !taxOptions.length || !activityOptions.length || !activitySummaryInput || !activityError || !frame || !turnoverAmountInput || !turnoverRange || !turnoverThumb || !turnoverOutput || !turnoverError || !turnoverSummaryInput || !turnoverEditButton || !turnoverCustomEditor || !turnoverCustomInput || !turnoverCustomApply || !turnoverCustomCancel || !turnoverCustomError || !employeeRange || !employeeOutput || !employeeThumb || !employeeEditButton || !employeeCustomEditor || !employeeCustomInput || !employeeCustomApply || !employeeCustomCancel || !employeeCustomError || !employeeSummaryInput || !employeeError || !employeeMarkers.length || !importRange || !importOutput || !importThumb || !importSummaryInput || !importError || !importMarkers.length || !importEditButton || !importCustomEditor || !importCustomInput || !importCustomApply || !importCustomCancel || !importCustomError || form.dataset.initialized === 'true') return;
     form.dataset.initialized = 'true';
 
     let activeRequestId = '';
@@ -956,10 +957,11 @@ function initializeFooterQuoteForm() {
         modal.hidden = true;
         closeButton.classList.remove('is-highlighted');
         document.body.classList.remove('footer-contact-open');
-        trigger.focus();
+        activeTrigger?.focus();
     };
 
-    trigger.addEventListener('click', () => {
+    triggers.forEach((trigger) => trigger.addEventListener('click', (event) => {
+        activeTrigger = event.currentTarget;
         modal.hidden = false;
         playQuoteOpenSound();
         document.body.classList.add('footer-contact-open');
@@ -975,7 +977,7 @@ function initializeFooterQuoteForm() {
         updateEmployeeSlider();
         updateImportSlider();
         form.querySelector('[name="activity"]')?.focus();
-    });
+    }));
 
     closeButton.addEventListener('click', closeModal);
     modal.addEventListener('click', (event) => {

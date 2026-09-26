@@ -1086,8 +1086,8 @@
 .footer-contact-status.is-error{color:#c6283c}
 .footer-contact-submit{display:flex;justify-content:center;align-items:center;gap:10px;min-height:46px!important;padding:11px 18px!important;border:0!important;border-radius:10px!important;background:var(--blue)!important;color:#fff!important;font:700 14px Inter,"Segoe UI",Arial,sans-serif;cursor:pointer}
 .footer-contact-submit:hover{background:#1857bd!important}
-.footer-quote-trigger{display:block;margin:10px 0 0;padding:0;border:0;background:none;color:#9fb1c8;font:600 13px Inter,"Segoe UI",Arial,sans-serif;text-align:left;cursor:pointer;transition:color .18s}
-.footer-quote-trigger:hover{color:#fff}
+.footer .footer-quote-trigger{display:block;width:max-content;max-width:100%;margin:7px auto 0 0;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;color:#9fb1c8!important;font:400 13px Inter,"Segoe UI",Arial,sans-serif;line-height:1.5;text-align:left;cursor:pointer;transition:color .18s}
+.footer .footer-quote-trigger:hover{background:transparent!important;color:#fff!important}
 .footer-quote-dialog{width:min(900px,100%);max-height:min(88vh,820px)}
 #footer-quote-modal{background:rgba(31,38,48,.48);backdrop-filter:blur(4px)}
 #footer-quote-modal .footer-quote-dialog{background:#fff;color:#293747;font-family:Inter,"Segoe UI",Arial,sans-serif}
@@ -1208,9 +1208,31 @@ body.footer-contact-open{overflow:hidden}
 /* Düymələrdə ox işarəsini istifadə etmirik — daha təmiz və yığcam görünüş üçün. */
 .btn-arrow{display:none}
 @media(max-width:600px){.cta{padding:36px 0}.cta h2{font-size:28px}}
+
+/* Ana səhifənin konsultasiya çağırışını ümumi, açıq dizayna uyğun saxla. */
+.cta-home{background:#fff;color:var(--navy);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.cta-home .cta-inner{justify-content:flex-start;align-items:center;text-align:left}
+.cta-home-copy{flex:1 1 850px;min-width:0;max-width:850px}
+.cta-home .kicker.light{color:var(--blue)}
+.cta-home h2{max-width:100%;color:var(--navy);line-height:1.25;overflow-wrap:break-word}
+@media(max-width:600px){.cta-home .cta-inner{display:block;text-align:left}.cta-home .btn-primary{margin-top:18px}}
 .hero h1{font-size:clamp(36px,3.8vw,50px)}
 .cta h2,.contact-main-title{font-size:30px !important}
 @media(max-width:600px){.hero h1{font-size:36px}.cta h2,.contact-main-title{font-size:24px !important}}
+
+/* Təklif banneri — xidmətlər bölməsinin altında, açıq mirvari üslubda. */
+.service-offer-banner{position:relative;display:grid;grid-template-columns:118px minmax(0,1fr) auto;align-items:center;gap:22px;min-height:148px;margin-top:30px;padding:10px 24px 10px 18px;overflow:hidden;border:1px solid var(--line);border-radius:14px;background:linear-gradient(105deg,#fff 0%,#fcfdff 100%);box-shadow:0 8px 24px #0d1f3a0b}
+.service-offer-banner:before{position:absolute;inset:0 auto 0 0;width:4px;background:var(--blue);content:""}
+.service-offer-visual{position:relative;display:grid;place-items:center;align-self:stretch;isolation:isolate}
+.service-offer-visual:before{position:absolute;z-index:-1;width:102px;height:102px;border:1px solid #edf2f8;border-radius:50%;background:radial-gradient(circle,#f1f6fc 0%,#f8fafd 66%,transparent 68%);content:""}
+.service-offer-visual img{display:block;width:96px;height:132px;object-fit:contain;object-position:center bottom}
+.service-offer-copy{min-width:0}
+.service-offer-copy h3{margin:0;color:var(--navy);font-size:22px;font-weight:600;line-height:1.32;letter-spacing:-.02em}
+.service-offer-copy p{margin:8px 0 0;color:var(--muted);font-size:14px;line-height:1.5}
+.service-offer-banner .service-offer-button{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:44px;margin:0;padding:0 17px;border:1px solid var(--navy);border-radius:8px;background:var(--navy);color:#fff;font:500 13px Inter,"Segoe UI",Arial,sans-serif;white-space:nowrap;cursor:pointer;transition:background-color .18s,border-color .18s}
+.service-offer-banner .service-offer-button:hover{border-color:var(--blue);background:var(--blue)}
+.service-offer-button span{color:#cfe0f6;font-size:18px;line-height:1}
+@media(max-width:760px){.service-offer-banner{grid-template-columns:86px minmax(0,1fr);gap:14px;padding:12px 16px 16px 12px}.service-offer-visual img{width:78px;height:112px}.service-offer-visual:before{width:76px;height:76px}.service-offer-copy h3{font-size:18px}.service-offer-copy p{font-size:13px}.service-offer-banner .service-offer-button{grid-column:2;justify-self:start;min-height:42px}}
 
 @media(max-width:600px){
   .footer-grid{grid-template-columns:1fr}
