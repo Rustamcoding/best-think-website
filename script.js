@@ -6311,22 +6311,43 @@ document.addEventListener('click', (event) => {
     }
 
     function createSchedule(principal, annualRate, months, issueDate) {
-        const regularPayment = annuityPayment(principal, annualRate, months);
+        const rawPayment = annuityPayment(principal, annualRate, months);
+        const paymentCents = annualRate > 0
+            ? Math.ceil((rawPayment - 1e-10) * 100)
+            : null;
+        const regularPayment = paymentCents === null ? rawPayment : paymentCents / 100;
         let balance = principal;
+        let balanceCents = Math.round(principal * 100);
         const rows = [];
 
         for (let index = 0; index < months; index += 1) {
             const dueDate = sameDayInFollowingMonth(issueDate, index + 1);
-            const calculatedInterest = balance * annualRate / 12;
             const finalPayment = index === months - 1;
-            const principalPart = finalPayment
-                ? balance
-                : Math.min(balance, regularPayment - calculatedInterest);
-            const interest = finalPayment
-                ? regularPayment - principalPart
-                : calculatedInterest;
-            const payment = regularPayment;
-            balance = Math.max(0, balance - principalPart);
+            let principalPart;
+            let interest;
+            let payment = regularPayment;
+
+            if (paymentCents !== null) {
+                const interestCents = Math.round(balanceCents * annualRate / 12);
+                const principalPartCents = finalPayment
+                    ? balanceCents
+                    : Math.min(balanceCents, paymentCents - interestCents);
+                const finalInterestCents = finalPayment
+                    ? paymentCents - principalPartCents
+                    : interestCents;
+                principalPart = principalPartCents / 100;
+                interest = finalInterestCents / 100;
+                payment = paymentCents / 100;
+                balanceCents = Math.max(0, balanceCents - principalPartCents);
+                balance = balanceCents / 100;
+            } else {
+                principalPart = finalPayment
+                    ? balance
+                    : Math.min(balance, regularPayment);
+                interest = 0;
+                balance = Math.max(0, balance - principalPart);
+            }
+
             rows.push({
                 number: index + 1,
                 date: dueDate,
