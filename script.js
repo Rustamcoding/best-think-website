@@ -3491,8 +3491,8 @@ function lifeSavingsBudgetAfterInsurance(
         gross,
         Math.max(0, Number(otherDeductionAmount) || 0)
     );
-    // Vergi və DSMF sığortadan sonra qalan əməkhaqqı hissəsinə,
-    // işsizlik və tibbi sığorta isə bütün gross əməkhaqqına tətbiq olunur.
+    // Vergi və DSMF sığortadan sonra qalan əmək haqqı hissəsinə,
+    // işsizlik və tibbi sığorta isə bütün gross əmək haqqına tətbiq olunur.
     // 200 AZN əsas iş yeri güzəşti ümumi aylıq gəlir üzrə yoxlanılır.
     // Məsələn, 3 000 AZN gross və 500 AZN sığortada ümumi gəlir 2 500-dən
     // çox olduğu üçün 200 AZN güzəşt tətbiq edilmir: 2 500 × 3% = 75 AZN.
@@ -3508,7 +3508,7 @@ function lifeSavingsBudgetAfterInsurance(
     const salaryMedical = lifeSavingsMedical(gross, sector);
     const insuranceUnemployment = 0;
     const insuranceMedical = 0;
-    // Həmkarlar ittifaqı tutulması ümumi gross əməkhaqqından hesablanır.
+    // Həmkarlar ittifaqı tutulması ümumi gross əmək haqqından hesablanır.
     const union = gross * unionRate;
     const total =
         incomeTax +
@@ -3795,8 +3795,8 @@ function updateLegacyLifeSavingsAmountLabel() {
     }
 
     const labels = {
-        'gross-salary-to-net': 'Gross əməkhaqqı',
-        'net-salary-to-gross': 'Net əməkhaqqı',
+        'gross-salary-to-net': 'Gross əmək haqqı',
+        'net-salary-to-gross': 'Net əmək haqqı',
         'gross-insurance-to-supergross': 'Gross sığorta haqqı',
         'supergross-to-gross-insurance': 'Supergross sığorta haqqı'
     };
@@ -3808,7 +3808,7 @@ function updateLegacyLifeSavingsAmountLabel() {
         lifeSavingsMode.value === 'gross-salary-to-net';
 
     if (isSalaryInsuranceMode) {
-        lifeSavingsAmountLabel.textContent = 'Aylıq gross əməkhaqqı';
+        lifeSavingsAmountLabel.textContent = 'Aylıq gross əmək haqqı';
 
         if (lifeSavingsSector) {
             lifeSavingsSector.value = 'private';
@@ -3954,7 +3954,7 @@ function calculateLegacyLifeSavings() {
 
         if (lifeSavingsResultTitle) {
             lifeSavingsResultTitle.textContent =
-                'Sığortadan sonra karta keçəcək net əməkhaqqı';
+                'Sığortadan sonra karta keçəcək net əmək haqqı';
         }
         setLifeSavingsResult(lifeSavingsNetResult, netSalaryAfterInsurance);
 
@@ -3995,12 +3995,12 @@ function calculateLegacyLifeSavings() {
             sector,
             year
         );
-        primaryLabel = 'Net əməkhaqqı';
+        primaryLabel = 'Net əmək haqqı';
         primaryResult = salaryResult.net;
         insuranceLabel = 'Net sığorta haqqı';
         employerLabel = 'Supergross sığorta haqqı';
         deductionsResult = salaryResult.total;
-        resultTitle = 'İşçinin alacağı net əməkhaqqı';
+        resultTitle = 'İşçinin alacağı net əmək haqqı';
         resultValue = salaryResult.net;
     } else if (mode === 'net-salary-to-gross') {
         salaryResult = lifeSavingsSalaryGrossFromNet(
@@ -4029,12 +4029,12 @@ function calculateLegacyLifeSavings() {
             sector,
             year
         );
-        primaryLabel = 'Gross əməkhaqqı';
+        primaryLabel = 'Gross əmək haqqı';
         primaryResult = grossSalary;
         insuranceLabel = 'Net sığorta haqqı';
         employerLabel = 'Supergross sığorta haqqı';
         deductionsResult = salaryBreakdown.total;
-        resultTitle = 'Hesablanan gross əməkhaqqı';
+        resultTitle = 'Hesablanan gross əmək haqqı';
         resultValue = grossSalary;
     } else if (mode === 'gross-insurance-to-supergross') {
         grossInsurance = enteredAmount;
@@ -4483,7 +4483,7 @@ function calculateLifeSavings(options = {}) {
 
     if (lifeSavingsResultTitle) {
         lifeSavingsResultTitle.textContent =
-            'Sığortadan sonra karta köçürüləcək net əməkhaqqı';
+            'Sığortadan sonra karta köçürüləcək net əmək haqqı';
     }
     setLifeSavingsResult(
         lifeSavingsNetResult,
@@ -5851,7 +5851,7 @@ document.addEventListener('click', (event) => {
         return;
     }
 
-    document.querySelectorAll('details[open]').forEach((details) => {
+    document.querySelectorAll('details[open]:not(.vacation-earnings-details)').forEach((details) => {
         details.removeAttribute('open');
     });
 });
@@ -6165,8 +6165,7 @@ document.addEventListener('click', (event) => {
 
 /* =========================================================
    SABİT MÜDDƏTLİ KREDİT KALKULYATORU
-   Excel QRAFİK copy.xlsx əsasında: annuitet, DAYS360 faiz,
-   üç rəqəmə yuxarı yuvarlaqlaşdırılmış aylıq ödəniş.
+   Verilmə gününə bağlanan sabit tarixli annuitet ödənişi.
    ========================================================= */
 (() => {
     const card = document.querySelector('#credit-loan-calculator-panel');
@@ -6291,65 +6290,42 @@ document.addEventListener('click', (event) => {
         settingsMode = nextMode;
     }
 
-    function excelDays360US(start, end) {
-        let y1 = start.getFullYear();
-        let m1 = start.getMonth();
-        let y2 = end.getFullYear();
-        let m2 = end.getMonth();
-        let d1 = start.getDate();
-        let d2 = end.getDate();
-        const lastDay = (date) => new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
-        const startIsFebEnd = m1 === 1 && d1 === lastDay(start);
-        const endIsFebEnd = m2 === 1 && d2 === lastDay(end);
-
-        if (startIsFebEnd) d1 = 30;
-        if (endIsFebEnd && startIsFebEnd) d2 = 30;
-        if (d1 === 31) d1 = 30;
-        if (d2 === 31) {
-            if (d1 >= 30) d2 = 30;
-            else {
-                d2 = 1;
-                m2 += 1;
-                if (m2 > 11) { m2 = 0; y2 += 1; }
-            }
-        }
-
-        return (y2 - y1) * 360 + (m2 - m1) * 30 + d2 - d1;
-    }
-
-    function roundedUpPayment(principal, annualRate, months) {
+    function annuityPayment(principal, annualRate, months) {
         const monthlyRate = annualRate / 12;
-        const rawPayment = monthlyRate === 0
+        return monthlyRate === 0
             ? principal / months
             : principal * monthlyRate / (1 - Math.pow(1 + monthlyRate, -months));
-        return Math.ceil((rawPayment - 1e-10) * 1000) / 1000;
+    }
+
+    function sameDayInFollowingMonth(issueDate, monthOffset) {
+        const targetMonth = issueDate.getMonth() + monthOffset;
+        const targetYear = issueDate.getFullYear() + Math.floor(targetMonth / 12);
+        const normalizedMonth = ((targetMonth % 12) + 12) % 12;
+        const lastDay = new Date(targetYear, normalizedMonth + 1, 0).getDate();
+        return new Date(
+            targetYear,
+            normalizedMonth,
+            Math.min(issueDate.getDate(), lastDay),
+            12
+        );
     }
 
     function createSchedule(principal, annualRate, months, issueDate) {
-        const regularPayment = roundedUpPayment(principal, annualRate, months);
-        const firstDueDate = new Date(
-            issueDate.getFullYear(),
-            issueDate.getMonth() + 1 + (issueDate.getDate() > 24 ? 1 : 0),
-            1,
-            12
-        );
+        const regularPayment = annuityPayment(principal, annualRate, months);
         let balance = principal;
-        let previousDate = issueDate;
         const rows = [];
 
         for (let index = 0; index < months; index += 1) {
-            const dueDate = new Date(
-                firstDueDate.getFullYear(), firstDueDate.getMonth() + index, 1, 12
-            );
-            const days = excelDays360US(previousDate, dueDate);
-            const interest = balance * annualRate * days / 360;
+            const dueDate = sameDayInFollowingMonth(issueDate, index + 1);
+            const calculatedInterest = balance * annualRate / 12;
             const finalPayment = index === months - 1;
             const principalPart = finalPayment
                 ? balance
-                : Math.min(balance, regularPayment - balance * annualRate / 12);
-            const payment = finalPayment
-                ? balance + interest
-                : principalPart + interest;
+                : Math.min(balance, regularPayment - calculatedInterest);
+            const interest = finalPayment
+                ? regularPayment - principalPart
+                : calculatedInterest;
+            const payment = regularPayment;
             balance = Math.max(0, balance - principalPart);
             rows.push({
                 number: index + 1,
@@ -6359,7 +6335,6 @@ document.addEventListener('click', (event) => {
                 interest,
                 balance
             });
-            previousDate = dueDate;
         }
 
         return {
@@ -6409,6 +6384,19 @@ document.addEventListener('click', (event) => {
             : optionalNumberValue(otherExpenseInput);
     }
 
+    function effectiveRatePercentFor(result) {
+        if (!(result.principal > 0) || !(result.months > 0)) return 0;
+        const totalFinancingCost = result.schedule.totalInterest + result.fee + result.otherExpenses;
+        const rateForLoanTerm = totalFinancingCost / result.principal * 100;
+        return result.months < 12
+            ? rateForLoanTerm
+            : totalFinancingCost / result.principal / result.months * 12 * 100;
+    }
+
+    function effectiveRateLabelFor() {
+        return 'Effektiv (real) faiz';
+    }
+
     function setOutputs(result) {
         currentCalculation = result;
         if (excelExportButton) excelExportButton.disabled = false;
@@ -6422,12 +6410,10 @@ document.addEventListener('click', (event) => {
         const totalCosts = result.fee + result.otherExpenses;
         outputs.deductions.textContent = money(totalCosts);
         outputs.contractRate.textContent = `${azn.format(result.annualRatePercent)}%`;
-        const effectiveRatePercent = result.principal > 0
-            ? result.schedule.totalInterest / result.principal * 100
-            : 0;
+        const effectiveRatePercent = effectiveRatePercentFor(result);
         outputs.effectiveRate.textContent = `${oneDecimal.format(effectiveRatePercent)}%`;
         if (effectiveRateLabel) {
-            effectiveRateLabel.textContent = `Effektiv (real) faiz — ${result.months} ay müddətində`;
+            effectiveRateLabel.textContent = effectiveRateLabelFor();
         }
         outputs.net.textContent = money(result.principal - totalCosts);
 
@@ -6575,6 +6561,7 @@ document.addEventListener('click', (event) => {
     const exportAmount = (value) => `${azn.format(value)} ₼`;
     function getLoanSummary(result) {
         const totalCosts = result.fee + result.otherExpenses;
+        const effectiveRatePercent = effectiveRatePercentFor(result);
         return [
             { label: 'Hesablama istiqaməti', value: result.mode === 'budget' ? 'Aylıq ödənişə görə' : 'Kredit məbləğinə görə', display: result.mode === 'budget' ? 'Aylıq ödənişə görə' : 'Kredit məbləğinə görə', format: '@' },
             { label: result.mode === 'budget' ? 'Daxil edilmiş aylıq ödəniş limiti' : 'Daxil edilmiş kredit məbləği', value: result.mode === 'budget' ? result.paymentCap : result.inputPrincipal, display: exportAmount(result.mode === 'budget' ? result.paymentCap : result.inputPrincipal), format: '#,##0.00 "₼"' },
@@ -6594,7 +6581,7 @@ document.addEventListener('click', (event) => {
             { label: 'Daxil edilmiş digər xərclər', value: result.otherExpenseType === 'percent' ? result.otherExpenseInput / 100 : result.otherExpenseInput, display: result.otherExpenseType === 'percent' ? `${azn.format(result.otherExpenseInput)}%` : exportAmount(result.otherExpenseInput), format: result.otherExpenseType === 'percent' ? '0.00%' : '#,##0.00 "₼"' },
             { label: 'Hesablanan digər xərclər', value: result.otherExpenses, display: exportAmount(result.otherExpenses), format: '#,##0.00 "₼"' },
             { label: 'Tutulacaq komissiya və xərclər', value: totalCosts, display: exportAmount(totalCosts), format: '#,##0.00 "₼"' },
-            { label: `Effektiv (real) faiz — ${result.months} ay müddətində`, value: result.principal > 0 ? result.schedule.totalInterest / result.principal : 0, display: `${oneDecimal.format(result.principal > 0 ? result.schedule.totalInterest / result.principal * 100 : 0)}%`, format: '0.0%' },
+            { label: effectiveRateLabelFor(), value: effectiveRatePercent / 100, display: `${oneDecimal.format(effectiveRatePercent)}%`, format: '0.0%' },
             { label: 'Kassadan net alınacaq məbləğ', value: result.principal - totalCosts, display: exportAmount(result.principal - totalCosts), format: '#,##0.00 "₼"' }
         ];
     }
@@ -6842,5 +6829,1226 @@ document.addEventListener('click', (event) => {
     });
 
     updateVisibility();
+    calculate();
+})();
+
+/* =========================================================
+   MƏZUNİYYƏT HAQQI KALKULYATORU — ilkin preview
+   Təqvim günləri, 12 aylıq orta qazanc və aylıq iş günü müqayisəsi.
+   ========================================================= */
+(() => {
+    const card = document.querySelector('#vacation-calculator-panel');
+    if (!card) return;
+
+    const leaveDaysInput = card.querySelector('#vacation-days');
+    const leaveStartInput = card.querySelector('#vacation-start');
+    const leaveEndOutput = card.querySelector('#vacation-end');
+    const holidayDialog = card.querySelector('#vacation-holiday-dialog');
+    const openHolidayDialogButton = card.querySelector('#vacation-holidays-open');
+    const closeHolidayDialogButton = card.querySelector('#vacation-holiday-dialog-close');
+    const saveHolidayChangesButton = card.querySelector('#vacation-holiday-save');
+    const holidayDialogList = card.querySelector('#vacation-holiday-list');
+    const customHolidayNameInput = card.querySelector('#vacation-custom-holiday-name');
+    const holidayNameControl = card.querySelector('.vacation-holiday-name-control');
+    const holidayNameToggle = card.querySelector('#vacation-holiday-name-toggle');
+    const holidayNameOptions = card.querySelector('#vacation-holiday-name-options');
+    const holidayNameOptionButtons = Array.from(holidayNameOptions.querySelectorAll('[data-holiday-name]'));
+    const customHolidayDateInput = card.querySelector('#vacation-custom-holiday-date');
+    const customHolidayDaysInput = card.querySelector('#vacation-custom-holiday-days');
+    const addCustomHolidayButton = card.querySelector('#vacation-custom-holiday-add');
+    const votingHolidayNote = card.querySelector('#vacation-voting-note');
+    const customHolidayStatus = card.querySelector('#vacation-holiday-add-status');
+    const employmentStartInput = card.querySelector('#vacation-employment-start');
+    const tenureNote = card.querySelector('#vacation-tenure-note');
+    const earningsMonthHeading = card.querySelector('#vacation-earnings-month-heading');
+    const earningsHeader = card.querySelector('.vacation-earnings-header');
+    const earningsExclusionHeading = card.querySelector('.vacation-earnings-exclusion-heading');
+    const earningsWorkdaysHeading = card.querySelector('.vacation-earnings-workdays-heading');
+    const earningsDailyHeading = card.querySelector('.vacation-earnings-daily-heading');
+    const holidayCountOutput = card.querySelector('#vacation-holiday-count');
+    const earningsList = card.querySelector('#vacation-earnings-list');
+    const sameWageToggle = card.querySelector('#vacation-same-wage-toggle');
+    sameWageToggle.defaultChecked = false;
+    sameWageToggle.checked = false;
+    const earningsSummaryMonthCount = card.querySelector('#vacation-summary-month-count');
+    const earningsSummaryWageTotal = card.querySelector('#vacation-summary-wage-total');
+    const earningsSummaryCalendarDays = card.querySelector('#vacation-summary-calendar-days');
+    const earningsSummaryDaysLabel = card.querySelector('#vacation-summary-days-label');
+    const earningsSummaryDailyWage = card.querySelector('#vacation-summary-daily-wage');
+    const earningsSummaryCalculationNote = card.querySelector('#vacation-summary-calculation-note');
+    const previousEarningsSummary = card.querySelector('.vacation-earnings-details > summary');
+    const sortMonthsButton = card.querySelector('#vacation-sort-months');
+    const excludedPaymentsDialog = card.querySelector('#vacation-excluded-payments-dialog');
+    const excludedPaymentsOpenButton = card.querySelector('#vacation-excluded-payments-open');
+    const excludedPaymentsCloseButton = card.querySelector('#vacation-excluded-payments-close');
+    const vacationScheduleDays = 5;
+    const lastSalaryList = card.querySelector('#vacation-last-salary-list');
+    const status = card.querySelector('#vacation-status');
+    const averageResult = card.querySelector('#vacation-average-result');
+    const averageDetail = card.querySelector('#vacation-average-detail');
+    const lastSalaryResult = card.querySelector('#vacation-last-salary-result');
+    const lastSalaryDetail = card.querySelector('#vacation-last-salary-detail');
+    const averageCard = card.querySelector('#vacation-average-card');
+    const lastSalaryCard = card.querySelector('#vacation-last-salary-card');
+    const monthlyAllocationPanel = card.querySelector('#vacation-monthly-allocation');
+    const monthlyAllocationRows = card.querySelector('#vacation-allocation-rows');
+
+    const earningsState = new Map();
+    const currentWageState = new Map();
+    const customHolidayDates = new Set();
+    const customHolidayDetails = new Map();
+    const excludedAutomaticHolidayDates = new Set();
+    let holidayDraftDates = null;
+    let holidayDraftDetails = null;
+    let holidayDraftExcludedAutomaticDates = null;
+    let oldestFirst = false;
+    let activeLeaveEnd = null;
+    const azMonths = ['yanvar', 'fevral', 'mart', 'aprel', 'may', 'iyun', 'iyul', 'avqust', 'sentyabr', 'oktyabr', 'noyabr', 'dekabr'];
+
+    const parseDate = (value) => {
+        if (!value || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return null;
+        const parts = value.split('-').map(Number);
+        const date = new Date(parts[0], parts[1] - 1, parts[2]);
+        return Number.isNaN(date.getTime()) ? null : date;
+    };
+    const toIso = (date) => {
+        if (!date) return '';
+        return date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0') + '-' + String(date.getDate()).padStart(2, '0');
+    };
+    const dateLabel = (date) => date
+        ? String(date.getDate()).padStart(2, '0') + '.' + String(date.getMonth() + 1).padStart(2, '0') + '.' + date.getFullYear()
+        : '—';
+    const monthKey = (date) => date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0');
+    const monthStart = (date) => new Date(date.getFullYear(), date.getMonth(), 1);
+    const shiftMonth = (date, amount) => new Date(date.getFullYear(), date.getMonth() + amount, 1);
+    const calendarDaysInMonth = (date) => new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+    const calendarDaysBetween = (start, endExclusive) => start && endExclusive
+        ? Math.round((Date.UTC(endExclusive.getFullYear(), endExclusive.getMonth(), endExclusive.getDate()) - Date.UTC(start.getFullYear(), start.getMonth(), start.getDate())) / 86400000)
+        : null;
+    const addCalendarMonths = (date, amount) => {
+        const targetMonth = new Date(date.getFullYear(), date.getMonth() + amount, 1);
+        return new Date(targetMonth.getFullYear(), targetMonth.getMonth(), Math.min(date.getDate(), calendarDaysInMonth(targetMonth)));
+    };
+    function getEmploymentTenure() {
+        const employmentStart = parseDate(employmentStartInput.value);
+        const leaveStart = parseDate(leaveStartInput.value);
+        if (!employmentStart || !leaveStart || employmentStart > leaveStart) {
+            return { employmentStart, leaveStart, under12Months: false, underOneMonth: false, completedMonthCount: 0, datesValid: false };
+        }
+        const firstCompletedMonth = new Date(
+            employmentStart.getFullYear(),
+            employmentStart.getMonth() + (employmentStart.getDate() === 1 ? 0 : 1),
+            1
+        );
+        const lastCompletedMonth = shiftMonth(monthStart(leaveStart), -1);
+        const completedMonthCount = firstCompletedMonth <= lastCompletedMonth
+            ? (lastCompletedMonth.getFullYear() - firstCompletedMonth.getFullYear()) * 12
+                + lastCompletedMonth.getMonth() - firstCompletedMonth.getMonth() + 1
+            : 0;
+        return {
+            employmentStart,
+            leaveStart,
+            under12Months: completedMonthCount < 12,
+            underOneMonth: leaveStart < addCalendarMonths(employmentStart, 1),
+            completedMonthCount,
+            datesValid: true
+        };
+    }
+    const monthLabel = (date) => azMonths[date.getMonth()] + ' ' + date.getFullYear();
+    const vacationPeriodLabel = (start, end) => {
+        const firstMonth = monthStart(start);
+        const lastMonth = monthStart(end);
+        const firstName = azMonths[firstMonth.getMonth()];
+        const lastName = azMonths[lastMonth.getMonth()];
+        const capitalize = (text) => text.charAt(0).toLocaleUpperCase('az-AZ') + text.slice(1);
+        if (firstMonth.getFullYear() === lastMonth.getFullYear()) {
+            return capitalize(firstName) + '–' + capitalize(lastName) + ' ' + firstMonth.getFullYear();
+        }
+        return capitalize(monthLabel(firstMonth)) + ' – ' + capitalize(monthLabel(lastMonth));
+    };
+    const currency = (amount) => new Intl.NumberFormat('az-AZ', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    }).format(amount) + ' ₼';
+    const numericValue = (input) => {
+        if (!input || input.value.trim() === '') return null;
+        const value = Number(input.value);
+        return Number.isFinite(value) && value >= 0 ? value : null;
+    };
+    function getAutomaticHolidayDates() {
+        const dates = new Set();
+        const start = parseDate(leaveStartInput.value);
+        const requestedDays = Number(leaveDaysInput.value);
+        if (start) {
+            const yearsToCheck = Math.min(5, Math.max(1, Math.ceil((requestedDays > 0 ? requestedDays : 1) / 365) + 1));
+            for (let offset = 0; offset <= yearsToCheck; offset += 1) {
+                const year = start.getFullYear() + offset;
+                [
+                    year + '-01-01', year + '-01-02', year + '-01-20',
+                    year + '-03-08',
+                    year + '-05-09', year + '-05-28',
+                    year + '-06-15', year + '-06-26',
+                    year + '-11-08', year + '-11-09', year + '-12-31'
+                ].forEach((date) => dates.add(date));
+            }
+        }
+        return dates;
+    }
+
+    function getHolidayDates(customDates = customHolidayDates, excludedDates = excludedAutomaticHolidayDates) {
+        const dates = getAutomaticHolidayDates();
+        excludedDates.forEach((date) => dates.delete(date));
+        customDates.forEach((date) => dates.add(date));
+        return dates;
+    }
+
+    function getHolidayName(dateValue, detailsMap = customHolidayDetails, datesSet = customHolidayDates, excludedDates = excludedAutomaticHolidayDates) {
+        const monthDay = dateValue.slice(5);
+        const names = [];
+        const isAutomatic = getAutomaticHolidayDates().has(dateValue) && !excludedDates.has(dateValue);
+        if (isAutomatic && (monthDay === '01-01' || monthDay === '01-02')) names.push('Yeni il bayramı');
+        if (isAutomatic && monthDay === '01-20') names.push('20 Yanvar — ümumxalq hüzn günü');
+        if (isAutomatic && monthDay === '03-08') names.push('Qadınlar günü');
+        if (isAutomatic && monthDay === '05-09') names.push('Faşizm üzərində qələbə günü');
+        if (isAutomatic && monthDay === '05-28') names.push('Müstəqillik Günü');
+        if (isAutomatic && monthDay === '06-15') names.push('Milli qurtuluş günü');
+        if (isAutomatic && monthDay === '06-26') names.push('Silahlı Qüvvələr günü');
+        if (isAutomatic && monthDay === '11-08') names.push('Zəfər Günü');
+        if (isAutomatic && monthDay === '11-09') names.push('Dövlət bayrağı günü');
+        if (isAutomatic && monthDay === '12-31') names.push('Dünya azərbaycanlılarının həmrəyliyi günü');
+        const customDetails = detailsMap.get(dateValue) || [];
+        customDetails.forEach((detail) => {
+            const suffixes = { 0: '-cu', 1: '-ci', 2: '-ci', 3: '-cü', 4: '-cü', 5: '-ci', 6: '-cı', 7: '-ci', 8: '-ci', 9: '-cu' };
+            const dayText = detail.dayCount > 1
+                ? ' — ' + detail.dayNumber + suffixes[detail.dayNumber % 10] + ' gün'
+                : '';
+            names.push(detail.name + dayText);
+        });
+        if (datesSet.has(dateValue) && customDetails.length === 0) names.push('Əlavə edilmiş bayram günü');
+        return names.join(' · ') || 'Əlavə bayram günü';
+    }
+
+    function renderHolidayDialogList() {
+        holidayDialogList.replaceChildren();
+        const activeCustomDates = holidayDraftDates || customHolidayDates;
+        const activeHolidayDetails = holidayDraftDetails || customHolidayDetails;
+        const activeExcludedAutomaticDates = holidayDraftExcludedAutomaticDates || excludedAutomaticHolidayDates;
+        const automaticHolidayDates = getAutomaticHolidayDates();
+        const dialogHolidayDates = getHolidayDates(activeCustomDates, activeExcludedAutomaticDates);
+        const start = parseDate(leaveStartInput.value);
+        const end = activeLeaveEnd;
+        const inRangeDates = start && end
+            ? Array.from(dialogHolidayDates).filter((value) => {
+                const date = parseDate(value);
+                return date && date >= start && date <= end;
+            })
+            : [];
+        const shownDates = new Set(inRangeDates);
+        activeCustomDates.forEach((date) => shownDates.add(date));
+
+        if (!start || !end) {
+            const empty = document.createElement('p');
+            empty.className = 'vacation-holiday-empty';
+            empty.textContent = 'Bayram günlərini görmək üçün məzuniyyətin başlanma tarixini və gün sayını daxil edin.';
+            holidayDialogList.appendChild(empty);
+        } else if (inRangeDates.length === 0) {
+            const empty = document.createElement('p');
+            empty.className = 'vacation-holiday-empty';
+            empty.textContent = 'Seçilən məzuniyyət aralığında avtomatik nəzərə alınan bayram günü yoxdur.';
+            holidayDialogList.appendChild(empty);
+        }
+
+        Array.from(shownDates).sort().forEach((dateValue) => {
+            const date = parseDate(dateValue);
+            const isInRange = Boolean(start && end && date && date >= start && date <= end);
+            const entry = document.createElement('div');
+            entry.className = 'vacation-holiday-entry';
+            const main = document.createElement('div');
+            main.className = 'vacation-holiday-entry-main';
+            const dateText = document.createElement('span');
+            dateText.className = 'vacation-holiday-entry-date';
+            dateText.textContent = dateLabel(date);
+            const name = document.createElement('span');
+            name.className = 'vacation-holiday-entry-name';
+            name.textContent = getHolidayName(dateValue, activeHolidayDetails, activeCustomDates, activeExcludedAutomaticDates);
+            main.append(dateText, name);
+            entry.appendChild(main);
+
+            const actions = document.createElement('div');
+            actions.className = 'vacation-holiday-entry-actions';
+            const isAutomatic = automaticHolidayDates.has(dateValue) && !activeExcludedAutomaticDates.has(dateValue);
+            if (isAutomatic) {
+                const removeAutomatic = document.createElement('button');
+                removeAutomatic.type = 'button';
+                removeAutomatic.className = 'vacation-holiday-entry-remove is-danger';
+                removeAutomatic.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"></path><path d="M8 6V4h8v2"></path><path d="M19 6l-1 14H6L5 6"></path><path d="M10 11v5M14 11v5"></path></svg>';
+                removeAutomatic.setAttribute('aria-label', dateLabel(date) + ' tarixli avtomatik bayram gününü siyahıdan çıxar');
+                removeAutomatic.title = 'Avtomatik bayram gününü siyahıdan çıxar';
+                removeAutomatic.addEventListener('click', () => {
+                    const confirmed = window.confirm(dateLabel(date) + ' tarixli avtomatik bayram gününü siyahıdan çıxarmaq istədiyinizə əminsiniz? Bu tarix məzuniyyətin bitmə tarixinə daxil ediləcək.');
+                    if (!confirmed) return;
+                    activeExcludedAutomaticDates.add(dateValue);
+                    customHolidayStatus.textContent = 'Avtomatik bayram günü siyahıdan çıxarıldı. Dəyişikliyi tətbiq etmək üçün “Yadda saxla” düyməsini basın.';
+                    renderHolidayDialogList();
+                });
+                actions.appendChild(removeAutomatic);
+            }
+            if (activeCustomDates.has(dateValue)) {
+                if (!isInRange) {
+                    const rangeNote = document.createElement('span');
+                    rangeNote.className = 'vacation-holiday-entry-status';
+                    rangeNote.textContent = 'Cari məzuniyyət aralığına düşmür; bitmə tarixinə hazırda təsir etmir.';
+                    entry.appendChild(rangeNote);
+                }
+                const remove = document.createElement('button');
+                remove.type = 'button';
+                remove.className = 'vacation-holiday-entry-remove';
+                remove.textContent = '×';
+                remove.setAttribute('aria-label', dateLabel(date) + ' tarixini sil');
+                remove.addEventListener('click', () => {
+                    activeCustomDates.delete(dateValue);
+                    activeHolidayDetails.delete(dateValue);
+                    customHolidayStatus.textContent = 'Tarix siyahıdan silindi. Dəyişikliyi tətbiq etmək üçün “Yadda saxla” düyməsini basın.';
+                    renderHolidayDialogList();
+                });
+                actions.appendChild(remove);
+            }
+            if (actions.childElementCount) entry.appendChild(actions);
+            holidayDialogList.appendChild(entry);
+        });
+    }
+
+    function addCustomHolidayDate() {
+        const holidayName = customHolidayNameInput.value.trim();
+        const dateValue = customHolidayDateInput.value;
+        const dayCount = Number(customHolidayDaysInput.value);
+        if (!holidayName) {
+            customHolidayStatus.textContent = 'Bayramın adını daxil edin.';
+            return;
+        }
+        if (!parseDate(dateValue)) {
+            customHolidayStatus.textContent = 'Bayramın birinci gününün tarixini seçin.';
+            return;
+        }
+        if (!Number.isInteger(dayCount) || dayCount < 1 || dayCount > 366) {
+            customHolidayStatus.textContent = 'Gün sayını 1–366 aralığında tam ədəd kimi daxil edin.';
+            return;
+        }
+
+        const activeCustomDates = holidayDraftDates || customHolidayDates;
+        const activeHolidayDetails = holidayDraftDetails || customHolidayDetails;
+        const activeExcludedAutomaticDates = holidayDraftExcludedAutomaticDates || excludedAutomaticHolidayDates;
+        const existingDates = getHolidayDates(activeCustomDates, activeExcludedAutomaticDates);
+        let overlapCount = 0;
+        const firstDate = parseDate(dateValue);
+        for (let dayNumber = 1; dayNumber <= dayCount; dayNumber += 1) {
+            const currentDate = new Date(firstDate.getFullYear(), firstDate.getMonth(), firstDate.getDate() + dayNumber - 1);
+            const currentDateValue = toIso(currentDate);
+            if (existingDates.has(currentDateValue)) overlapCount += 1;
+            activeCustomDates.add(currentDateValue);
+            const details = activeHolidayDetails.get(currentDateValue) || [];
+            details.push({ name: holidayName, dayNumber, dayCount });
+            activeHolidayDetails.set(currentDateValue, details);
+        }
+        customHolidayNameInput.value = '';
+        customHolidayDateInput.value = '';
+        customHolidayDaysInput.value = '1';
+        updateVotingHolidayNote();
+        setHolidayNameOptionsOpen(false);
+        customHolidayStatus.textContent = dayCount + ' gün siyahıya əlavə edildi.' + (overlapCount ? ' ' + overlapCount + ' üst-üstə düşən tarix hesablamada bir dəfə nəzərə alınır.' : '') + ' Dəyişikliyi tətbiq etmək üçün “Yadda saxla” düyməsini basın.';
+        renderHolidayDialogList();
+    }
+
+    function setHolidayNameOptionsOpen(isOpen) {
+        holidayNameOptions.hidden = !isOpen;
+        holidayNameToggle.setAttribute('aria-expanded', String(isOpen));
+        holidayNameToggle.setAttribute('aria-label', isOpen ? 'Bayram seçimlərini bağla' : 'Bayram seçimlərini aç');
+        customHolidayNameInput.setAttribute('aria-expanded', String(isOpen));
+        if (isOpen) filterHolidayNameOptions();
+    }
+
+    function filterHolidayNameOptions() {
+        const query = customHolidayNameInput.value.trim().toLocaleLowerCase('az');
+        let visibleCount = 0;
+        holidayNameOptionButtons.forEach((option) => {
+            const matches = option.dataset.holidayName.toLocaleLowerCase('az').includes(query);
+            option.hidden = !matches;
+            option.setAttribute('aria-selected', String(option.dataset.holidayName === customHolidayNameInput.value.trim()));
+            if (matches) visibleCount += 1;
+        });
+        let emptyMessage = holidayNameOptions.querySelector('.vacation-holiday-name-empty');
+        if (!visibleCount) {
+            if (!emptyMessage) {
+                emptyMessage = document.createElement('p');
+                emptyMessage.className = 'vacation-holiday-name-empty';
+                emptyMessage.textContent = 'Uyğun hazır seçim yoxdur; yazdığınız adı əlavə edə bilərsiniz.';
+                holidayNameOptions.appendChild(emptyMessage);
+            }
+        } else if (emptyMessage) {
+            emptyMessage.remove();
+        }
+    }
+
+    function updateVotingHolidayNote() {
+        const isVotingDay = customHolidayNameInput.value.trim().toLocaleLowerCase('az') === 'səsvermə günü';
+        votingHolidayNote.hidden = !isVotingDay;
+    }
+
+    function saveHolidayChanges() {
+        if (!holidayDraftDates || !holidayDraftDetails) {
+            holidayDialog.close();
+            return;
+        }
+        customHolidayDates.clear();
+        holidayDraftDates.forEach((date) => customHolidayDates.add(date));
+        customHolidayDetails.clear();
+        holidayDraftDetails.forEach((details, date) => {
+            customHolidayDetails.set(date, details.map((detail) => ({ ...detail })));
+        });
+        excludedAutomaticHolidayDates.clear();
+        (holidayDraftExcludedAutomaticDates || new Set()).forEach((date) => excludedAutomaticHolidayDates.add(date));
+        holidayDraftDates = null;
+        holidayDraftDetails = null;
+        holidayDraftExcludedAutomaticDates = null;
+        updateLeaveEnd(getHolidayDates());
+        renderCurrentWageMonths();
+        calculate();
+        holidayDialog.close();
+    }
+
+    function calculateLeaveEnd(start, paidCalendarDays, holidaySet) {
+        if (!start || !Number.isInteger(paidCalendarDays) || paidCalendarDays < 1) return null;
+        const cursor = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+        let counted = 0;
+        let safety = 0;
+        while (counted < paidCalendarDays && safety < 740) {
+            if (!holidaySet.has(toIso(cursor))) counted += 1;
+            if (counted < paidCalendarDays) cursor.setDate(cursor.getDate() + 1);
+            safety += 1;
+        }
+        return counted === paidCalendarDays ? cursor : null;
+    }
+
+    function updateLeaveEnd(holidaySet) {
+        const start = parseDate(leaveStartInput.value);
+        const days = Number(leaveDaysInput.value);
+        const end = calculateLeaveEnd(start, days, holidaySet);
+        activeLeaveEnd = end;
+        leaveEndOutput.value = end ? dateLabel(end) : '';
+        const count = start && end
+            ? Array.from(holidaySet).filter((value) => {
+                const date = parseDate(value);
+                return date && date >= start && date <= end;
+            }).length
+            : 0;
+        holidayCountOutput.textContent = 'Bayram günləri: ' + count;
+        return end;
+    }
+
+    function snapshotEarningsRows() {
+        earningsList.querySelectorAll('[data-vacation-month-row]').forEach((row) => {
+            const key = row.dataset.vacationMonthRow;
+            const previousEntry = earningsState.get(key) || {};
+            const statusSelect = row.querySelector('[data-vacation-earnings-status]');
+            earningsState.set(key, {
+                amount: row.querySelector('[data-vacation-earnings-amount]').value,
+                status: statusSelect ? statusSelect.value : (previousEntry.status || 'include')
+            });
+        });
+    }
+
+    function setAllEarningsAmounts(value, isDefaultZero = false) {
+        earningsList.querySelectorAll('[data-vacation-earnings-amount]').forEach((input) => {
+            input.value = value;
+            input.classList.toggle('is-default-zero', isDefaultZero);
+        });
+    }
+
+    function getEarningsMonthRows() {
+        const tenure = getEmploymentTenure();
+        const { leaveStart, employmentStart, under12Months, underOneMonth, completedMonthCount, datesValid } = tenure;
+        if (!datesValid) {
+            return { rows: [], targetCount: 0, included: 0, under12Months: false, underOneMonth: false, completedMonthCount: 0, datesValid: false };
+        }
+
+        const lastCompletedMonth = shiftMonth(monthStart(leaveStart), -1);
+        const rows = [];
+        let included = 0;
+
+        if (under12Months) {
+            const firstCompletedMonth = new Date(
+                employmentStart.getFullYear(),
+                employmentStart.getMonth() + (employmentStart.getDate() === 1 ? 0 : 1),
+                1
+            );
+            for (let date = firstCompletedMonth; date <= lastCompletedMonth; date = shiftMonth(date, 1)) {
+                const key = monthKey(date);
+                const entry = earningsState.get(key) || { amount: '', status: 'include' };
+                rows.push({ date, key, entry, isVacationMonth: false });
+                if (entry.status === 'include') included += 1;
+            }
+
+            // When no prior full calendar month exists, keep the leave month visible.
+            if (completedMonthCount === 0 && rows.length === 0) {
+                const date = monthStart(leaveStart);
+                const key = monthKey(date);
+                const entry = earningsState.get(key) || { amount: '', status: 'include' };
+                rows.push({ date, key, entry, isVacationMonth: true, workPeriodStart: monthStart(employmentStart) });
+                if (entry.status === 'include') included += 1;
+            }
+
+            return { rows, targetCount: rows.length, included, under12Months, underOneMonth, completedMonthCount, datesValid: true };
+        }
+
+        // For a full-year averaging period, use up to 12 months before the leave month.
+        // If a month is excluded, continue backwards, but never before employment began.
+        const firstEmploymentMonth = monthStart(employmentStart);
+        for (let index = 0; index < 60 && included < 12; index += 1) {
+            const date = shiftMonth(lastCompletedMonth, -index);
+            if (date < firstEmploymentMonth) break;
+            const key = monthKey(date);
+            const entry = earningsState.get(key) || { amount: '', status: 'include' };
+            rows.push({ date, key, entry, isVacationMonth: false });
+            if (entry.status === 'include') included += 1;
+        }
+        return { rows, targetCount: 12, included, under12Months, underOneMonth, completedMonthCount, datesValid: true };
+    }
+
+    function updateEarningsSummary(monthData) {
+        const includedRows = monthData.rows.filter((row) => row.entry.status === 'include');
+        const noCompleteMonth = monthData.datesValid && monthData.completedMonthCount === 0;
+        const allWagesEntered = includedRows.length > 0 && includedRows.every((row) => {
+            const rawAmount = String(row.entry.amount ?? '').trim();
+            return rawAmount !== '' && Number.isFinite(Number(rawAmount)) && Number(rawAmount) >= 0;
+        });
+        const wageTotal = allWagesEntered
+            ? includedRows.reduce((sum, row) => sum + Number(row.entry.amount), 0)
+            : null;
+        const workedCalendarDays = noCompleteMonth
+            ? calendarDaysBetween(parseDate(employmentStartInput.value), parseDate(leaveStartInput.value))
+            : null;
+        const calendarDayTotal = monthData.under12Months && !noCompleteMonth
+            ? includedRows.reduce((sum, row) => sum + calendarDaysInMonth(row.date), 0)
+            : null;
+        const dailyWageDivisor = noCompleteMonth
+            ? workedCalendarDays
+            : monthData.under12Months
+            ? calendarDayTotal
+            : includedRows.length * 30.4;
+
+        earningsSummaryMonthCount.textContent = includedRows.length + ' ay';
+        earningsSummaryWageTotal.textContent = wageTotal == null ? '—' : currency(wageTotal);
+        earningsSummaryDaysLabel.textContent = noCompleteMonth ? 'İşlənmiş təqvim günlərinin sayı' : 'Təqvim günlərinin sayı';
+        earningsSummaryCalendarDays.textContent = noCompleteMonth
+            ? workedCalendarDays == null || workedCalendarDays < 1 ? '—' : workedCalendarDays + ' təqvim günü'
+            : monthData.under12Months
+            ? calendarDayTotal + ' gün'
+            : monthData.datesValid ? '30.4 gün' : '—';
+        earningsSummaryDailyWage.textContent = wageTotal == null || dailyWageDivisor <= 0
+            ? '—'
+            : currency(wageTotal / dailyWageDivisor);
+        earningsSummaryCalculationNote.textContent = noCompleteMonth
+            ? 'Bir günlük orta əmək haqqı nəzərə alınan ümumi əmək haqqının faktiki işlənmiş təqvim günlərinə bölünməsi ilə hesablanır.'
+            : monthData.under12Months
+            ? 'Bir günlük orta əmək haqqı nəzərə alınan əmək haqqının tam işlənmiş ayların təqvim günləri cəminə bölünməsi ilə hesablanır.'
+            : '12 aylıq hesablamada bir günlük məbləğ 30,4 günlük norma ilə hesablanır.';
+        if (noCompleteMonth) {
+            const entriesByKey = new Map(monthData.rows.map((row) => [row.key, row.entry]));
+            earningsList.querySelectorAll('[data-vacation-earnings-daily-wage]').forEach((output) => {
+                const entry = entriesByKey.get(output.dataset.vacationEarningsDailyWage);
+                const amount = Number(entry?.amount);
+                output.textContent = Number.isFinite(amount) && amount >= 0 && Number.isInteger(workedCalendarDays) && workedCalendarDays > 0
+                    ? currency(amount / workedCalendarDays)
+                    : '—';
+            });
+        }
+    }
+
+    function renderEarningsMonths() {
+        snapshotEarningsRows();
+        const monthData = getEarningsMonthRows();
+        const noCompleteMonth = monthData.datesValid && monthData.completedMonthCount === 0;
+        tenureNote.hidden = !monthData.under12Months;
+        if (monthData.under12Months) {
+            tenureNote.innerHTML = monthData.completedMonthCount === 0
+                ? 'Müqavilə heç bir tam təqvim ayını əhatə etmədiyi üçün orta aylıq əmək haqqı nəzərə alınan ümumi əmək haqqının işçinin faktiki işlədiyi təqvim günlərinin sayına nisbəti ilə hesablanır.'
+                : '12 təqvim ayından az <em>əmək münasibətində olub</em> məzuniyyətə çıxan işçinin orta aylıq əmək haqqı onun <em>faktiki</em> işlədiyi (müqavilənin bağlandığı) tam təqvim aylarına əsasən hesablanır.';
+        }
+        earningsHeader.classList.toggle('is-no-complete-month', noCompleteMonth);
+        earningsExclusionHeading.hidden = noCompleteMonth;
+        earningsWorkdaysHeading.hidden = !noCompleteMonth;
+        earningsDailyHeading.hidden = !noCompleteMonth;
+        earningsMonthHeading.textContent = noCompleteMonth
+            ? 'Məzuniyyət ayı'
+            : monthData.under12Months ? 'Tam təqvim ayı işlənmiş aylar' : 'Ayların siyahısı';
+        sortMonthsButton.hidden = monthData.under12Months || !monthData.datesValid;
+        const rows = !monthData.under12Months && oldestFirst ? monthData.rows.slice().reverse() : monthData.rows;
+        const fragment = document.createDocumentFragment();
+        const renderedRows = [];
+        if (!monthData.datesValid || rows.length === 0) {
+            const empty = document.createElement('p');
+            empty.className = 'vacation-earnings-empty';
+            if (!parseDate(employmentStartInput.value)) {
+                empty.textContent = 'Ayların siyahısını hesablamaq üçün işçinin işə başladığı tarixi daxil edin.';
+            } else if (!parseDate(leaveStartInput.value)) {
+                empty.textContent = 'Ayların siyahısını hesablamaq üçün məzuniyyətin başlanma tarixini daxil edin.';
+            } else if (parseDate(employmentStartInput.value) > parseDate(leaveStartInput.value)) {
+                empty.textContent = 'İşə başlama tarixi məzuniyyətin başlanma tarixindən sonra ola bilməz.';
+            } else {
+                empty.textContent = 'Məzuniyyət ayından əvvəl tam işlənmiş təqvim ayı yoxdur.';
+            }
+            fragment.appendChild(empty);
+        }
+        rows.forEach(({ date, key, entry, isVacationMonth, workPeriodStart }) => {
+            const row = document.createElement('div');
+            row.className = 'vacation-month-row' + (noCompleteMonth ? ' is-no-complete-month' : '');
+            row.dataset.vacationMonthRow = key;
+
+            const name = document.createElement('span');
+            name.className = 'vacation-month-name';
+            const spansMultipleMonths = isVacationMonth && workPeriodStart && monthKey(workPeriodStart) !== monthKey(date);
+            const periodName = spansMultipleMonths
+                ? vacationPeriodLabel(workPeriodStart, date)
+                : monthLabel(date) + (isVacationMonth ? ' — məzuniyyət ayı' : '');
+            name.textContent = periodName;
+            const nameCell = document.createElement('div');
+            nameCell.className = 'vacation-month-name-cell';
+            nameCell.appendChild(name);
+
+            const amount = document.createElement('input');
+            amount.type = 'number';
+            amount.min = '0';
+            amount.step = '0.01';
+            amount.inputMode = 'decimal';
+            amount.placeholder = 'Əmək haqqı (AZN)';
+            const hasSavedAmount = entry.amount !== '' && entry.amount !== undefined && entry.amount !== null;
+            const initialAmount = hasSavedAmount ? entry.amount : '0.00';
+            amount.value = initialAmount;
+            const isDefaultZero = !hasSavedAmount || Number(initialAmount) === 0;
+            amount.classList.toggle('is-default-zero', isDefaultZero);
+            amount.setAttribute('aria-label', periodName + ' üzrə əmək haqqı, manatla');
+            amount.dataset.vacationEarningsAmount = '';
+            amount.addEventListener('wheel', () => {
+                if (document.activeElement === amount) amount.blur();
+            }, { passive: true });
+            const clearDefaultAmount = () => {
+                if (amount.classList.contains('is-default-zero')) {
+                    amount.value = '';
+                    amount.classList.remove('is-default-zero');
+                }
+            };
+            amount.addEventListener('pointerdown', clearDefaultAmount);
+            amount.addEventListener('focus', clearDefaultAmount);
+            amount.addEventListener('input', () => {
+                amount.classList.remove('is-default-zero');
+                snapshotEarningsRows();
+                calculate();
+            });
+            amount.addEventListener('blur', () => {
+                if (amount.value !== '') return;
+                amount.value = '0.00';
+                amount.classList.add('is-default-zero');
+                snapshotEarningsRows();
+                calculate();
+            });
+
+            row.append(nameCell, amount);
+            if (noCompleteMonth) {
+                const workedCalendarDays = calendarDaysBetween(
+                    parseDate(employmentStartInput.value),
+                    parseDate(leaveStartInput.value)
+                );
+                const calendarDaysOutput = document.createElement('output');
+                calendarDaysOutput.className = 'vacation-earnings-daily-output';
+                calendarDaysOutput.textContent = Number.isInteger(workedCalendarDays) && workedCalendarDays > 0
+                    ? workedCalendarDays + ' təqvim günü'
+                    : '—';
+                calendarDaysOutput.setAttribute('aria-label', periodName + ' üzrə işçinin faktiki işlədiyi təqvim günlərinin sayı');
+
+                const dailyWage = document.createElement('output');
+                dailyWage.className = 'vacation-earnings-daily-output';
+                dailyWage.dataset.vacationEarningsDailyWage = key;
+                dailyWage.textContent = '—';
+                row.append(calendarDaysOutput, dailyWage);
+            } else {
+                const reason = document.createElement('select');
+                reason.setAttribute('aria-label', monthLabel(date) + ' ayının hesablanmada nəzərə alınması');
+                reason.dataset.vacationEarningsStatus = '';
+                [
+                    ['include', 'Nəzərə alınır'],
+                    ['social-partial', 'Qismən ödənişli sosial məzuniyyət'],
+                    ['unpaid-not-worker', 'İşçinin təşəbbüsü olmadan ödənişsiz məzuniyyət'],
+                    ['idle-not-worker', 'İşçinin təqsiri olmadan boşdayanma']
+                ].forEach(([value, label]) => {
+                    const option = document.createElement('option');
+                    option.value = value;
+                    option.textContent = label;
+                    reason.appendChild(option);
+                });
+                reason.value = reason.querySelector('option[value="' + entry.status + '"]') ? entry.status : 'include';
+                reason.addEventListener('change', () => {
+                    snapshotEarningsRows();
+                    renderEarningsMonths();
+                    calculate();
+                });
+
+                const reasonCell = document.createElement('div');
+                reasonCell.className = 'vacation-month-reason-cell';
+                reasonCell.appendChild(reason);
+                row.appendChild(reasonCell);
+            }
+            renderedRows.push(row);
+        });
+        const usesTwoColumnLayout = renderedRows.length > 6 && !noCompleteMonth;
+        earningsHeader.classList.toggle('is-two-column-layout', usesTwoColumnLayout);
+        earningsList.classList.toggle('is-two-column-layout', usesTwoColumnLayout);
+
+        if (usesTwoColumnLayout) {
+            const columns = document.createElement('div');
+            columns.className = 'vacation-earnings-columns';
+            const leftColumn = document.createElement('div');
+            leftColumn.className = 'vacation-earnings-column';
+            const rightColumn = document.createElement('div');
+            rightColumn.className = 'vacation-earnings-column';
+            const leftColumnCount = Math.ceil(renderedRows.length / 2);
+
+            const createColumnHeader = () => {
+                const header = document.createElement('div');
+                header.className = 'vacation-earnings-column-header';
+                ['Ay', 'Əmək haqqı', 'Nəzərə alınması'].forEach((label) => {
+                    const heading = document.createElement('span');
+                    heading.textContent = label;
+                    header.appendChild(heading);
+                });
+                return header;
+            };
+
+            leftColumn.appendChild(createColumnHeader());
+            rightColumn.appendChild(createColumnHeader());
+
+            renderedRows.forEach((row, index) => {
+                (index < leftColumnCount ? leftColumn : rightColumn).appendChild(row);
+            });
+            columns.append(leftColumn, rightColumn);
+            fragment.appendChild(columns);
+        } else {
+            renderedRows.forEach((row) => fragment.appendChild(row));
+        }
+        earningsList.replaceChildren(fragment);
+        return monthData;
+    }
+
+    function isScheduledWorkday(date, scheduleDays) {
+        const day = date.getDay();
+        return scheduleDays === 6 ? day !== 0 : day !== 0 && day !== 6;
+    }
+
+    function countScheduledWorkdays(start, end, scheduleDays, holidaySet) {
+        let count = 0;
+        const cursor = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+        while (cursor <= end) {
+            if (isScheduledWorkday(cursor, scheduleDays) && !holidaySet.has(toIso(cursor))) count += 1;
+            cursor.setDate(cursor.getDate() + 1);
+        }
+        return count;
+    }
+
+    function countVacationCalendarDays(start, end, holidaySet) {
+        let count = 0;
+        const cursor = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+        while (cursor <= end) {
+            if (!holidaySet.has(toIso(cursor))) count += 1;
+            cursor.setDate(cursor.getDate() + 1);
+        }
+        return count;
+    }
+
+    function snapshotCurrentWageRows() {
+        lastSalaryList.querySelectorAll('[data-vacation-current-row]').forEach((row) => {
+            const key = row.dataset.vacationCurrentRow;
+            currentWageState.set(key, {
+                salary: row.querySelector('[data-vacation-current-salary]').value,
+                monthlyWorkdays: row.querySelector('[data-vacation-month-workdays]').value,
+                manualWorkdays: row.querySelector('[data-vacation-month-workdays]').dataset.manual === 'true',
+                leaveWorkdays: row.querySelector('[data-vacation-month-leave-workdays]').value
+            });
+        });
+    }
+
+    function getVacationMonthSegments(start, end, scheduleDays, holidaySet) {
+        if (!start || !end || end < start) return [];
+        const segments = [];
+        let month = monthStart(start);
+        const finalMonth = monthStart(end);
+        while (month <= finalMonth) {
+            const from = new Date(Math.max(start.getTime(), month.getTime()));
+            const monthEnd = new Date(month.getFullYear(), month.getMonth() + 1, 0);
+            const to = new Date(Math.min(end.getTime(), monthEnd.getTime()));
+            const totalMonthWorkdays = countScheduledWorkdays(month, monthEnd, scheduleDays, holidaySet);
+            const leaveWorkdays = countScheduledWorkdays(from, to, scheduleDays, holidaySet);
+            const leaveCalendarDays = countVacationCalendarDays(from, to, holidaySet);
+            segments.push({ date: month, key: monthKey(month), totalMonthWorkdays, leaveWorkdays, leaveCalendarDays });
+            month = shiftMonth(month, 1);
+        }
+        return segments;
+    }
+
+    function updateLeaveWorkdayLimits() {
+        const paidDays = Number(leaveDaysInput.value);
+        let remainingDays = Number.isInteger(paidDays) && paidDays >= 0 ? paidDays : Infinity;
+        const leaveWorkdayInputs = Array.from(lastSalaryList.querySelectorAll('[data-vacation-month-leave-workdays]'));
+
+        leaveWorkdayInputs.forEach((input) => {
+            const row = input.closest('.vacation-current-month-row');
+            const monthlyWorkdaysRaw = row?.querySelector('[data-vacation-month-workdays]')?.value ?? '';
+            const monthlyWorkdays = Number(monthlyWorkdaysRaw);
+            const monthlyLimit = monthlyWorkdaysRaw.trim() !== '' && Number.isInteger(monthlyWorkdays) && monthlyWorkdays >= 0
+                ? monthlyWorkdays
+                : Infinity;
+            const maximum = Math.max(0, Math.min(remainingDays, monthlyLimit));
+            if (Number.isFinite(maximum)) input.max = String(maximum);
+            else input.removeAttribute('max');
+
+            if (input.value.trim() === '') return;
+            let value = Number(input.value);
+            if (Number.isInteger(value) && value < 0) value = 0;
+            if (Number.isInteger(value) && value > maximum) value = maximum;
+            if (Number.isInteger(value) && String(value) !== input.value) input.value = String(value);
+            if (Number.isInteger(value) && value >= 0) remainingDays -= value;
+        });
+    }
+
+    function renderCurrentWageMonths() {
+        snapshotCurrentWageRows();
+        const start = parseDate(leaveStartInput.value);
+        const end = activeLeaveEnd;
+        const holidaySet = getHolidayDates();
+        const segments = getVacationMonthSegments(start, end, vacationScheduleDays, holidaySet);
+        const fragment = document.createDocumentFragment();
+        if (segments.length === 0) {
+            const empty = document.createElement('p');
+            empty.className = 'vacation-current-empty';
+            empty.textContent = 'Məzuniyyətin başlanma tarixini və gün sayını daxil etdikdə, uyğun ayların göstəriciləri burada görünəcək.';
+            fragment.appendChild(empty);
+        } else {
+            const header = document.createElement('div');
+            header.className = 'vacation-current-month-header';
+            ['Aylar', 'İşçinin müqavilə üzrə əmək haqqı məbləği', 'Ay ərzində cəmi iş günlərinin sayı', 'Məzuniyyətə təsadüf edən iş günlərinin sayı', 'Alınacaq əmək haqqı'].forEach((text) => {
+                const cell = document.createElement('span');
+                cell.textContent = text;
+                header.appendChild(cell);
+            });
+            fragment.appendChild(header);
+        }
+
+        segments.forEach((segment) => {
+            const row = document.createElement('div');
+            row.className = 'vacation-current-month-row';
+            row.dataset.vacationCurrentRow = segment.key;
+
+            const monthName = azMonths[segment.date.getMonth()];
+            const monthNameTitle = monthName.charAt(0).toLocaleUpperCase('az-AZ') + monthName.slice(1);
+            const monthLabelCell = document.createElement('span');
+            monthLabelCell.className = 'vacation-current-month-name';
+            monthLabelCell.textContent = monthLabel(segment.date);
+            const makeField = (labelText, control) => {
+                const field = document.createElement('label');
+                field.className = 'vacation-current-month-field';
+                const label = document.createElement('span');
+                label.className = 'vacation-current-mobile-label';
+                label.textContent = labelText;
+                field.append(label, control);
+                return field;
+            };
+
+            const salary = document.createElement('input');
+            salary.type = 'number';
+            salary.min = '0';
+            salary.step = '0.01';
+            salary.inputMode = 'decimal';
+            salary.placeholder = '0';
+            salary.value = (currentWageState.get(segment.key) || {}).salary || '';
+            salary.setAttribute('aria-label', monthNameTitle + ' ayında müqavilə üzrə əmək haqqı məbləği, manatla');
+            salary.dataset.vacationCurrentSalary = '';
+            salary.addEventListener('input', () => {
+                snapshotCurrentWageRows();
+                calculate();
+            });
+
+            const workdays = document.createElement('input');
+            workdays.type = 'number';
+            workdays.min = '1';
+            workdays.step = '1';
+            workdays.inputMode = 'numeric';
+            workdays.placeholder = '0';
+            workdays.value = (currentWageState.get(segment.key) || {}).manualWorkdays
+                ? currentWageState.get(segment.key).monthlyWorkdays
+                : '';
+            workdays.dataset.vacationMonthWorkdays = '';
+            workdays.dataset.manual = (currentWageState.get(segment.key) || {}).manualWorkdays ? 'true' : 'false';
+            workdays.setAttribute('aria-label', monthLabel(segment.date) + ' ayı ərzində cəmi iş günlərinin sayı');
+            workdays.addEventListener('input', () => {
+                workdays.dataset.manual = 'true';
+                updateLeaveWorkdayLimits();
+                snapshotCurrentWageRows();
+                calculate();
+            });
+            workdays.title = 'Ay ərzindəki cəmi iş günlərinin sayını daxil edin';
+
+            const wageState = currentWageState.get(segment.key) || {};
+            const leaveWorkdays = document.createElement('input');
+            leaveWorkdays.type = 'number';
+            leaveWorkdays.min = '0';
+            leaveWorkdays.step = '1';
+            leaveWorkdays.inputMode = 'numeric';
+            leaveWorkdays.placeholder = '0';
+            leaveWorkdays.value = wageState.leaveWorkdays ?? '';
+            leaveWorkdays.dataset.vacationMonthLeaveWorkdays = '';
+            leaveWorkdays.setAttribute('aria-label', monthNameTitle + ' ayında məzuniyyətə təsadüf edən iş günlərinin sayı');
+            leaveWorkdays.addEventListener('input', () => {
+                updateLeaveWorkdayLimits();
+                snapshotCurrentWageRows();
+                calculate();
+            });
+
+            const amountOutput = document.createElement('output');
+            amountOutput.className = 'vacation-current-month-output';
+            amountOutput.textContent = '—';
+            amountOutput.dataset.vacationCurrentAmount = '';
+
+            row.append(
+                monthLabelCell,
+                makeField('İşçinin müqavilə üzrə əmək haqqı məbləği', salary),
+                makeField('Ay ərzində cəmi iş günlərinin sayı', workdays),
+                makeField('Məzuniyyətə təsadüf edən iş günlərinin sayı', leaveWorkdays),
+                makeField('Alınacaq əmək haqqı', amountOutput)
+            );
+            fragment.appendChild(row);
+        });
+        if (segments.length >= 2) {
+            const total = document.createElement('div');
+            total.className = 'vacation-current-total';
+            const totalLabel = document.createElement('span');
+            totalLabel.textContent = 'Cəmi alınacaq əmək haqqı';
+            const totalAmount = document.createElement('strong');
+            totalAmount.dataset.vacationLastSalaryTotal = '';
+            totalAmount.textContent = '—';
+            total.append(totalLabel, totalAmount);
+            fragment.appendChild(total);
+        }
+        lastSalaryList.replaceChildren(fragment);
+        updateLeaveWorkdayLimits();
+        snapshotCurrentWageRows();
+        return segments;
+    }
+
+    function resetResults() {
+        averageResult.textContent = '—';
+        lastSalaryResult.textContent = '—';
+        averageCard.classList.remove('is-selected');
+        lastSalaryCard.classList.remove('is-selected');
+        monthlyAllocationPanel.hidden = true;
+        monthlyAllocationRows.replaceChildren();
+        const tenure = getEmploymentTenure();
+        averageDetail.textContent = tenure.completedMonthCount === 0
+            ? 'Nəzərə alınan ümumi əmək haqqı ÷ faktiki işlənmiş təqvim günləri × məzuniyyət günləri'
+            : tenure.under12Months
+            ? 'Nəzərə alınan əmək haqqı ÷ tam işlənmiş ayların təqvim günləri cəmi × məzuniyyət günləri'
+            : 'Əvvəlki ayların qazancı ÷ ay sayı ÷ 30,4 × məzuniyyət günləri';
+        lastSalaryDetail.textContent = 'Cari aylıq əmək haqqı ÷ ay ərzindəki iş günləri × məzuniyyətə təsadüf edən iş günləri';
+    }
+
+    function renderMonthlyAllocation(amount, totalLeaveDays, monthParts) {
+        const dayTotal = monthParts.reduce((sum, part) => sum + part.days, 0);
+        if (!Number.isFinite(amount) || !Number.isInteger(totalLeaveDays) || totalLeaveDays < 1 || dayTotal !== totalLeaveDays) return;
+
+        const parts = monthParts.filter((part) => part.days > 0);
+        if (parts.length === 0) return;
+
+        const totalCents = Math.round(amount * 100);
+        let cumulativeDays = 0;
+        let cumulativeCents = 0;
+        const fragment = document.createDocumentFragment();
+        parts.forEach((part, index) => {
+            cumulativeDays += part.days;
+            const nextCumulativeCents = Math.round(totalCents * cumulativeDays / totalLeaveDays);
+            const partCents = nextCumulativeCents - cumulativeCents;
+            cumulativeCents = nextCumulativeCents;
+
+            const row = document.createElement('tr');
+            const monthCell = document.createElement('td');
+            monthCell.textContent = monthLabel(part.date);
+            const daysCell = document.createElement('td');
+            daysCell.textContent = part.days + ' gün';
+            const amountCell = document.createElement('td');
+            amountCell.textContent = currency(partCents / 100);
+            row.appendChild(monthCell);
+            if (index === 0) {
+                const baseAmountCell = document.createElement('td');
+                baseAmountCell.className = 'vacation-allocation-merged-value';
+                baseAmountCell.textContent = currency(amount);
+                baseAmountCell.rowSpan = parts.length;
+                const totalDaysCell = document.createElement('td');
+                totalDaysCell.className = 'vacation-allocation-merged-value';
+                totalDaysCell.textContent = totalLeaveDays + ' gün';
+                totalDaysCell.rowSpan = parts.length;
+                row.append(baseAmountCell, totalDaysCell);
+            }
+            row.append(daysCell, amountCell);
+            fragment.appendChild(row);
+        });
+        monthlyAllocationRows.replaceChildren(fragment);
+        monthlyAllocationPanel.hidden = false;
+    }
+
+    function calculate() {
+        const holidaySet = getHolidayDates();
+        const leaveEnd = updateLeaveEnd(holidaySet);
+        renderHolidayDialogList();
+        const leaveStart = parseDate(leaveStartInput.value);
+        const earningsMonthData = getEarningsMonthRows();
+        updateEarningsSummary(earningsMonthData);
+        const segments = getVacationMonthSegments(
+            leaveStart,
+            leaveEnd,
+            vacationScheduleDays,
+            holidaySet
+        );
+        const paidDays = Number(leaveDaysInput.value);
+        const messages = [];
+        resetResults();
+        const monthAmountOutputs = lastSalaryList.querySelectorAll('[data-vacation-current-amount]');
+        monthAmountOutputs.forEach((output) => { output.textContent = '—'; });
+        const lastSalaryTotalOutput = lastSalaryList.querySelector('[data-vacation-last-salary-total]');
+        if (lastSalaryTotalOutput) lastSalaryTotalOutput.textContent = '—';
+
+        if (!leaveStart) messages.push('Məzuniyyətin başlanma tarixini daxil edin.');
+        if (!Number.isInteger(paidDays) || paidDays < 1) messages.push('Məzuniyyət günlərinin sayını daxil edin.');
+        if (!parseDate(employmentStartInput.value)) messages.push('İşçinin işə başladığı tarixi daxil edin.');
+        else if (leaveStart && parseDate(employmentStartInput.value) > leaveStart) messages.push('İşə başlama tarixi məzuniyyətin başlanma tarixindən sonra ola bilməz.');
+        if (!leaveStart || !leaveEnd || !Number.isInteger(paidDays) || paidDays < 1) {
+            status.textContent = messages.join(' ');
+            return;
+        }
+
+        const consideredRows = earningsMonthData.rows.filter((row) => row.entry.status === 'include');
+        const noCompleteMonth = earningsMonthData.datesValid && earningsMonthData.completedMonthCount === 0;
+        const earningsMissing = consideredRows.some((row) => row.entry.amount.trim() === '' || !Number.isFinite(Number(row.entry.amount)) || Number(row.entry.amount) < 0);
+        const workedCalendarDays = noCompleteMonth
+            ? calendarDaysBetween(parseDate(employmentStartInput.value), leaveStart)
+            : null;
+        const calendarDaysMissing = noCompleteMonth && (!Number.isInteger(workedCalendarDays) || workedCalendarDays < 1);
+        const averageHasEnoughRows = earningsMonthData.under12Months
+            ? consideredRows.length > 0
+            : consideredRows.length === earningsMonthData.targetCount;
+        const averageIsReady = earningsMonthData.datesValid && earningsMonthData.targetCount > 0 && averageHasEnoughRows && !earningsMissing && !calendarDaysMissing;
+        let averageAmount = null;
+        if (averageIsReady) {
+            const earningsTotal = consideredRows.reduce((sum, row) => sum + Number(row.entry.amount), 0);
+            const calendarDayDivisor = earningsMonthData.under12Months && !noCompleteMonth
+                ? consideredRows.reduce((sum, row) => sum + calendarDaysInMonth(row.date), 0)
+                : null;
+            averageAmount = noCompleteMonth
+                ? earningsTotal / workedCalendarDays * paidDays
+                : earningsMonthData.under12Months
+                ? earningsTotal / calendarDayDivisor * paidDays
+                : earningsTotal / consideredRows.length / 30.4 * paidDays;
+            averageResult.textContent = currency(averageAmount);
+            averageDetail.textContent = noCompleteMonth
+                ? currency(earningsTotal) + ' ÷ ' + workedCalendarDays + ' təqvim günü × ' + paidDays + ' təqvim günü'
+                : earningsMonthData.under12Months
+                ? currency(earningsTotal) + ' ÷ ' + calendarDayDivisor + ' təqvim günü × ' + paidDays + ' təqvim günü'
+                : currency(earningsTotal) + ' ÷ ' + consideredRows.length + ' ay ÷ 30,4 × ' + paidDays + ' təqvim günü';
+        }
+
+        let lastSalaryAmount = null;
+        const relevantSegments = segments;
+        if (relevantSegments.length > 0) {
+            const leaveWorkdayParts = [];
+            let complete = true;
+            let total = 0;
+            relevantSegments.forEach((segment, index) => {
+                const state = currentWageState.get(segment.key) || {};
+                const salary = state.salary === '' || state.salary == null ? null : Number(state.salary);
+                const divisor = Number(state.monthlyWorkdays);
+                const leaveWorkdays = state.leaveWorkdays === '' || state.leaveWorkdays == null
+                    ? null
+                    : Number(state.leaveWorkdays);
+                if (salary == null || !Number.isFinite(salary) || salary < 0 || !Number.isInteger(divisor) || divisor < 1 || !Number.isInteger(leaveWorkdays) || leaveWorkdays < 0 || leaveWorkdays > divisor || leaveWorkdays > paidDays) {
+                    complete = false;
+                    return;
+                }
+                const part = salary / divisor * leaveWorkdays;
+                total += part;
+                if (monthAmountOutputs[index]) monthAmountOutputs[index].textContent = currency(part);
+                leaveWorkdayParts.push(leaveWorkdays);
+            });
+            if (leaveWorkdayParts.reduce((sum, days) => sum + days, 0) > paidDays) {
+                complete = false;
+                messages.push('Məzuniyyətə təsadüf edən iş günlərinin ümumi sayı məzuniyyət günlərinin sayından çox ola bilməz.');
+            }
+            if (complete && leaveWorkdayParts.length === relevantSegments.length) {
+                lastSalaryAmount = total;
+                lastSalaryResult.textContent = currency(lastSalaryAmount);
+                if (lastSalaryTotalOutput) lastSalaryTotalOutput.textContent = currency(lastSalaryAmount);
+                lastSalaryDetail.textContent = leaveWorkdayParts.map((days) => days + ' iş günü').join(' + ') + ' üzrə hesablanıb';
+            }
+        } else if (segments.length > 0) {
+            lastSalaryAmount = 0;
+            lastSalaryResult.textContent = currency(0);
+            lastSalaryDetail.textContent = 'Seçilmiş iş qrafikində məzuniyyət dövrünə iş günü düşmür.';
+        } else {
+            messages.push('Sonuncu əmək haqqı prinsipi üçün məzuniyyət dövrünü yoxlayın.');
+        }
+
+        if (averageAmount != null && lastSalaryAmount != null) {
+            const selected = averageAmount >= lastSalaryAmount ? 'average' : 'last';
+            averageCard.classList.toggle('is-selected', selected === 'average');
+            lastSalaryCard.classList.toggle('is-selected', selected === 'last');
+            const allocationParts = segments.map((segment) => ({
+                date: segment.date,
+                days: segment.leaveCalendarDays
+            }));
+            renderMonthlyAllocation(
+                selected === 'average' ? averageAmount : lastSalaryAmount,
+                paidDays,
+                allocationParts
+            );
+        }
+        status.textContent = Array.from(new Set(messages)).join(' ');
+    }
+
+    [leaveStartInput, leaveDaysInput].forEach((input) => {
+        input.addEventListener('input', () => {
+            updateLeaveEnd(getHolidayDates());
+            renderEarningsMonths();
+            renderCurrentWageMonths();
+            calculate();
+        });
+        input.addEventListener('change', () => {
+            updateLeaveEnd(getHolidayDates());
+            renderEarningsMonths();
+            renderCurrentWageMonths();
+            calculate();
+        });
+    });
+    openHolidayDialogButton.addEventListener('click', () => {
+        holidayDraftDates = new Set(customHolidayDates);
+        holidayDraftDetails = new Map(Array.from(customHolidayDetails, ([date, details]) => [date, details.map((detail) => ({ ...detail }))]));
+        holidayDraftExcludedAutomaticDates = new Set(excludedAutomaticHolidayDates);
+        customHolidayStatus.textContent = '';
+        setHolidayNameOptionsOpen(false);
+        renderHolidayDialogList();
+        holidayDialog.showModal();
+    });
+    excludedPaymentsOpenButton.addEventListener('click', () => excludedPaymentsDialog.showModal());
+    excludedPaymentsCloseButton.addEventListener('click', () => excludedPaymentsDialog.close());
+    closeHolidayDialogButton.addEventListener('click', () => holidayDialog.close());
+    holidayDialog.addEventListener('close', () => {
+        holidayDraftDates = null;
+        holidayDraftDetails = null;
+        holidayDraftExcludedAutomaticDates = null;
+        setHolidayNameOptionsOpen(false);
+    });
+    saveHolidayChangesButton.addEventListener('click', saveHolidayChanges);
+    addCustomHolidayButton.addEventListener('click', addCustomHolidayDate);
+    holidayNameToggle.addEventListener('click', () => {
+        setHolidayNameOptionsOpen(holidayNameOptions.hidden);
+        if (!holidayNameOptions.hidden) customHolidayNameInput.focus();
+    });
+    customHolidayNameInput.addEventListener('focus', () => setHolidayNameOptionsOpen(true));
+    customHolidayNameInput.addEventListener('input', () => {
+        filterHolidayNameOptions();
+        updateVotingHolidayNote();
+    });
+    customHolidayNameInput.addEventListener('keydown', (event) => {
+        if (event.key === 'ArrowDown') {
+            event.preventDefault();
+            setHolidayNameOptionsOpen(true);
+            const firstOption = holidayNameOptionButtons.find((option) => !option.hidden);
+            if (firstOption) firstOption.focus();
+            return;
+        }
+        if (event.key === 'Escape' && !holidayNameOptions.hidden) {
+            event.preventDefault();
+            event.stopPropagation();
+            setHolidayNameOptionsOpen(false);
+            return;
+        }
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            const exactOption = holidayNameOptionButtons.find((option) => !option.hidden && option.dataset.holidayName.toLocaleLowerCase('az') === customHolidayNameInput.value.trim().toLocaleLowerCase('az'));
+            if (exactOption) {
+                customHolidayNameInput.value = exactOption.dataset.holidayName;
+                updateVotingHolidayNote();
+                setHolidayNameOptionsOpen(false);
+            } else {
+                addCustomHolidayDate();
+            }
+        }
+    });
+    holidayNameOptions.addEventListener('click', (event) => {
+        const option = event.target.closest('[data-holiday-name]');
+        if (!option) return;
+        customHolidayNameInput.value = option.dataset.holidayName;
+        updateVotingHolidayNote();
+        setHolidayNameOptionsOpen(false);
+        customHolidayDateInput.focus();
+    });
+    holidayNameOptions.addEventListener('keydown', (event) => {
+        if (!['ArrowDown', 'ArrowUp', 'Escape'].includes(event.key)) return;
+        event.preventDefault();
+        if (event.key === 'Escape') {
+            setHolidayNameOptionsOpen(false);
+            customHolidayNameInput.focus();
+            return;
+        }
+        const visibleOptions = holidayNameOptionButtons.filter((option) => !option.hidden);
+        const currentIndex = visibleOptions.indexOf(document.activeElement);
+        const nextIndex = event.key === 'ArrowDown'
+            ? Math.min(visibleOptions.length - 1, currentIndex + 1)
+            : Math.max(0, currentIndex - 1);
+        if (visibleOptions[nextIndex]) visibleOptions[nextIndex].focus();
+    });
+    holidayDialog.addEventListener('click', (event) => {
+        if (!holidayNameControl.contains(event.target)) setHolidayNameOptionsOpen(false);
+    });
+    [customHolidayDateInput, customHolidayDaysInput].forEach((input) => input.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            addCustomHolidayDate();
+        }
+    }));
+    previousEarningsSummary.addEventListener('click', (event) => {
+        if (!event.target.closest('.vacation-summary-title, .vacation-summary-arrow')) {
+            event.preventDefault();
+        }
+    });
+    sameWageToggle.addEventListener('change', () => {
+        if (!sameWageToggle.checked) return;
+        const firstAmount = earningsList.querySelector('[data-vacation-month-row] [data-vacation-earnings-amount]');
+        const amount = firstAmount?.value || '0.00';
+        setAllEarningsAmounts(amount, Number(amount) === 0);
+        snapshotEarningsRows();
+        calculate();
+    });
+    employmentStartInput.addEventListener('change', () => {
+        renderEarningsMonths();
+        calculate();
+    });
+    sortMonthsButton.addEventListener('click', () => {
+        oldestFirst = !oldestFirst;
+        sortMonthsButton.setAttribute('aria-pressed', String(oldestFirst));
+        const sortLabel = oldestFirst ? 'Ən köhnə ay əvvəl' : 'Ən yeni ay əvvəl';
+        sortMonthsButton.setAttribute('aria-label', sortLabel);
+        sortMonthsButton.title = sortLabel;
+        sortMonthsButton.querySelector('[data-sort-letter="first"]').textContent = oldestFirst ? 'Z' : 'A';
+        sortMonthsButton.querySelector('[data-sort-letter="second"]').textContent = oldestFirst ? 'A' : 'Z';
+        renderEarningsMonths();
+        calculate();
+    });
+
+    renderEarningsMonths();
+    renderCurrentWageMonths();
     calculate();
 })();

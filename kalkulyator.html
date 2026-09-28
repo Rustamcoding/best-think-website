@@ -911,57 +911,20 @@ href="style.css?v=20260924-import-employee-sliders-v23"
             transition: padding .25s ease, box-shadow .25s ease;
         }
 
-        @property --calculator-wave-angle {
-            syntax: "<angle>";
-            inherits: false;
-            initial-value: 0deg;
-        }
-
-        .calculator-grid .calculator-card::before {
-            content: "";
-            position: absolute;
-            inset: -1px;
-            z-index: 2;
-            padding: 1.5px;
-            border-radius: inherit;
-            background: conic-gradient(
-                from var(--calculator-wave-angle),
-                transparent 0deg 292deg,
-                rgba(36, 102, 211, .22) 310deg,
-                rgba(92, 157, 239, .92) 334deg,
-                rgba(36, 102, 211, .22) 356deg,
-                transparent 360deg
-            );
-            -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-            -webkit-mask-composite: xor;
-            mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-            mask-composite: exclude;
-            pointer-events: none;
-            filter: drop-shadow(0 0 2px rgba(36, 102, 211, .22));
-            animation: calculator-border-wave 5.8s linear infinite;
-        }
-
-        .calculator-grid .calculator-card.is-open::before {
-            animation: none;
-            opacity: 0;
-        }
-
-        @keyframes calculator-border-wave {
-            to {
-                --calculator-wave-angle: 360deg;
-            }
-        }
-
         .calculator-grid .salary-calculator-card {
             order: 1;
         }
 
         .calculator-grid .calculator-card-exchange {
-            order: 3;
+            order: 5;
         }
 
         .calculator-grid .life-savings-calculator-card {
-            order: 2;
+            order: 3;
+        }
+
+        .calculator-grid .credit-loan-calculator-card {
+            order: 6;
         }
 
         .calculator-grid .calculator-card:not(.is-open) {
@@ -1327,12 +1290,6 @@ href="style.css?v=20260924-import-employee-sliders-v23"
 
         .calculator-card-action-label {
             display: inline-block;
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            .calculator-grid .calculator-card::before {
-                animation: none;
-            }
         }
 
         .calculator-card-action:hover,
@@ -3070,10 +3027,339 @@ href="style.css?v=20260924-import-employee-sliders-v23"
             text-align: right;
         }
         .credit-loan-export-status:empty { display: none; }
+        .vacation-calculator-card { order: 2; }
+        .vacation-calculator-card [hidden] { display: none !important; }
+        .vacation-tool { display: grid; gap: 18px; }
+        .vacation-panel { min-width: 0; padding: 18px; border: 1px solid #e1e8f1; border-radius: 16px; background: #fff; }
+        .vacation-panel h3,
+        .vacation-panel summary { margin: 0; color: #13233e; font-size: 15px; font-weight: 800; }
+        .vacation-panel > p,
+        .vacation-note { margin: 7px 0 0; color: #687991; font-size: 12px; line-height: 1.55; }
+        .vacation-same-wage-control { margin-top: 10px; }
+        .vacation-same-wage-label { display: inline-flex; align-items: center; gap: 7px; padding: 4px 0; background: #fff; color: #38516f; font-size: 11.5px; font-weight: 800; cursor: pointer; user-select: none; }
+        .vacation-same-wage-toggle { width: 16px; height: 16px; flex: 0 0 16px; margin: 0; accent-color: #2466d3; cursor: pointer; }
+        .vacation-panel details > summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; cursor: pointer; list-style: none; }
+        .vacation-panel details > summary::-webkit-details-marker { display: none; }
+        .vacation-summary-title { flex: 0 1 auto; }
+        .vacation-summary-arrow { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; flex: 0 0 20px; border: 1px solid #d9e3ef; border-radius: 50%; background: #f7faff; font-size: 0; line-height: 1; transition: background-color .2s ease, border-color .2s ease; }
+        .vacation-summary-arrow::before { content: ""; width: 5px; height: 5px; border-right: 2px solid var(--blue); border-bottom: 2px solid var(--blue); transform: rotate(45deg) translate(-1px, -1px); transition: transform .2s ease; }
+        .vacation-panel details[open] .vacation-summary-arrow { background: #e2edfc; border-color: #a9c5ec; }
+        .vacation-panel details[open] .vacation-summary-arrow::before { transform: rotate(225deg) translate(-1px, -1px); }
+        .vacation-inline-link { display: inline; padding: 0; border: 0; background: none; color: var(--blue); font: inherit; text-decoration: underline; cursor: pointer; }
+        .vacation-fields { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 15px 16px; margin-top: 16px; }
+        .vacation-tenure-note { margin: 14px 0 0; padding: 10px 12px; border-left: 3px solid #75a6eb; border-radius: 0 9px 9px 0; background: #f5f9ff; color: #526b8d; font-size: 12px; line-height: 1.55; }
+        .vacation-field { display: grid; align-content: start; gap: 6px; min-width: 0; }
+        .vacation-field-heading { display: block; }
+        .vacation-field-heading > label { display: block; }
+        .vacation-holiday-trigger { display: inline-grid; place-items: center; width: 25px; height: 25px; flex: 0 0 auto; padding: 0; border: 1px solid #d7e4f6; border-radius: 8px; background: #f7faff; color: #2466d3; cursor: pointer; }
+        .vacation-holiday-count-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 25px; }
+        .vacation-holiday-count-row small { margin: 0; }
+        .vacation-holiday-trigger:hover { background: #edf4ff; border-color: #a9c7f5; }
+        .vacation-holiday-trigger svg { width: 15px; height: 15px; }
+        .vacation-field label,
+        .vacation-field-label { color: #263954; font-size: 12px; font-weight: 700; }
+        .vacation-field input,
+        .vacation-field select,
+        .vacation-month-row input,
+        .vacation-month-row select,
+        .vacation-current-month-row input { box-sizing: border-box; width: 100%; min-width: 0; height: 42px; padding: 0 11px; border: 1px solid #d9e2ed; border-radius: 10px; background: #fff; color: #13233e; font: inherit; font-size: 13px; }
+        .vacation-field input:focus,
+        .vacation-field select:focus,
+        .vacation-month-row input:focus,
+        .vacation-month-row select:focus,
+        .vacation-current-month-row input:focus { outline: 3px solid #2466d322; border-color: #2466d3; }
+        .vacation-field input[readonly] { background: #f6f8fb; color: #52637b; }
+        .vacation-current-month-row input[readonly] { background: #f6f8fb; color: #52637b; }
+        .vacation-field small { color: #74839a; font-size: 11px; line-height: 1.4; }
+        .vacation-holiday-dialog { width: min(440px, calc(100vw - 32px)); max-height: min(80vh, 560px); margin: auto; padding: 0; overflow: hidden; border: 1px solid #dfe7f1; border-radius: 16px; background: #fff; color: #13233e; box-shadow: 0 22px 70px #13233e2b; }
+        .vacation-holiday-dialog::backdrop { background: #13233e66; backdrop-filter: blur(2px); }
+        .vacation-holiday-dialog-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 8px 14px; padding: 18px 20px 13px; border-bottom: 1px solid #edf1f6; }
+        .vacation-holiday-dialog-head h4 { margin: 0; color: #13233e; font-size: 16px; font-weight: 800; }
+        .vacation-holiday-dialog-head p { margin: 5px 0 0; color: #687991; font-size: 12px; line-height: 1.5; }
+        .vacation-holiday-dialog-head > div { min-width: 0; }
+        .vacation-holiday-dialog-head .vacation-holiday-overlap-note { grid-column: 1 / -1; width: 100%; box-sizing: border-box; margin: 0; padding: 9px 10px; border: 1px solid #e7edf5; border-radius: 9px; background: #f7f9fc; color: #586b84; font-size: 11px; line-height: 1.45; }
+        .vacation-holiday-dialog-close { display: grid; place-items: center; width: 30px; height: 30px; flex: 0 0 auto; border: 1px solid #e1e8f1; border-radius: 9px; background: #fff; color: #52637b; font-size: 20px; cursor: pointer; }
+        .vacation-holiday-dialog-body { display: grid; gap: 16px; max-height: calc(80vh - 80px); padding: 15px 20px 20px; overflow: auto; }
+        #vacation-holiday-dialog[open] { display: flex; flex-direction: column; }
+        #vacation-holiday-dialog .vacation-holiday-dialog-body { flex: 1 1 auto; min-height: 0; max-height: calc(80vh - 170px); }
+        .vacation-holiday-dialog-footer { display: flex; justify-content: flex-end; flex: 0 0 auto; padding: 10px 20px 16px; border-top: 1px solid #edf1f6; background: #fff; }
+        .vacation-holiday-save { min-height: 40px; padding: 0 16px; border: 1px solid #2466d3; border-radius: 9px; background: #2466d3; color: #fff; font: inherit; font-size: 12px; font-weight: 700; cursor: pointer; }
+        .vacation-holiday-list { display: grid; gap: 8px; }
+        .vacation-holiday-entry { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 8px 12px; padding: 10px 11px; border: 1px solid #e7edf5; border-radius: 11px; background: #fbfcfe; }
+        .vacation-holiday-entry-main { display: grid; gap: 3px; min-width: 0; }
+        .vacation-holiday-entry-date { color: #233852; font-size: 12px; font-weight: 800; }
+        .vacation-holiday-entry-name { color: #6a7b92; font-size: 11px; line-height: 1.4; }
+        .vacation-holiday-entry-status { grid-column: 1 / -1; color: #a45e12; font-size: 10px; }
+        .vacation-holiday-entry-actions { grid-column: 2; grid-row: 1; display: flex; align-items: center; gap: 6px; }
+        .vacation-holiday-entry-remove { display: grid; place-items: center; width: 28px; height: 28px; padding: 0; border: 1px solid #e1e8f1; border-radius: 8px; background: #fff; color: #687991; font-size: 17px; cursor: pointer; }
+        .vacation-holiday-entry-remove svg { width: 15px; height: 15px; }
+        .vacation-holiday-entry-remove.is-danger { border-color: #f1c9cf; background: #fff7f8; color: #c4374c; }
+        .vacation-holiday-entry-remove.is-danger:hover { border-color: #dc6678; background: #fff0f2; }
+        .vacation-holiday-empty { margin: 0; padding: 12px; border-radius: 10px; background: #f7f9fc; color: #687991; font-size: 12px; line-height: 1.5; }
+        .vacation-holiday-add { display: grid; gap: 7px; padding-top: 14px; border-top: 1px solid #edf1f6; }
+        .vacation-holiday-add label { color: #263954; font-size: 12px; font-weight: 700; }
+        .vacation-holiday-add-fields { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr) minmax(66px, .5fr) auto; gap: 8px; align-items: end; }
+        .vacation-holiday-add-field { display: grid; gap: 6px; min-width: 0; }
+        .vacation-holiday-add-field label { color: #263954; font-size: 11px; font-weight: 700; }
+        .vacation-holiday-add input { width: 100%; min-width: 0; height: 40px; padding: 0 9px; border: 1px solid #d9e2ed; border-radius: 9px; background: #fff; color: #13233e; font: inherit; font-size: 12px; }
+        .vacation-holiday-name-control { position: relative; z-index: 2; min-width: 0; }
+        .vacation-holiday-name-control input { padding-right: 38px; }
+        .vacation-holiday-name-control:focus-within input { border-color: #2466d3; outline: 3px solid #2466d322; }
+        .vacation-holiday-name-toggle { position: absolute; top: 1px; right: 1px; display: grid; place-items: center; width: 38px; height: 38px; padding: 0; border: 0; border-radius: 8px; background: transparent; color: #64748b; cursor: pointer; }
+        .vacation-holiday-name-toggle svg { width: 14px; height: 14px; transition: transform .18s ease; }
+        .vacation-holiday-name-toggle[aria-expanded="true"] svg { transform: rotate(180deg); }
+        .vacation-holiday-name-options { position: absolute; top: calc(100% + 5px); left: 0; right: 0; z-index: 30; display: grid; gap: 2px; max-height: 180px; padding: 4px; overflow-y: auto; border: 1px solid #d9e2ed; border-radius: 10px; background: #fff; box-shadow: 0 10px 24px #13233e24; }
+        .vacation-holiday-name-options[hidden] { display: none; }
+        .vacation-holiday-name-option { width: 100%; padding: 8px 9px; border: 0; border-radius: 7px; background: transparent; color: #263954; font: inherit; font-size: 12px; text-align: left; cursor: pointer; }
+        .vacation-holiday-name-option:hover,
+        .vacation-holiday-name-option:focus-visible,
+        .vacation-holiday-name-option[aria-selected="true"] { outline: none; background: #edf4ff; color: #2466d3; }
+        .vacation-holiday-name-empty { margin: 0; padding: 8px 9px; color: #74839a; font-size: 11px; line-height: 1.4; }
+        .vacation-holiday-add-fields > button { align-self: end; display: grid; place-items: center; width: 40px; height: 40px; min-height: 40px; padding: 0; border: 1px solid #2466d3; border-radius: 9px; background: #2466d3; color: #fff; font: inherit; font-size: 24px; font-weight: 500; line-height: 1; cursor: pointer; }
+        .vacation-holiday-add small { color: #74839a; font-size: 11px; line-height: 1.45; }
+        .vacation-holiday-overlap-note { margin: 0; padding: 10px 11px; border: 1px solid #e7edf5; border-radius: 9px; background: #f7f9fc; color: #586b84; font-size: 11px; line-height: 1.5; }
+        .vacation-voting-note { margin: 2px 0 0; padding: 8px 10px; border-left: 3px solid #75a6eb; border-radius: 0 8px 8px 0; background: #f5f9ff; color: #586b84; font-size: 11px; line-height: 1.45; }
+        .vacation-holiday-add-status { margin: 0; color: #167345; font-size: 11px; }
+        .vacation-holiday-add-status:empty { display: none; }
+        @media (max-width: 480px) {
+            .vacation-holiday-add-fields { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+            .vacation-holiday-add-fields > button { justify-self: start; }
+        }
+        .vacation-sort-button { min-height: 34px; padding: 0 11px; border: 1px solid #d7e4f6; border-radius: 9px; background: #f7faff; color: #2466d3; font: inherit; font-size: 12px; font-weight: 700; cursor: pointer; }
+        .vacation-section-top { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-top: 14px; }
+        .vacation-month-list { display: grid; gap: 8px; margin-top: 14px; }
+        .vacation-earnings-header:not(.is-no-complete-month) + #vacation-earnings-list { grid-template-columns: minmax(0, 1fr); grid-template-rows: none; grid-auto-flow: row; }
+        .vacation-earnings-header.is-two-column-layout { display: none; }
+        .vacation-earnings-header.is-two-column-layout + #vacation-earnings-list { margin-top: 10px; }
+        .vacation-earnings-columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; align-items: start; min-width: 0; }
+        .vacation-earnings-column { box-sizing: border-box; display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; align-content: start; min-width: 0; width: 100%; padding: 10px; border: 1px solid #e4eaf2; border-radius: 14px; background: #f8fafd; }
+        .vacation-earnings-column-header { box-sizing: border-box; display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .8fr) minmax(0, 1.15fr); gap: 8px; align-items: center; min-height: 27px; width: 100%; min-width: 0; padding: 0 3px 5px; color: #52637b; font-size: 10px; font-weight: 800; line-height: 1.25; }
+        .vacation-earnings-column-header span:nth-child(2),
+        .vacation-earnings-column-header span:nth-child(3) { text-align: center; }
+        .vacation-earnings-summary { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 14px; padding-top: 12px; border-top: 1px solid #e8edf4; }
+        .vacation-earnings-summary-item { display: grid; align-content: start; gap: 5px; min-width: 0; padding: 0 9px; }
+        .vacation-earnings-summary-item span { color: #74839a; font-size: 11px; line-height: 1.35; }
+        .vacation-earnings-summary-item strong { color: #263954; font-size: 13px; font-variant-numeric: tabular-nums; line-height: 1.3; }
+        .vacation-earnings-summary-note { grid-column: 1 / -1; margin: 0; padding: 0 9px; color: #74839a; font-size: 10px; line-height: 1.4; }
+        .vacation-month-row { box-sizing: border-box; display: grid; grid-template-columns: minmax(125px, .7fr) minmax(130px, .8fr) minmax(175px, 1fr); gap: 10px; align-items: center; width: 100%; padding: 9px 10px; border: 1px solid #edf1f6; border-radius: 11px; background: #fbfcfe; }
+        .vacation-earnings-header:not(.is-no-complete-month) + #vacation-earnings-list .vacation-month-row { grid-template-columns: minmax(0, 1.05fr) minmax(0, .8fr) minmax(0, 1.15fr); gap: 8px; padding: 8px; background: #fff; }
+        .vacation-month-row.is-no-complete-month,
+        .vacation-earnings-header.is-no-complete-month { grid-template-columns: minmax(125px, .7fr) minmax(130px, .78fr) minmax(150px, .9fr) minmax(130px, .78fr); }
+        .vacation-earnings-daily-output { display: flex; align-items: center; min-width: 0; height: 38px; padding: 0 11px; border: 1px solid #d9e2ed; border-radius: 10px; background: #f7f9fc; color: #263954; font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums; }
+        .vacation-month-name-cell { display: flex; align-items: center; gap: 8px; min-width: 0; max-width: 100%; }
+        .vacation-month-reason-cell { display: flex; align-items: center; gap: 8px; min-width: 0; max-width: 100%; }
+        .vacation-month-reason-cell select { flex: 1 1 auto; min-width: 0; }
+        .vacation-month-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .vacation-month-row.is-no-complete-month .vacation-month-name { overflow: visible; font-size: 13px; line-height: 1.3; text-overflow: clip; white-space: normal; overflow-wrap: anywhere; }
+        .vacation-earnings-empty { margin: 14px 8px 0; color: #74839a; font-size: 12px; line-height: 1.5; text-align: center; }
+        .vacation-earnings-header { margin-top: 14px; padding: 8px 10px; border-color: #e4eaf2; background: #f7f9fc; color: #52637b; font-size: 11px; font-weight: 800; }
+        .vacation-earnings-month-heading { display: flex; align-items: center; gap: 8px; min-width: 0; }
+        .vacation-sort-icon { display: inline-grid; place-items: center; width: 30px; height: 27px; flex: 0 0 30px; padding: 0; }
+        .vacation-sort-icon svg { width: 19px; height: 18px; }
+        .vacation-excluded-payments-dialog { width: min(600px, calc(100vw - 32px)); max-height: min(82vh, 680px); }
+        .vacation-excluded-payment-list { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+        .vacation-excluded-payment-list li { position: relative; padding: 9px 11px 9px 28px; border: 1px solid #e7edf5; border-radius: 10px; background: #fbfcfe; color: #52637b; font-size: 12px; line-height: 1.45; }
+        .vacation-excluded-payment-list li::before { position: absolute; top: 16px; left: 13px; width: 6px; height: 6px; border-radius: 50%; background: #4a79c8; content: ""; }
+        .vacation-excluded-law-link { color: var(--blue); font-weight: 700; text-decoration: underline; }
+        .vacation-last-salary-panel > h3 { text-align: center; }
+        .vacation-last-salary-panel #vacation-last-salary-list { gap: 18px; }
+        .vacation-current-month-header,
+        .vacation-current-month-row { display: grid; grid-template-columns: minmax(100px, .58fr) repeat(4, minmax(0, 1fr)); gap: 12px; padding: 0 8px; }
+        .vacation-current-month-header { align-items: center; min-height: 58px; padding-bottom: 8px; border-bottom: 1px solid #e8edf4; color: #263954; font-size: 12px; font-weight: 700; line-height: 1.35; text-align: center; }
+        .vacation-current-month-header span { display: flex; align-items: center; justify-content: center; min-height: 46px; padding: 0 4px; }
+        .vacation-current-month-header span:first-child { justify-content: center; text-align: center; }
+        .vacation-current-month-row { align-items: center; border: 0; border-radius: 0; background: transparent; }
+        .vacation-current-month-name { color: #263954; font-size: 13px; font-weight: 700; }
+        .vacation-current-month-field { display: grid; align-content: start; gap: 6px; min-width: 0; }
+        .vacation-current-mobile-label { display: none; }
+        .vacation-month-row input,
+        .vacation-month-row select,
+        .vacation-current-month-row input { height: 38px; font-size: 12px; }
+        .vacation-month-row input.is-default-zero { color: #99a7b9; }
+        .vacation-current-month-row input { height: 42px; padding: 0 11px; border: 1px solid #d9e2ed; border-radius: 10px; background: #fff; color: #13233e; font: inherit; font-size: 13px; text-align: left; }
+        .vacation-current-month-row input::placeholder { color: #a7b1c0; opacity: 1; }
+        .vacation-current-month-row input:focus::placeholder { color: transparent; }
+        .vacation-current-month-row input[readonly] { background: #f6f8fb; color: #52637b; }
+        .vacation-current-month-output { display: flex; align-items: center; min-height: 42px; width: 100%; padding: 0 11px; border: 1px solid #d9e2ed; border-radius: 10px; background: #f7f9fc; color: #13233e; font-size: 13px; font-variant-numeric: tabular-nums; }
+        .vacation-current-total { display: flex; align-items: center; justify-content: flex-end; gap: 8px; margin-top: -8px; padding: 12px 8px 0; border: 0; border-top: 1px solid #e8edf4; border-radius: 0; background: transparent; color: #52637b; font-size: 13px; font-weight: 600; text-align: right; }
+        .vacation-current-total strong { color: #263954; font-size: 13px; font-weight: 700; white-space: nowrap; }
+        .vacation-current-empty { margin: 14px 8px 0; color: #74839a; font-size: 12px; line-height: 1.5; text-align: center; }
+        .vacation-comparison-intro { margin: 5px 0 0; color: #687991; font-size: 12px; }
+        .vacation-result-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+        .vacation-selection-note { margin: 0; padding: 10px 13px; border-left: 3px solid #75a6eb; border-radius: 0 9px 9px 0; background: #f5f9ff; color: #526b8d; font-size: 12px; line-height: 1.55; }
+        .vacation-selection-note strong { color: #263954; font-weight: 800; }
+        .vacation-result-card { position: relative; padding: 17px; border: 1px solid #e0e7f0; border-radius: 14px; background: #fff; transition: border-color .2s ease, background .2s ease, box-shadow .2s ease; }
+        .vacation-result-card.is-selected { border-color: #7bb294; background: #f4fbf6; box-shadow: 0 0 0 2px #20824a12; }
+        .vacation-result-label { display: block; margin-bottom: 7px; color: #60718a; font-size: 12px; font-weight: 700; }
+        .vacation-result-winner { position: absolute; top: 12px; right: 12px; display: none; place-items: center; width: 23px; height: 23px; border-radius: 50%; background: #e4f4e9; color: #167345; }
+        .vacation-result-winner svg { width: 14px; height: 14px; }
+        .vacation-result-card.is-selected .vacation-result-winner { display: grid; }
+        .vacation-result-card strong { display: block; color: #142540; font-size: 22px; line-height: 1.2; }
+        .vacation-result-card.is-selected strong { color: #167345; }
+        .vacation-result-card small { display: block; margin-top: 7px; color: #74839a; font-size: 11px; }
+        .vacation-allocation-table-wrap { margin-top: 12px; overflow-x: auto; }
+        .vacation-allocation-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        .vacation-allocation-table th,
+        .vacation-allocation-table td { padding: 10px 9px; border-bottom: 1px solid #edf1f6; text-align: center; vertical-align: middle; }
+        .vacation-allocation-table tbody td { border-bottom: 0; }
+        .vacation-allocation-table .vacation-allocation-merged-value { text-align: center; vertical-align: middle; }
+        .vacation-allocation-table th { color: #60718a; font-size: 11px; font-weight: 700; }
+        .vacation-allocation-table td:last-child { color: #123f70; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+        .vacation-status { min-height: 0; margin: 0; color: #b42318; font-size: 12px; }
+        .vacation-status:empty { display: none; }
+
+        /* Kalkulyator siyahısı: kartları yığcam, şaquli siyahı sətirlərində göstər. */
+        .calculator-grid {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            gap: 12px;
+        }
+
+        .calculator-grid > .calculator-card.is-open {
+            align-self: center;
+        }
+
+        .calculator-quick-nav {
+            align-self: center;
+        }
+
+        .calculator-grid .calculator-card:not(.is-open) {
+            display: block;
+            min-height: 0;
+            padding: 14px 18px;
+            border-color: #e3eaf3;
+            border-radius: 16px;
+            box-shadow: 0 3px 12px rgba(19, 35, 62, 0.035);
+            transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease;
+        }
+
+        .calculator-grid .calculator-card:not(.is-open):hover {
+            border-color: #bfd2eb;
+            box-shadow: 0 8px 20px rgba(19, 35, 62, 0.075);
+            transform: translateY(-1px);
+        }
+
+        .calculator-grid .calculator-card:not(.is-open) .calculator-title {
+            grid-template-columns: 46px minmax(0, 1fr) auto;
+            grid-template-rows: auto;
+            align-items: center;
+            column-gap: 15px;
+            row-gap: 0;
+            min-height: 0;
+        }
+
+        .calculator-grid .calculator-card:not(.is-open) .calculator-icon {
+            width: 46px;
+            height: 46px;
+            flex-basis: 46px;
+            border-radius: 14px;
+            font-size: 21px;
+        }
+
+        .calculator-grid .calculator-card:not(.is-open) .calculator-main-title {
+            margin: 0 0 4px;
+            font-size: 19px;
+            line-height: 1.3;
+        }
+
+        .calculator-grid .calculator-card:not(.is-open) .calculator-title p {
+            display: -webkit-box;
+            overflow: hidden;
+            margin: 0;
+            font-size: 13px;
+            line-height: 1.45;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+        }
+
+        .calculator-grid .calculator-card:not(.is-open) .calculator-card-action {
+            grid-column: 3;
+            grid-row: 1;
+            justify-self: end;
+            align-self: center;
+            width: auto;
+            min-height: 38px;
+            padding: 9px 12px;
+            border: 1px solid #dce7f5;
+            border-radius: 10px;
+            background: #f7faff;
+            font-size: 13px;
+            line-height: 1.25;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .calculator-grid .calculator-card.is-open .calculator-title {
+            grid-template-columns: 48px minmax(0, 1fr);
+        }
+
+        .calculator-grid .calculator-card.is-open .calculator-title p {
+            display: block;
+            overflow: visible;
+            -webkit-line-clamp: unset;
+        }
+
+        @media (max-width: 700px) {
+            .calculator-grid {
+                gap: 10px;
+            }
+
+            .calculator-grid .calculator-card:not(.is-open) {
+                padding: 13px 14px;
+            }
+
+            .calculator-grid .calculator-card:not(.is-open) .calculator-title {
+                grid-template-columns: 42px minmax(0, 1fr);
+                column-gap: 12px;
+                row-gap: 8px;
+            }
+
+            .calculator-grid .calculator-card:not(.is-open) .calculator-icon {
+                width: 42px;
+                height: 42px;
+                flex-basis: 42px;
+                border-radius: 13px;
+                font-size: 19px;
+            }
+
+            .calculator-grid .calculator-card:not(.is-open) .calculator-main-title {
+                font-size: 17px;
+            }
+
+            .calculator-grid .calculator-card:not(.is-open) .calculator-title p {
+                font-size: 12px;
+            }
+
+            .calculator-grid .calculator-card:not(.is-open) .calculator-card-action {
+                grid-column: 2;
+                grid-row: 2;
+                justify-self: start;
+                min-height: 0;
+                padding: 4px 0 0;
+                border: 0;
+                background: transparent;
+                text-align: left;
+            }
+
+            .calculator-grid .calculator-card.is-open .calculator-title {
+                grid-template-columns: 42px minmax(0, 1fr);
+            }
+        }
+
         @media (max-width: 760px) {
             .credit-loan-form { grid-template-columns: repeat(2, minmax(0, 1fr)); }
             .credit-loan-results { grid-template-columns: repeat(2, minmax(0, 1fr)); }
             .credit-loan-export-actions { justify-content: flex-start; }
+            .vacation-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .vacation-current-month-header { display: none; }
+            .vacation-current-month-row { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+            .vacation-current-month-name { grid-column: 1 / -1; }
+            .vacation-current-mobile-label { display: block; color: #263954; font-size: 11px; font-weight: 700; line-height: 1.35; }
+            .vacation-earnings-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .vacation-earnings-columns { grid-template-columns: minmax(0, 1fr); }
+            .vacation-month-row.is-no-complete-month,
+            .vacation-earnings-header.is-no-complete-month { grid-template-columns: repeat(2, minmax(0, 1fr)); }
         }
         @media (max-width: 520px) {
             .credit-loan-form,
@@ -3086,6 +3372,14 @@ href="style.css?v=20260924-import-employee-sliders-v23"
             .credit-loan-export-button { flex: 0 1 auto; }
             .credit-loan-export-actions .calculator-error-report-card { margin-left: auto; }
             .credit-loan-export-status { text-align: left; }
+            .vacation-fields,
+            .vacation-result-grid { grid-template-columns: 1fr; }
+            .vacation-panel { padding: 14px; }
+            .vacation-month-row { grid-template-columns: 1fr 1fr; }
+            .vacation-current-month-row { grid-template-columns: 1fr; }
+            .vacation-current-total { flex-wrap: wrap; }
+            .vacation-month-name-cell { grid-column: 1 / -1; }
+            .vacation-month-reason-cell { grid-column: 1 / -1; }
         }
 
     </style>
@@ -3449,7 +3743,7 @@ href="style.css?v=20260924-import-employee-sliders-v23"
                         </h2>
 
                         <p>
-                            Gross və ya net əməkhaqqını hesabla. Vergi və digər tutulmalardan sonra alacağın net məbləği müəyyən et.
+                            Gross və ya net əmək haqqını hesabla. Vergi və digər tutulmalardan sonra alacağın net məbləği müəyyən et.
                         </p>
 
                     </div>
@@ -3956,11 +4250,13 @@ href="style.css?v=20260924-import-employee-sliders-v23"
             <article class="calculator-card life-savings-calculator-card" id="life-savings-calculator-panel">
 
                 <div class="calculator-title">
-                    <div class="calculator-icon" aria-label="Yığım sığortası ikonu">◈</div>
+                    <div class="calculator-icon" aria-hidden="true">
+                        <img src="assets/life-savings-protection-icon.png" width="38" height="38" alt="">
+                    </div>
 
                     <div>
                         <h2 class="calculator-main-title">Yığım sığortası kalkulyatoru</h2>
-                        <p>Gross əməkhaqqına əsasən maksimum qoşula biləcəyin sığorta məbləğini hesabla. Net, gross və supergross sığorta məbləğlərini müqayisə et.</p>
+                        <p>Gross əmək haqqına əsasən maksimum qoşula biləcəyin sığorta məbləğini hesabla. Net, gross və supergross sığorta məbləğlərini müqayisə et.</p>
                     </div>
 
                     <button class="calculator-card-action" type="button" aria-label="Yığım sığortası kalkulyatorunu sına">
@@ -4162,11 +4458,11 @@ href="style.css?v=20260924-import-employee-sliders-v23"
                         <strong id="life-savings-social-result">—</strong>
                     </div>
                     <div class="life-savings-row">
-                        <span>İşsizlikdən sığorta haqqı (ümumi gross əməkhaqqı üzrə)</span>
+                        <span>İşsizlikdən sığorta haqqı (ümumi gross əmək haqqı üzrə)</span>
                         <strong id="life-savings-unemployment-result">—</strong>
                     </div>
                     <div class="life-savings-row">
-                        <span>İcbari tibbi sığorta haqqı (ümumi gross əməkhaqqı üzrə)</span>
+                        <span>İcbari tibbi sığorta haqqı (ümumi gross əmək haqqı üzrə)</span>
                         <strong id="life-savings-medical-result">—</strong>
                     </div>
                     <div class="life-savings-row">
@@ -4178,11 +4474,11 @@ href="style.css?v=20260924-import-employee-sliders-v23"
                         <strong id="life-savings-other-deduction-result">—</strong>
                     </div>
                     <div class="life-savings-row">
-                        <span>Əməkhaqqı üzrə ümumi tutulmalar</span>
+                        <span>Əmək haqqı üzrə ümumi tutulmalar</span>
                         <strong id="life-savings-deductions-result">—</strong>
                     </div>
                     <div class="life-savings-row life-savings-net-row">
-                        <span id="life-savings-result-title">Sığortadan sonra karta köçürüləcək net əməkhaqqı</span>
+                        <span id="life-savings-result-title">Sığortadan sonra karta köçürüləcək net əmək haqqı</span>
                         <strong id="life-savings-net-result">—</strong>
                     </div>
                 </div>
@@ -4523,7 +4819,7 @@ href="style.css?v=20260924-import-employee-sliders-v23"
 
             <article class="calculator-card credit-loan-calculator-card credit-loan-card" id="credit-loan-calculator-panel">
                 <div class="calculator-title">
-                    <div class="calculator-icon" aria-label="Kredit kalkulyatoru ikonu">↗</div>
+                    <div class="calculator-icon" aria-label="Kredit kalkulyatoru ikonu">%</div>
                     <div>
                         <h2 class="calculator-main-title">Kredit kalkulyatoru</h2>
                         <p>Kredit məbləği və şərtləri üzrə aylıq ödənişi, əsas borc və faiz bölgüsünü hesabla. Büdcənə uyğun aylıq ödənişlə əldə edə biləcəyin maksimum kredit məbləğini də müəyyən et.</p>
@@ -4670,6 +4966,189 @@ href="style.css?v=20260924-import-employee-sliders-v23"
                         </button>
                     </div>
                     <p class="credit-loan-export-status" id="credit-loan-export-status" role="status" aria-live="polite"></p>
+                </div>
+            </article>
+
+            <article class="calculator-card vacation-calculator-card" id="vacation-calculator-panel">
+                <div class="calculator-title">
+                    <div class="calculator-icon" aria-hidden="true"><svg viewBox="0 0 48 48" width="38" height="38" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="7.5" y="10" width="33" height="31" rx="5" stroke="currentColor" stroke-width="2.6"/><path d="M16 6.5v7M32 6.5v7M8 19h32" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/><path d="m17 29 5 5 10-10" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                    <div>
+                        <h2 class="calculator-main-title">Məzuniyyət kalkulyatoru</h2>
+                        <p>Məzuniyyət məbləğini ən son qanunvericiliyə uyğun olaraq sonuncu əmək haqqı prinsipi ilə hesabla.</p>
+                    </div>
+                    <button class="calculator-card-action" type="button" aria-label="Məzuniyyət kalkulyatorunu sına">
+                        <span class="calculator-card-action-label">Dərhal sına</span>
+                        <span aria-hidden="true">→</span>
+                    </button>
+                    <button class="calculator-expand" type="button" aria-expanded="false" aria-controls="vacation-calculator-panel" aria-label="Məzuniyyət kalkulyatorunu aç">
+                        <span aria-hidden="true">↓</span>
+                    </button>
+                </div>
+
+                <div class="vacation-tool">
+                    <section class="vacation-panel" aria-labelledby="vacation-period-heading">
+                        <h3 id="vacation-period-heading">Məzuniyyət dövrü</h3>
+                        <div class="vacation-fields">
+                            <div class="vacation-field">
+                                <label for="vacation-employment-start">İşçinin işə başladığı tarix *</label>
+                                <input id="vacation-employment-start" type="date" required>
+                            </div>
+                            <div class="vacation-field">
+                                <label for="vacation-start">Məzuniyyətin başlanma tarixi</label>
+                                <input id="vacation-start" type="date">
+                            </div>
+                            <div class="vacation-field">
+                                <label for="vacation-days">Məzuniyyət günlərinin sayı</label>
+                                <input id="vacation-days" type="number" min="1" step="1" inputmode="numeric" placeholder="Məsələn, 21">
+                            </div>
+                            <div class="vacation-field">
+                                <div class="vacation-field-heading">
+                                    <label for="vacation-end">Məzuniyyətin bitmə tarixi</label>
+                                </div>
+                                <input id="vacation-end" type="text" readonly placeholder="Avtomatik hesablanır">
+                                <div class="vacation-holiday-count-row">
+                                    <small id="vacation-holiday-count" aria-live="polite">Bayram günləri: 0</small>
+                                    <button class="vacation-holiday-trigger" id="vacation-holidays-open" type="button" aria-label="Bayram günlərinə bax və düzəliş et" aria-haspopup="dialog" aria-controls="vacation-holiday-dialog" title="Bayram günlərinə bax">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 12s3.4-6 9.5-6 9.5 6 9.5 6-3.4 6-9.5 6-9.5-6-9.5-6Z"></path><circle cx="12" cy="12" r="2.5"></circle></svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="vacation-tenure-note" id="vacation-tenure-note" role="note" hidden>12 təqvim ayından az <em>əmək münasibətində olub</em> məzuniyyətə çıxan işçinin orta aylıq əmək haqqı onun <em>faktiki</em> işlədiyi (müqavilənin bağlandığı) tam təqvim aylarına əsasən hesablanır.</p>
+                        <dialog class="vacation-holiday-dialog" id="vacation-holiday-dialog" aria-labelledby="vacation-holiday-dialog-title">
+                            <div class="vacation-holiday-dialog-head">
+                                <h4 id="vacation-holiday-dialog-title">İş günü olmayan bayram günləri</h4>
+                                <button class="vacation-holiday-dialog-close" id="vacation-holiday-dialog-close" type="button" aria-label="Pəncərəni bağla">×</button>
+                                <p class="vacation-holiday-overlap-note" role="note"><em>Qurban və Ramazan bayramları iş günü hesab olunmayan başqa bayram günü ilə üst-üstə düşdükdə və bu hal əmək məzuniyyəti dövrünə təsadüf etdikdə üst-üstə düşən günlər bir gün hesabı ilə nəzərə alınır.</em></p>
+                            </div>
+                            <div class="vacation-holiday-dialog-body">
+                                <div class="vacation-holiday-list" id="vacation-holiday-list" aria-live="polite"></div>
+                                <div class="vacation-holiday-add">
+                                    <div class="vacation-holiday-add-fields">
+                                        <div class="vacation-holiday-add-field">
+                                            <label for="vacation-custom-holiday-name">Bayramın adı</label>
+                                            <div class="vacation-holiday-name-control">
+                                                <input id="vacation-custom-holiday-name" type="text" maxlength="80" placeholder="Bayramı seçin və ya daxil edin" aria-label="Bayramın adı" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="vacation-holiday-name-options" autocomplete="off">
+                                                <button class="vacation-holiday-name-toggle" id="vacation-holiday-name-toggle" type="button" aria-label="Bayram seçimlərini aç" aria-haspopup="listbox" aria-expanded="false" aria-controls="vacation-holiday-name-options">
+                                                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3.5 6 4.5 4 4.5-4"></path></svg>
+                                                </button>
+                                                <div class="vacation-holiday-name-options" id="vacation-holiday-name-options" role="listbox" aria-label="Bayram adları" hidden>
+                                                    <button class="vacation-holiday-name-option" type="button" role="option" aria-selected="false" data-holiday-name="Novruz bayramı">Novruz bayramı</button>
+                                                    <button class="vacation-holiday-name-option" type="button" role="option" aria-selected="false" data-holiday-name="Qurban bayramı">Qurban bayramı</button>
+                                                    <button class="vacation-holiday-name-option" type="button" role="option" aria-selected="false" data-holiday-name="Ramazan bayramı">Ramazan bayramı</button>
+                                                    <button class="vacation-holiday-name-option" type="button" role="option" aria-selected="false" data-holiday-name="Səsvermə günü">Səsvermə günü</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="vacation-holiday-add-field">
+                                            <label for="vacation-custom-holiday-date">Tarix</label>
+                                            <input id="vacation-custom-holiday-date" type="date" aria-label="Bayramın birinci gününün tarixi">
+                                        </div>
+                                        <div class="vacation-holiday-add-field">
+                                            <label for="vacation-custom-holiday-days">Gün sayı</label>
+                                            <input id="vacation-custom-holiday-days" type="number" min="1" max="366" step="1" value="1" inputmode="numeric" aria-label="Bayram günlərinin sayı">
+                                        </div>
+                                        <button id="vacation-custom-holiday-add" type="button" aria-label="Bayram günlərini əlavə et" title="Bayram günlərini əlavə et">+</button>
+                                    </div>
+                                    <p class="vacation-voting-note" id="vacation-voting-note" role="note" hidden>Səsvermə günü yalnız seçkinin keçirildiyi ərazidə iş günü hesab edilmir.</p>
+                                    <p class="vacation-holiday-add-status" id="vacation-holiday-add-status" role="status" aria-live="polite"></p>
+                                </div>
+                            </div>
+                            <div class="vacation-holiday-dialog-footer">
+                                <button class="vacation-holiday-save" id="vacation-holiday-save" type="button">Yadda saxla</button>
+                            </div>
+                        </dialog>
+                    </section>
+
+                    <section class="vacation-panel">
+                        <details class="vacation-earnings-details" open>
+                            <summary><span class="vacation-summary-title">Əvvəlki ayların əmək haqqını daxil edin</span><span class="vacation-summary-arrow" aria-hidden="true"></span></summary>
+                            <p class="vacation-note">Məzuniyyət vaxtı üçün orta əmək haqqının hesablanması zamanı nəzərə alınmayan ödənişləri aşağıdakı siyahıya daxil etməyin. Nəzərə alınmayan ödəniş növləri ilə <button class="vacation-inline-link" id="vacation-excluded-payments-open" type="button">buradan</button> tanış ola bilərsiniz. Müvafiq qərarın tam mətni ilə tanış olmaq üçün <a class="vacation-excluded-law-link" href="https://frameworks.e-qanun.az/3/c_f_3947.html" target="_blank" rel="noopener noreferrer">e-Qanuna keçin</a>.</p>
+                            <div class="vacation-same-wage-control">
+                                <label class="vacation-same-wage-label" for="vacation-same-wage-toggle">
+                                    <input class="vacation-same-wage-toggle" id="vacation-same-wage-toggle" type="checkbox">
+                                    <span>Bütün aylarda əmək haqqı eynidir</span>
+                                </label>
+                            </div>
+                            <div class="vacation-month-row vacation-earnings-header">
+                            <div class="vacation-earnings-month-heading">
+                                <span id="vacation-earnings-month-heading">Ayların siyahısı</span>
+                                <button class="vacation-sort-button vacation-sort-icon" id="vacation-sort-months" type="button" aria-label="Ən yeni ay əvvəl" aria-pressed="false" title="Ən yeni ay əvvəl">
+                                    <svg viewBox="0 0 28 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><text data-sort-letter="first" x="2" y="10" fill="currentColor" stroke="none" font-size="9" font-weight="800">A</text><text data-sort-letter="second" x="2" y="21" fill="currentColor" stroke="none" font-size="9" font-weight="800">Z</text><path d="M20 4v16m0 0-4-4m4 4 4-4"></path></svg>
+                                    </button>
+                                </div>
+                                <span>Nəzərə alınan əmək haqqı</span>
+                                <span class="vacation-earnings-exclusion-heading">Nəzərə alınmayan ayları qeyd edin</span>
+                                <span class="vacation-earnings-workdays-heading" hidden>İşçinin faktiki işlədiyi təqvim günlərinin sayı</span>
+                                <span class="vacation-earnings-daily-heading" hidden>Bir günlük orta əmək haqqı</span>
+                            </div>
+                            <div class="vacation-month-list" id="vacation-earnings-list"></div>
+                            <div class="vacation-earnings-summary" id="vacation-earnings-summary" aria-live="polite">
+                                <div class="vacation-earnings-summary-item"><span>Nəzərə alınan ayların sayı</span><strong id="vacation-summary-month-count">—</strong></div>
+                                <div class="vacation-earnings-summary-item"><span>Nəzərə alınan əmək haqqı</span><strong id="vacation-summary-wage-total">—</strong></div>
+                                <div class="vacation-earnings-summary-item"><span id="vacation-summary-days-label">Təqvim günlərinin sayı</span><strong id="vacation-summary-calendar-days">—</strong></div>
+                                <div class="vacation-earnings-summary-item"><span>Bir günlük orta əmək haqqı</span><strong id="vacation-summary-daily-wage">—</strong></div>
+                                <p class="vacation-earnings-summary-note" id="vacation-summary-calculation-note"></p>
+                            </div>
+                            <dialog class="vacation-holiday-dialog vacation-excluded-payments-dialog" id="vacation-excluded-payments-dialog" aria-labelledby="vacation-excluded-payments-title">
+                                <div class="vacation-holiday-dialog-head">
+                                    <div><h4 id="vacation-excluded-payments-title">Orta əmək haqqına daxil edilməyən ödənişlər</h4></div>
+                                    <button class="vacation-holiday-dialog-close" id="vacation-excluded-payments-close" type="button" aria-label="Pəncərəni bağla">×</button>
+                                </div>
+                                <div class="vacation-holiday-dialog-body">
+                                    <p class="vacation-note">Nazirlər Kabinetinin 137 nömrəli qərarındakı siyahının qısa xülasəsi:</p>
+                                    <ul class="vacation-excluded-payment-list">
+                                        <li>Birdəfəlik mükafat və həvəsləndirici ödənişlər, o cümlədən yubiley, bayram və ad günü ilə bağlı ödənişlər.</li>
+                                        <li>İşçinin vəzifəsinə aid olmayan ayrıca tapşırıqlara görə verilən ödənişlər və əmək alətlərinin amortizasiyası üçün pul əvəzi.</li>
+                                        <li>Maddi yardım, ezamiyyət və yol xərcləri, gündəlik xərclər, habelə işin səyyar və ya növbə metodu ilə bağlı əlavələr.</li>
+                                        <li>Pulsuz verilən mənzil, kommunal xidmət, yanacaq və nəqliyyat xərcləri və ya onların əvəzi.</li>
+                                        <li>İş geyimi, ayaqqabı, fərdi mühafizə vasitələri, yuyucu vasitələr, süd və müalicə-profilaktika qidasının dəyəri.</li>
+                                        <li>Pulsuz yeməklər, sanatoriya-kurort və istirahət evi yollayışları.</li>
+                                        <li>Başqa əraziyə köçürülmə zamanı mənzil kirayəsi və əmlakın daşınması xərcləri.</li>
+                                        <li>İstehsalatdan tam və ya qismən ayrılaraq təhsil almağa göndərilən işçilərə verilən təqaüdlər.</li>
+                                        <li>Müsabiqə qaliblərinə verilən pul mükafatları və gənc mütəxəssislərə məzuniyyət zamanı ödənilən müavinətlər.</li>
+                                        <li>Mülki-hüquqi müqavilə üzrə işlərə görə ödənişlər və istifadə edilməmiş əmək məzuniyyətinə görə kompensasiya.</li>
+                                    </ul>
+                                    <p class="vacation-note">Bu mətn qısa xülasədir. <a class="vacation-excluded-law-link" href="https://frameworks.e-qanun.az/3/c_f_3947.html" target="_blank" rel="noopener noreferrer">Qərarın tam mətni ilə e-Qanunda tanış olun.</a></p>
+                                </div>
+                            </dialog>
+                        </details>
+                    </section>
+
+                    <section class="vacation-panel vacation-last-salary-panel">
+                        <h3>Sonuncu əmək haqqı prinsipi ilə hesablama</h3>
+                        <div class="vacation-month-list" id="vacation-last-salary-list"></div>
+                    </section>
+
+                    <p class="vacation-status" id="vacation-status" role="status" aria-live="polite"></p>
+
+                    <section class="vacation-result-grid" aria-live="polite" aria-label="Hesablama üsullarının nəticələri">
+                        <div class="vacation-result-card" id="vacation-average-card">
+                            <span class="vacation-result-label">Orta əmək haqqı üsulu</span>
+                            <span class="vacation-result-winner" role="img" aria-label="Daha yüksək nəticə"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 8 3.2 3.2L13 4.5"></path></svg></span>
+                            <strong id="vacation-average-result">—</strong>
+                            <small id="vacation-average-detail">Əvvəlki ayların qazancı ÷ 12 ÷ 30,4 × məzuniyyət günləri</small>
+                        </div>
+                        <div class="vacation-result-card" id="vacation-last-salary-card">
+                            <span class="vacation-result-label">Sonuncu əmək haqqı prinsipi</span>
+                            <span class="vacation-result-winner" role="img" aria-label="Daha yüksək nəticə"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 8 3.2 3.2L13 4.5"></path></svg></span>
+                            <strong id="vacation-last-salary-result">—</strong>
+                            <small id="vacation-last-salary-detail">Aylıq əmək haqqı ÷ ayın iş günləri × məzuniyyətə düşən iş günləri</small>
+                        </div>
+                    </section>
+
+                    <p class="vacation-selection-note" role="note">Məzuniyyət haqqının sonuncu əmək haqqı prinsipi ilə hesablama qaydasına əsasən orta əmək haqqı və sonuncu əmək haqqı müqayisə olunur və daha yuxarı olan məbləğ əsas götürülür.</p>
+
+                    <section class="vacation-panel vacation-allocation-panel" id="vacation-monthly-allocation" hidden>
+                        <h3>Məzuniyyət haqqının aylar üzrə bölgüsü</h3>
+                        <div class="vacation-allocation-table-wrap">
+                            <table class="vacation-allocation-table">
+<thead><tr><th>Ay</th><th>Cəmi məbləğ</th><th>Məzuniyyət günlərinin sayı</th><th>Təqvim ayları üzrə bölgü</th><th>Ay üzrə məbləğ</th></tr></thead>
+                                <tbody id="vacation-allocation-rows"></tbody>
+                            </table>
+                        </div>
+                    </section>
+
                 </div>
             </article>
 
@@ -4855,7 +5334,7 @@ href="style.css?v=20260924-import-employee-sliders-v23"
 
 
 <script src="assets/xlsx-js-style.bundle.js"></script>
-<script src="script.js?v=20260924-import-employee-sliders-v38"></script>
+<script src="script.js?v=20260928-credit-due-date-v40"></script>
 </body>
 
 </html>

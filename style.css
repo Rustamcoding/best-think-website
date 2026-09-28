@@ -1220,8 +1220,10 @@ body.footer-contact-open{overflow:hidden}
 .cta h2,.contact-main-title{font-size:30px !important}
 @media(max-width:600px){.hero h1{font-size:36px}.cta h2,.contact-main-title{font-size:24px !important}}
 
-/* Təklif banneri — xidmətlər bölməsinin altında, açıq mirvari üslubda. */
-.service-offer-banner{position:relative;display:grid;grid-template-columns:118px minmax(0,1fr) auto;align-items:center;gap:22px;min-height:148px;margin-top:30px;padding:10px 24px 10px 18px;overflow:hidden;border:1px solid var(--line);border-radius:14px;background:linear-gradient(105deg,#fff 0%,#fcfdff 100%);box-shadow:0 8px 24px #0d1f3a0b}
+/* Təklif banneri xidmət kartlarından ayrı, yumşaq rəngli müstəqil blokdur. */
+.home-services-section,.home-coverage-section{padding-top:50px}
+.service-offer-section{position:relative;padding:30px 0 34px;overflow:hidden;border-top:1px solid #e8eef6;border-bottom:1px solid #e8eef6;background:radial-gradient(ellipse at 82% 45%,rgba(36,102,211,.075),transparent 38%),linear-gradient(180deg,#fff 0%,#f5f8fc 100%)}
+.service-offer-banner{position:relative;display:grid;grid-template-columns:118px minmax(0,1fr) auto;align-items:center;gap:22px;min-height:158px;margin:0;padding:10px 24px 10px 18px;overflow:hidden;border:1px solid #d7e3f3;border-radius:18px;background:linear-gradient(112deg,#fff 0%,#fff 64%,#f7faff 100%);box-shadow:0 14px 36px #0d1f3a12}
 .service-offer-banner:before{position:absolute;inset:0 auto 0 0;width:4px;background:var(--blue);content:""}
 .service-offer-visual{position:relative;display:grid;place-items:center;align-self:stretch;isolation:isolate}
 .service-offer-visual:before{position:absolute;z-index:-1;width:102px;height:102px;border:1px solid #edf2f8;border-radius:50%;background:radial-gradient(circle,#f1f6fc 0%,#f8fafd 66%,transparent 68%);content:""}
@@ -1238,6 +1240,7 @@ body.footer-contact-open{overflow:hidden}
 .service-offer-button span{color:#cfe0f6;font-size:18px;line-height:1}
 @media(max-width:900px){.service-offer-copy{display:block}.service-offer-benefits{justify-content:flex-start;gap:7px;margin:12px 0 0}}
 @media(max-width:760px){.service-offer-banner{grid-template-columns:86px minmax(0,1fr);gap:14px;padding:12px 16px 16px 12px}.service-offer-visual img{width:78px;height:112px}.service-offer-visual:before{width:76px;height:76px}.service-offer-copy h3{font-size:20px}.service-offer-copy p{font-size:15px}.service-offer-benefits{align-items:flex-start;flex-direction:column;gap:7px;font-size:13px}.service-offer-banner .service-offer-button{grid-column:2;justify-self:start;min-height:42px}}
+@media(max-width:600px){.home-services-section,.home-coverage-section{padding-top:40px}.service-offer-section{padding:22px 0 26px}}
 
 @media(max-width:600px){
   .footer-grid{grid-template-columns:1fr}
