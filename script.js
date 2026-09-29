@@ -1221,6 +1221,12 @@ let paymentRateValue = null;
 
 let importRateValue = null;
 
+let paymentRateRequestId = 0;
+
+let importRateRequestId = 0;
+
+const rateRequestCache = new Map();
+
 
 /* =========================================================
    4. API-DƏN MƏZƏNNƏNİ AL
@@ -1241,37 +1247,46 @@ async function getRate(
     }
 
 
+    const cacheKey = `${selectedCurrency.toUpperCase()}:${date}`;
+    if (rateRequestCache.has(cacheKey)) {
+        return rateRequestCache.get(cacheKey);
+    }
+
     const url =
         `${API_BASE}/rates?date=${encodeURIComponent(date)}&currency=${encodeURIComponent(selectedCurrency)}`;
 
+    const request = (async () => {
+        const response = await fetch(url);
 
-    const response =
-        await fetch(url);
+        if (!response.ok) {
+            throw new Error(`API xətası: ${response.status}`);
+        }
 
+        const data = await response.json();
+        const ratePerUnit = Number(data.ratePerUnit);
 
-    if (!response.ok) {
+        if (!data.success || !Number.isFinite(ratePerUnit) || ratePerUnit <= 0) {
+            throw new Error('Məzənnə məlumatı düzgün əldə olunmadı.');
+        }
 
-        throw new Error(
-            `API xətası: ${response.status}`
-        );
+        return { ...data, ratePerUnit };
+    })();
 
+    const cachedRequest = request.catch((error) => {
+        if (rateRequestCache.get(cacheKey) === cachedRequest) {
+            rateRequestCache.delete(cacheKey);
+        }
+        throw error;
+    });
+
+    rateRequestCache.set(cacheKey, cachedRequest);
+
+    // Keep this page-session cache bounded if the user checks many dates.
+    if (rateRequestCache.size > 60) {
+        rateRequestCache.delete(rateRequestCache.keys().next().value);
     }
 
-
-    const data =
-        await response.json();
-
-
-    if (!data.success) {
-
-        throw new Error(
-            'Məzənnə məlumatı əldə olunmadı.'
-        );
-
-    }
-
-
-    return data;
+    return cachedRequest;
 
 }
 
@@ -1281,6 +1296,10 @@ async function getRate(
    ========================================================= */
 
 async function loadPaymentRate() {
+
+    const requestId = ++paymentRateRequestId;
+    const requestedDate = paymentDate.value;
+    const requestedCurrency = currency.value;
 
     paymentRateValue = null;
 
@@ -1305,13 +1324,21 @@ async function loadPaymentRate() {
 
         const data =
             await getRate(
-                paymentDate.value,
-                currency.value
+                requestedDate,
+                requestedCurrency
             );
+
+        if (
+            requestId !== paymentRateRequestId ||
+            requestedDate !== paymentDate.value ||
+            requestedCurrency !== currency.value
+        ) {
+            return;
+        }
 
 
         paymentRateValue =
-            Number(data.ratePerUnit);
+            data.ratePerUnit;
 
 
         paymentRate.textContent =
@@ -1323,6 +1350,14 @@ async function loadPaymentRate() {
     }
 
     catch (error) {
+
+        if (
+            requestId !== paymentRateRequestId ||
+            requestedDate !== paymentDate.value ||
+            requestedCurrency !== currency.value
+        ) {
+            return;
+        }
 
         console.error(
             'Ödəniş məzənnəsi xətası:',
@@ -1350,6 +1385,10 @@ async function loadPaymentRate() {
 
 async function loadImportRate() {
 
+    const requestId = ++importRateRequestId;
+    const requestedDate = importDate.value;
+    const requestedCurrency = currency.value;
+
     importRateValue = null;
 
 
@@ -1373,13 +1412,21 @@ async function loadImportRate() {
 
         const data =
             await getRate(
-                importDate.value,
-                currency.value
+                requestedDate,
+                requestedCurrency
             );
+
+        if (
+            requestId !== importRateRequestId ||
+            requestedDate !== importDate.value ||
+            requestedCurrency !== currency.value
+        ) {
+            return;
+        }
 
 
         importRateValue =
-            Number(data.ratePerUnit);
+            data.ratePerUnit;
 
 
         importRate.textContent =
@@ -1391,6 +1438,14 @@ async function loadImportRate() {
     }
 
     catch (error) {
+
+        if (
+            requestId !== importRateRequestId ||
+            requestedDate !== importDate.value ||
+            requestedCurrency !== currency.value
+        ) {
+            return;
+        }
 
         console.error(
             'İdxal məzənnəsi xətası:',
@@ -1753,18 +1808,10 @@ if (currency) {
             calculateResult();
 
 
-            if (paymentDate.value) {
-
-                await loadPaymentRate();
-
-            }
-
-
-            if (importDate.value) {
-
-                await loadImportRate();
-
-            }
+            await Promise.all([
+                loadPaymentRate(),
+                loadImportRate()
+            ]);
 
         }
     );
