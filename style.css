@@ -1278,6 +1278,29 @@ body.footer-contact-open{overflow:hidden}
   height:150px;
   margin-top:18px;
 }
+.hero-visual.hero-visual-graphic{
+  display:block;
+  min-height:0;
+  aspect-ratio:640 / 390;
+  padding:0;
+  border:0;
+  overflow:visible;
+  background:none;
+  transform:scale(1.10);
+}
+@media(min-width:1051px){.hero-grid{grid-template-columns:.95fr 1.05fr;column-gap:60px}}
+.hero-visual-graphic picture,
+.hero-finance-graphic{
+  display:block;
+  width:100%;
+}
+.hero-finance-graphic{height:auto}
+@media(max-width:600px){
+  .hero-visual.hero-visual-graphic{aspect-ratio:360 / 410;transform:none}
+}
+@media(max-width:1050px){
+  .hero-visual.hero-visual-graphic{transform:none}
+}
 .section-intro{
   max-width:620px;
   margin:10px auto 0;

@@ -1,0 +1,136 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="410" viewBox="0 0 360 410" fill="none" role="img" aria-labelledby="title desc" font-family="Inter, Segoe UI, Arial, sans-serif">
+  <title id="title">Biznesin maliyyə xəritəsi</title>
+  <desc id="desc">Vergi, mühasibatlıq və kadr işlərindən əmin qərara gedən maliyyə mənzərəsi.</desc>
+  <defs>
+    <linearGradient id="background" x1="24" y1="10" x2="349" y2="397" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#E7F0FD"/><stop offset=".6" stop-color="#F7FAFF"/><stop offset="1" stop-color="#E7F1FF"/>
+    </linearGradient>
+    <linearGradient id="chart-fill" x1="170" y1="226" x2="170" y2="297" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#6EA7F4" stop-opacity=".4"/><stop offset="1" stop-color="#DCEBFF" stop-opacity=".03"/>
+    </linearGradient>
+    <filter id="shadow" x="0" y="0" width="360" height="410" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="10" stdDeviation="13" flood-color="#17416E" flood-opacity=".12"/>
+    </filter>
+    <clipPath id="chart-clip"><rect x="42" y="204" width="276" height="96" rx="14"/></clipPath>
+    <style>
+      @media (prefers-reduced-motion: no-preference) {
+        #finance-map-line { stroke-dasharray:100; stroke-dashoffset:100; animation:finance-draw 7.29s linear 1 forwards; }
+        #finance-map-chart-area { opacity:0; animation:finance-area 8.1s linear 1 forwards; }
+        .finance-point-one { opacity:0; animation:finance-step-one 8.1s linear 1 forwards; }
+        .finance-point-two { opacity:0; animation:finance-step-two 8.1s linear 1 forwards; }
+        .finance-point-three { opacity:0; animation:finance-step-three 8.1s linear 1 forwards; }
+        .finance-point-four { opacity:0; animation:finance-step-four 8.1s linear 1 forwards; }
+        .finance-step-one { opacity:0; animation:finance-step-one 8.1s linear 1 forwards; }
+        .finance-step-two { opacity:0; animation:finance-step-two 8.1s linear 1 forwards; }
+        .finance-step-three { opacity:0; animation:finance-step-three 8.1s linear 1 forwards; }
+        .finance-step-four { opacity:0; animation:finance-step-four 8.1s linear 1 forwards; }
+        #finance-map-arrowhead { opacity:0; animation:finance-arrow 8.1s linear 1 forwards; }
+        #finance-map-tax { opacity:0; animation:finance-edge-one 8.505s ease-out 1 forwards; }
+        #finance-map-accounting { opacity:0; animation:finance-edge-two 8.505s ease-out 1 forwards; }
+        #finance-map-decision { opacity:0; animation:finance-edge-three 8.505s ease-out 1 forwards; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        #finance-map-line { stroke-dasharray:none; stroke-dashoffset:0; }
+        #finance-map-chart-area,#finance-map-tax,#finance-map-accounting,#finance-map-decision { opacity:1; }
+        .finance-point-one,.finance-point-two,.finance-point-three,.finance-point-four,.finance-step-one,.finance-step-two,.finance-step-three,.finance-step-four,#finance-map-arrowhead { opacity:1; }
+      }
+      @keyframes finance-draw { 0%{stroke-dashoffset:100;opacity:0} 7%{opacity:1} 58%,100%{stroke-dashoffset:0;opacity:1} }
+      @keyframes finance-area { 0%,7%{opacity:0} 58%,100%{opacity:1} }
+      @keyframes finance-step-one { 0%,16%{opacity:0} 19%,100%{opacity:1} }
+      @keyframes finance-step-two { 0%,29%{opacity:0} 33%,100%{opacity:1} }
+      @keyframes finance-step-three { 0%,43%{opacity:0} 47%,100%{opacity:1} }
+      @keyframes finance-step-four { 0%,56%{opacity:0} 60%,100%{opacity:1} }
+      @keyframes finance-arrow { 0%,57%{opacity:0} 59%,100%{opacity:1} }
+      @keyframes finance-edge-one { 0%,61%{opacity:0;transform:translateY(5px)} 65%,100%{opacity:1;transform:translateY(0)} }
+      @keyframes finance-edge-two { 0%,68%{opacity:0;transform:translateY(5px)} 72%,100%{opacity:1;transform:translateY(0)} }
+      @keyframes finance-edge-three { 0%,75%{opacity:0;transform:translateY(5px)} 79%,100%{opacity:1;transform:translateY(0)} }
+    </style>
+  </defs>
+
+  <rect x=".5" y=".5" width="359" height="409" rx="25.5" fill="url(#background)" stroke="#D5E3F6"/>
+  <circle cx="297" cy="82" r="113" fill="#9AC1F5" fill-opacity=".12"/>
+  <circle cx="295" cy="83" r="92" stroke="#FFFFFF" stroke-opacity=".6"/>
+  <path d="M0 300C95 211 164 242 360 43" stroke="#99BFF1" stroke-opacity=".28" stroke-width="2"/>
+
+  <!-- Matching motion hooks keep the compact version ready for a later animation. -->
+  <g transform="translate(180 192.5) scale(1.08) translate(-180 -192.5)">
+  <g id="finance-map-main">
+    <rect x="20" y="61" width="320" height="263" rx="21" fill="#FFFFFF" filter="url(#shadow)"/>
+    <rect x="20.5" y="61.5" width="319" height="262" rx="20.5" stroke="#DCE7F5"/>
+    <rect x="43" y="85" width="25" height="25" rx="7" fill="#E9F2FF"/>
+    <path d="M49 103V98L53 99V94L57 96V91L63 93" stroke="#2466D3" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="77" y="102" fill="#527197" font-size="10" font-weight="800" letter-spacing="1.5">MALİYYƏ XƏRİTƏSİ</text>
+    <text x="43" y="141" fill="#0C1D36" font-size="21" font-weight="800" letter-spacing="-.5">Biznesin maliyyə</text>
+    <text x="43" y="166" fill="#0C1D36" font-size="21" font-weight="800" letter-spacing="-.5">mənzərəsi</text>
+    <text x="44" y="186" fill="#64748B" font-size="11.5">Vergi * Mühasibatlıq * Kadr işləri</text>
+    <rect x="42" y="204" width="276" height="96" rx="14" fill="#F5F9FF" stroke="#E2ECF9"/>
+    <g id="finance-map-grid" clip-path="url(#chart-clip)" stroke="#D9E7F8" stroke-dasharray="3 6">
+      <path d="M57 227H306M57 251H306M57 276H306"/>
+    </g>
+    <g id="finance-map-chart" clip-path="url(#chart-clip)">
+      <path id="finance-map-chart-area" d="M62 284C94 281 108 262 132 269C159 276 174 240 201 247C225 253 239 245 264 239C281 235 292 227 306 222V301H62Z" fill="url(#chart-fill)"/>
+      <path id="finance-map-line" pathLength="100" d="M62 284C94 281 108 262 132 269C159 276 174 240 201 247C225 253 239 245 264 239C281 235 292 227 306 222" stroke="#2466D3" stroke-width="3" stroke-linecap="round"/>
+      <g id="finance-map-points" fill="#FFFFFF" stroke="#2466D3" stroke-width="2">
+        <circle class="finance-point-one" cx="132" cy="269" r="4"/>
+        <circle class="finance-point-two" cx="201" cy="247" r="4"/>
+        <circle class="finance-point-three" cx="264" cy="239" r="4"/>
+        <circle class="finance-point-four" cx="306" cy="222" r="5"/>
+      </g>
+    </g>
+    <g id="finance-map-arrowhead" transform="translate(306 222) rotate(-24)"><path d="M-5 -4L5 0L-5 4L-2 0Z" fill="#0C1D36"/></g>
+    <g id="finance-map-step-labels" fill="#0C1D36" font-size="9" font-weight="800" text-anchor="middle">
+      <g class="finance-step-one"><rect x="83" y="236" width="98" height="21" rx="7" fill="#FFFFFF" stroke="#CBD9EB"/><text x="132" y="250">Dəqiq uçot</text></g>
+      <g class="finance-step-two"><rect x="146" y="264" width="110" height="21" rx="7" fill="#FFFFFF" stroke="#CBD9EB"/><text x="201" y="278">Vaxtında hesabat</text></g>
+      <g class="finance-step-three"><rect x="210" y="207" width="108" height="21" rx="7" fill="#FFFFFF" stroke="#CBD9EB"/><text x="264" y="221">Vicdanlı yanaşma</text></g>
+      <g class="finance-step-four"><rect x="249" y="239" width="92" height="21" rx="7" fill="#FFFFFF" stroke="#CBD9EB"/><text x="295" y="253">Aydın təhlil</text></g>
+    </g>
+    <circle cx="47" cy="311" r="2.5" fill="#2466D3"/>
+    <text x="56" y="315" fill="#527197" font-size="9.5" font-weight="700">Dəqiq məlumatdan aydın nəticəyə</text>
+  </g>
+  </g>
+
+  <g id="finance-map-tax" filter="url(#shadow)">
+    <g transform="translate(263 50.5) scale(.95) translate(-263 -50.5)">
+    <rect x="184" y="23" width="158" height="55" rx="14" fill="#FFFFFF"/>
+    <rect x="184.5" y="23.5" width="157" height="54" rx="13.5" stroke="#DBE7F7"/>
+    <rect x="194" y="33" width="34" height="34" rx="10" fill="#EAF3FF"/>
+    <g id="finance-icon-handshake" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="202" cy="44" r="3" stroke="#2466D3" stroke-width="1.8"/>
+      <circle cx="219" cy="44" r="3" stroke="#2466D3" stroke-width="1.8"/>
+      <path d="M196 61C197 56 199 53 203 53C206 53 208 55 210 57C212 55 215 53 218 53C222 53 224 56 225 61" stroke="#2466D3" stroke-width="1.8"/>
+      <path d="M204 54L210 59L213 56L219 60" stroke="#2466D3" stroke-width="2.1"/>
+      <path d="M210 59L208 62M213 56L216 53" stroke="#2466D3" stroke-width="1.6"/>
+    </g>
+    <text x="237" y="46" fill="#0C1D36" font-size="9.5" font-weight="800">Etibarlı</text>
+    <text x="237" y="61" fill="#64748B" font-size="9.5">münasibət</text>
+    </g>
+  </g>
+
+  <g id="finance-map-accounting" filter="url(#shadow)">
+    <g transform="translate(93 361) scale(.95) translate(-93 -361)">
+    <rect x="14" y="333" width="158" height="56" rx="14" fill="#FFFFFF"/>
+    <rect x="14.5" y="333.5" width="157" height="55" rx="13.5" stroke="#DBE7F7"/>
+    <rect x="24" y="345" width="33" height="33" rx="9" fill="#EAF3FF"/>
+    <g id="finance-icon-phone-mail" stroke="#2466D3" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="28.5" y="350" width="10" height="22" rx="2.5"/>
+      <path d="M32 353H35M32 368.5H35M42 358H52V369H42Z"/>
+      <path d="M42 359L47 363L52 359"/>
+    </g>
+    <text x="64" y="354" fill="#0C1D36" font-size="10.5" font-weight="800">Operativ</text>
+    <text x="64" y="369" fill="#64748B" font-size="9.5">cavablama</text>
+    </g>
+  </g>
+
+  <g id="finance-map-decision" filter="url(#shadow)">
+    <g transform="translate(263.5 361) scale(.95) translate(-263.5 -361)">
+      <rect x="181" y="333" width="165" height="56" rx="14" fill="#FFFFFF"/>
+      <rect x="181.5" y="333.5" width="164" height="55" rx="13.5" stroke="#DBE7F7"/>
+      <rect x="189" y="345" width="33" height="33" rx="9" fill="#EAF3FF"/>
+      <path d="M198 350.5H211L216 355.5V371H198Z" stroke="#2466D3" stroke-width="1.7" stroke-linejoin="round"/>
+      <path d="M210.5 351V356H215.5M201 361H211M201 365H207" stroke="#2466D3" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M207 369L209 371L213 366" stroke="#2466D3" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="225" y="354" fill="#0C1D36" font-size="10.5" font-weight="800">Əmin qərarlar</text>
+      <text x="225" y="369" fill="#64748B" font-size="9.5">aydın məlumatla</text>
+    </g>
+  </g>
+</svg>
