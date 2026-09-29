@@ -135,7 +135,7 @@ async function loadFooter() {
     }
 
     try {
-        const response = await fetch('/footer.html?v=20260924-import-employee-sliders-v31');
+        const response = await fetch('/footer.html?v=20260929-turnover-live-tooltip-v35');
 
         if (!response.ok) {
             throw new Error(`footer.html yüklənmədi: ${response.status}`);
@@ -357,6 +357,7 @@ function initializeFooterQuoteForm() {
     const turnoverRange = modal?.querySelector('#footer-quote-turnover-range');
     const turnoverThumb = modal?.querySelector('#footer-quote-turnover-thumb');
     const turnoverOutput = modal?.querySelector('#footer-quote-turnover-output');
+    const turnoverTooltip = modal?.querySelector('#footer-quote-turnover-tooltip');
     const turnoverError = modal?.querySelector('#footer-quote-turnover-error');
     const turnoverMarkers = [...(modal?.querySelectorAll('[data-turnover-marker]') || [])];
     const turnoverEditButton = modal?.querySelector('#footer-quote-turnover-edit');
@@ -369,6 +370,7 @@ function initializeFooterQuoteForm() {
     const employeeRange = modal?.querySelector('#footer-quote-employee-range');
     const employeeOutput = modal?.querySelector('#footer-quote-employee-output');
     const employeeThumb = modal?.querySelector('#footer-quote-employee-thumb');
+    const employeeTooltip = modal?.querySelector('#footer-quote-employee-tooltip');
     const employeeEditButton = modal?.querySelector('#footer-quote-employee-edit');
     const employeeCustomEditor = modal?.querySelector('#footer-quote-employee-custom');
     const employeeCustomInput = modal?.querySelector('#footer-quote-employee-custom-input');
@@ -378,9 +380,22 @@ function initializeFooterQuoteForm() {
     const employeeSummaryInput = form?.querySelector('[name="employeeCount"]');
     const employeeError = modal?.querySelector('#footer-quote-employee-error');
     const employeeMarkers = [...(modal?.querySelectorAll('.footer-quote-employee-markers [data-category-marker]') || [])];
+    const businessObjectRange = modal?.querySelector('#footer-quote-business-object-range');
+    const businessObjectOutput = modal?.querySelector('#footer-quote-business-object-output');
+    const businessObjectThumb = modal?.querySelector('#footer-quote-business-object-thumb');
+    const businessObjectTooltip = modal?.querySelector('#footer-quote-business-object-tooltip');
+    const businessObjectEditButton = modal?.querySelector('#footer-quote-business-object-edit');
+    const businessObjectCustomEditor = modal?.querySelector('#footer-quote-business-object-custom');
+    const businessObjectCustomInput = modal?.querySelector('#footer-quote-business-object-custom-input');
+    const businessObjectCustomApply = modal?.querySelector('#footer-quote-business-object-custom-apply');
+    const businessObjectCustomCancel = modal?.querySelector('#footer-quote-business-object-custom-cancel');
+    const businessObjectCustomError = modal?.querySelector('#footer-quote-business-object-custom-error');
+    const businessObjectSummaryInput = form?.querySelector('[name="businessObjectCount"]');
+    const businessObjectMarkers = [...(modal?.querySelectorAll('.footer-quote-business-object-markers [data-business-object-marker]') || [])];
     const importRange = modal?.querySelector('#footer-quote-import-range');
     const importOutput = modal?.querySelector('#footer-quote-import-output');
     const importThumb = modal?.querySelector('#footer-quote-import-thumb');
+    const importTooltip = modal?.querySelector('#footer-quote-import-tooltip');
     const importSummaryInput = form?.querySelector('[name="importVolume"]');
     const importError = modal?.querySelector('#footer-quote-import-error');
     const importMarkers = [...(modal?.querySelectorAll('.footer-quote-import-markers [data-category-marker]') || [])];
@@ -437,15 +452,23 @@ function initializeFooterQuoteForm() {
     let importOptions = importAmounts.map((amount) => `${formatTurnoverNumber(amount)} ABŞ dolları`);
     let importThumbOptions = importAmounts.map((amount) => amount >= 1000000 ? '$1M' : `$${amount / 1000}K`);
 
-    if (!modal || !dialog || !triggers.length || !closeButton || !form || !status || !taxError || !taxOptions.length || !activityOptions.length || !activitySummaryInput || !activityError || !frame || !turnoverAmountInput || !turnoverRange || !turnoverThumb || !turnoverOutput || !turnoverError || !turnoverSummaryInput || !turnoverEditButton || !turnoverCustomEditor || !turnoverCustomInput || !turnoverCustomApply || !turnoverCustomCancel || !turnoverCustomError || !employeeRange || !employeeOutput || !employeeThumb || !employeeEditButton || !employeeCustomEditor || !employeeCustomInput || !employeeCustomApply || !employeeCustomCancel || !employeeCustomError || !employeeSummaryInput || !employeeError || !employeeMarkers.length || !importRange || !importOutput || !importThumb || !importSummaryInput || !importError || !importMarkers.length || !importEditButton || !importCustomEditor || !importCustomInput || !importCustomApply || !importCustomCancel || !importCustomError || form.dataset.initialized === 'true') return;
+    if (!modal || !dialog || !triggers.length || !closeButton || !form || !status || !taxError || !taxOptions.length || !activityOptions.length || !activitySummaryInput || !activityError || !frame || !turnoverAmountInput || !turnoverRange || !turnoverThumb || !turnoverOutput || !turnoverTooltip || !turnoverError || !turnoverSummaryInput || !turnoverEditButton || !turnoverCustomEditor || !turnoverCustomInput || !turnoverCustomApply || !turnoverCustomCancel || !turnoverCustomError || !employeeRange || !employeeOutput || !employeeThumb || !employeeTooltip || !employeeEditButton || !employeeCustomEditor || !employeeCustomInput || !employeeCustomApply || !employeeCustomCancel || !employeeCustomError || !employeeSummaryInput || !employeeError || !employeeMarkers.length || !businessObjectRange || !businessObjectOutput || !businessObjectThumb || !businessObjectTooltip || !businessObjectEditButton || !businessObjectCustomEditor || !businessObjectCustomInput || !businessObjectCustomApply || !businessObjectCustomCancel || !businessObjectCustomError || !businessObjectSummaryInput || !businessObjectMarkers.length || !importRange || !importOutput || !importThumb || !importTooltip || !importSummaryInput || !importError || !importMarkers.length || !importEditButton || !importCustomEditor || !importCustomInput || !importCustomApply || !importCustomCancel || !importCustomError || form.dataset.initialized === 'true') return;
     form.dataset.initialized = 'true';
 
     let activeRequestId = '';
     let responseTimer = 0;
     let turnoverPointerX = null;
+    const positionSliderTooltip = (stage, tooltip, thumbCenter, rangeWidth, value) => {
+        tooltip.textContent = value;
+        const tooltipHalfWidth = tooltip.offsetWidth / 2;
+        const tooltipCenter = Math.max(tooltipHalfWidth + 6, Math.min(rangeWidth - tooltipHalfWidth - 6, thumbCenter + 16 + rangeWidth * 0.01));
+        stage.style.setProperty('--quote-tooltip-position', `${tooltipCenter}px`);
+        stage.style.setProperty('--quote-tooltip-arrow-offset', `${thumbCenter - tooltipCenter}px`);
+    };
 
     const updateTurnoverSlider = () => {
         const selectedIndex = Number(turnoverRange.value) - 1;
+        const selectedAmount = selectedIndex >= 0 ? turnoverStops[selectedIndex] : 0;
         const position = selectedIndex < 0 ? 0 : selectedIndex / sliderMax;
         const stage = turnoverRange.parentElement;
         const progress = position * 100;
@@ -459,6 +482,7 @@ function initializeFooterQuoteForm() {
         stage.style.setProperty('--quote-thumb-half-width', `${halfThumb}px`);
         stage.classList.toggle('is-at-start', position <= 0.001);
         stage.classList.toggle('is-at-end', position >= 0.999);
+        positionSliderTooltip(stage, turnoverTooltip, thumbCenter, rangeWidth, selectedAmount ? `${formatTurnoverNumber(selectedAmount)} ₼` : '');
         turnoverMarkers.forEach((marker) => {
             const markerPosition = turnoverSliderPosition(Number(marker.dataset.turnoverMarker));
             marker.style.left = `${travel * markerPosition}px`;
@@ -485,7 +509,7 @@ function initializeFooterQuoteForm() {
     };
     const openTurnoverEditor = () => {
         if (!turnoverCustomEditor.hidden) {
-            closeTurnoverEditor();
+            applyCustomTurnoverAmount();
             return;
         }
         closeOtherInlineEditors('turnover');
@@ -523,7 +547,7 @@ function initializeFooterQuoteForm() {
             turnoverCustomError.hidden = false;
             turnoverCustomInput.setAttribute('aria-invalid', 'true');
             turnoverCustomInput.focus();
-            return;
+            return false;
         }
         if (customTurnoverStop !== null) {
             const previousCustomIndex = turnoverStops.indexOf(customTurnoverStop);
@@ -548,9 +572,10 @@ function initializeFooterQuoteForm() {
         updateTurnoverSelection(true);
         updateEmployeeSlider();
         updateImportSlider();
+        return true;
         turnoverThumb.focus();
     };
-    const updateCategorySlider = (range, output, summaryInput, options, thumb, committed = thumb.classList.contains('is-committed'), markers = [], markerStops = [], displayOptions = options, sharedTurnoverStops = []) => {
+    const updateCategorySlider = (range, output, summaryInput, options, thumb, committed = thumb.classList.contains('is-committed'), markers = [], markerStops = [], displayOptions = options, sharedTurnoverStops = [], tooltip = null, tooltipText = (selected, displayed) => displayed) => {
         const selectedIndex = Number(range.value) - 1;
         const selected = selectedIndex >= 0 ? options[selectedIndex] : '';
         const displayed = selectedIndex >= 0 ? displayOptions[selectedIndex] : '';
@@ -565,6 +590,7 @@ function initializeFooterQuoteForm() {
         const halfThumb = thumb.offsetWidth / 2;
         const maxCenter = Math.max(halfThumb, rangeWidth - halfThumb);
         const thumbCenter = Math.max(halfThumb, Math.min(maxCenter, 14 + travel * position));
+        if (tooltip) positionSliderTooltip(stage, tooltip, thumbCenter, rangeWidth, tooltipText(selected, displayed));
         stage.style.setProperty('--quote-range-progress', `${position * 100}%`);
         stage.style.setProperty('--quote-thumb-position', `${thumbCenter}px`);
         stage.style.setProperty('--quote-thumb-half-width', `${halfThumb}px`);
@@ -591,11 +617,92 @@ function initializeFooterQuoteForm() {
         thumb.classList.toggle('is-committed', Boolean(selected && committed));
         range.setAttribute('aria-valuetext', displayed || 'Hələ seçim edilməyib');
     };
-    const updateEmployeeSlider = (committed = employeeThumb.classList.contains('is-committed')) => updateCategorySlider(employeeRange, employeeOutput, employeeSummaryInput, employeeOptions, employeeThumb, committed, employeeMarkers, employeeCounts, employeeDisplayOptions, sharedMarkerTurnoverAmounts);
-    const updateImportSlider = (committed = importThumb.classList.contains('is-committed')) => updateCategorySlider(importRange, importOutput, importSummaryInput, importOptions, importThumb, committed, importMarkers, importAmounts, importOptions, sharedMarkerTurnoverAmounts);
+    const updateEmployeeSlider = (committed = employeeThumb.classList.contains('is-committed')) => updateCategorySlider(employeeRange, employeeOutput, employeeSummaryInput, employeeOptions, employeeThumb, committed, employeeMarkers, employeeCounts, employeeDisplayOptions, sharedMarkerTurnoverAmounts, employeeTooltip);
+    const updateImportSlider = (committed = importThumb.classList.contains('is-committed')) => {
+        updateCategorySlider(importRange, importOutput, importSummaryInput, importOptions, importThumb, committed, importMarkers, importAmounts, importOptions, sharedMarkerTurnoverAmounts, importTooltip, (selected, displayed) => selected || '0 ABŞ dolları');
+        if (Number(importRange.value) !== 0) return;
+        const zeroAmountLabel = '0 ABŞ dolları';
+        importOutput.textContent = `${committed ? '✓ ' : ''}${zeroAmountLabel}`;
+        importOutput.classList.add('has-value');
+        importOutput.classList.toggle('is-committed', committed);
+        importSummaryInput.value = zeroAmountLabel;
+        importThumb.classList.toggle('is-committed', committed);
+        importRange.setAttribute('aria-valuetext', zeroAmountLabel);
+    };
+    const updateBusinessObjectSlider = (committed = businessObjectThumb.classList.contains('is-committed')) => {
+        const rawCount = Number(businessObjectRange.value);
+        const count = Number.isFinite(rawCount) ? Math.max(0, Math.min(10, Math.round(rawCount))) : 0;
+        const position = count / 10;
+        const stage = businessObjectRange.parentElement;
+        const rangeWidth = businessObjectRange.clientWidth;
+        const travel = Math.max(0, rangeWidth - 28);
+        const halfThumb = businessObjectThumb.offsetWidth / 2;
+        const maxCenter = Math.max(halfThumb, rangeWidth - halfThumb);
+        const thumbCenter = Math.max(halfThumb, Math.min(maxCenter, 14 + travel * position));
+
+        businessObjectRange.value = String(count);
+        businessObjectSummaryInput.value = String(count);
+        businessObjectRange.setAttribute('aria-valuetext', `${count} obyekt`);
+        businessObjectOutput.textContent = `${committed ? '✓ ' : ''}${count} obyekt`;
+        businessObjectOutput.classList.add('has-value');
+        businessObjectOutput.classList.toggle('is-committed', committed);
+        businessObjectThumb.classList.toggle('is-committed', committed);
+        positionSliderTooltip(stage, businessObjectTooltip, thumbCenter, rangeWidth, `${count} obyekt`);
+        stage.style.setProperty('--quote-range-progress', `${position * 100}%`);
+        stage.style.setProperty('--quote-thumb-position', `${thumbCenter}px`);
+        stage.style.setProperty('--quote-thumb-half-width', `${halfThumb}px`);
+        stage.classList.toggle('is-at-start', count === 0);
+        stage.classList.toggle('is-at-end', count === 10);
+        businessObjectMarkers.forEach((marker) => {
+            const markerValue = Number(marker.dataset.businessObjectMarker);
+            marker.style.left = `${travel * markerValue / 10}px`;
+            const isActive = count === markerValue;
+            marker.classList.toggle('is-active', isActive);
+            marker.setAttribute('aria-pressed', String(isActive));
+        });
+    };
+    const openBusinessObjectEditor = () => {
+        if (!businessObjectCustomEditor.hidden) {
+            applyCustomBusinessObjectCount();
+            return;
+        }
+        closeOtherInlineEditors('business-object');
+        businessObjectCustomInput.value = businessObjectRange.value;
+        businessObjectCustomError.textContent = '';
+        businessObjectCustomError.hidden = true;
+        businessObjectCustomInput.removeAttribute('aria-invalid');
+        businessObjectCustomEditor.hidden = false;
+        businessObjectRange.parentElement.classList.add('is-editing');
+        businessObjectThumb.hidden = true;
+        businessObjectCustomInput.focus();
+        businessObjectCustomInput.select();
+    };
+    const closeBusinessObjectEditor = () => {
+        businessObjectCustomEditor.hidden = true;
+        businessObjectCustomError.textContent = '';
+        businessObjectCustomError.hidden = true;
+        businessObjectCustomInput.removeAttribute('aria-invalid');
+        businessObjectThumb.hidden = false;
+        businessObjectRange.parentElement.classList.remove('is-editing', 'is-moving');
+    };
+    const applyCustomBusinessObjectCount = () => {
+        const rawCount = businessObjectCustomInput.value.trim();
+        const count = /^\d+$/.test(rawCount) ? Number(rawCount) : NaN;
+        if (!Number.isInteger(count) || count < 0 || count > 10) {
+            businessObjectCustomError.textContent = '0–10 aralığında tam obyekt sayı daxil edin.';
+            businessObjectCustomError.hidden = false;
+            businessObjectCustomInput.setAttribute('aria-invalid', 'true');
+            businessObjectCustomInput.focus();
+            return false;
+        }
+        businessObjectRange.value = String(count);
+        closeBusinessObjectEditor();
+        updateBusinessObjectSlider(true);
+        return true;
+    };
     const openEmployeeEditor = () => {
         if (!employeeCustomEditor.hidden) {
-            closeEmployeeEditor();
+            applyCustomEmployeeCount();
             return;
         }
         closeOtherInlineEditors('employee');
@@ -626,7 +733,7 @@ function initializeFooterQuoteForm() {
             employeeCustomError.hidden = false;
             employeeCustomInput.setAttribute('aria-invalid', 'true');
             employeeCustomInput.focus();
-            return;
+            return false;
         }
         if (customEmployeeCount !== null) {
             const previousCustomIndex = employeeCounts.indexOf(customEmployeeCount);
@@ -644,15 +751,16 @@ function initializeFooterQuoteForm() {
         employeeRange.value = String(employeeCounts.indexOf(count) + 1);
         closeEmployeeEditor();
         updateEmployeeSlider(true);
+        return true;
     };
     const openImportEditor = () => {
         if (!importCustomEditor.hidden) {
-            closeImportEditor();
+            applyCustomImportAmount();
             return;
         }
         closeOtherInlineEditors('import');
         const selectedIndex = Number(importRange.value) - 1;
-        importCustomInput.value = selectedIndex >= 0 ? formatTurnoverNumber(importAmounts[selectedIndex]) : '';
+        importCustomInput.value = selectedIndex >= 0 ? formatTurnoverNumber(importAmounts[selectedIndex]) : '0';
         importCustomError.textContent = '';
         importCustomError.hidden = true;
         importCustomInput.removeAttribute('aria-invalid');
@@ -673,6 +781,7 @@ function initializeFooterQuoteForm() {
     const closeOtherInlineEditors = (except) => {
         if (except !== 'turnover' && !turnoverCustomEditor.hidden) closeTurnoverEditor(false);
         if (except !== 'employee' && !employeeCustomEditor.hidden) closeEmployeeEditor();
+        if (except !== 'business-object' && !businessObjectCustomEditor.hidden) closeBusinessObjectEditor();
         if (except !== 'import' && !importCustomEditor.hidden) closeImportEditor();
     };
     const applyCustomImportAmount = () => {
@@ -682,18 +791,31 @@ function initializeFooterQuoteForm() {
             : /^\d{1,3}(?:[.,]\d{3})+$/.test(compactAmount)
                 ? compactAmount.replace(/[.,]/g, '')
                 : '';
-        const amount = numericAmount ? Number(numericAmount) : NaN;
-        if (!Number.isSafeInteger(amount) || amount < importMinimum || amount > importMaximum) {
-            importCustomError.textContent = '10 000–1 000 000 ABŞ dolları aralığında tam məbləğ daxil edin.';
+        const amount = numericAmount !== '' ? Number(numericAmount) : NaN;
+        if (!Number.isSafeInteger(amount) || (amount !== 0 && amount < importMinimum) || amount > importMaximum) {
+            importCustomError.textContent = '0 və ya 10 000–1 000 000 ABŞ dolları aralığında tam məbləğ daxil edin.';
             importCustomError.hidden = false;
             importCustomInput.setAttribute('aria-invalid', 'true');
             importCustomInput.focus();
-            return;
+            return false;
         }
         if (customImportAmount !== null) {
             const previousCustomIndex = importAmounts.indexOf(customImportAmount);
             if (previousCustomIndex >= 0) importAmounts.splice(previousCustomIndex, 1);
             customImportAmount = null;
+        }
+        if (amount === 0) {
+            importOptions = importAmounts.map((value) => `${formatTurnoverNumber(value)} ABŞ dolları`);
+            importThumbOptions = importAmounts.map((value) => value >= 1000000
+                ? '$1M'
+                : value % 1000 === 0
+                    ? `$${value / 1000}K`
+                    : `$${formatTurnoverNumber(value)}`);
+            importRange.max = String(importOptions.length);
+            importRange.value = '0';
+            closeImportEditor();
+            updateImportSlider(true);
+            return true;
         }
         if (!importAmounts.includes(amount)) {
             importAmounts.push(amount);
@@ -710,6 +832,7 @@ function initializeFooterQuoteForm() {
         importRange.value = String(importAmounts.indexOf(amount) + 1);
         closeImportEditor();
         updateImportSlider(true);
+        return true;
     };
     const bindCategorySlider = (range, update, markers, markerStops) => {
         const stage = range.parentElement;
@@ -815,14 +938,20 @@ function initializeFooterQuoteForm() {
     };
 
     turnoverRange.max = String(sliderMax + 1);
+    turnoverRange.value = '1';
     updateTurnoverSelection(false);
     employeeRange.max = String(employeeOptions.length);
-    updateEmployeeSlider();
+    employeeRange.value = '1';
+    updateEmployeeSlider(false);
+    businessObjectRange.max = '10';
+    updateBusinessObjectSlider(false);
     importRange.max = String(importOptions.length);
-    updateImportSlider();
+    importRange.value = '0';
+    updateImportSlider(false);
     window.addEventListener('resize', () => {
         updateTurnoverSlider();
         updateEmployeeSlider();
+        updateBusinessObjectSlider();
         updateImportSlider();
     });
     const snapTurnoverToNearbyMarker = () => {
@@ -864,6 +993,20 @@ function initializeFooterQuoteForm() {
         turnoverRange.parentElement.classList.remove('is-moving');
     });
     turnoverEditButton.addEventListener('click', openTurnoverEditor);
+    const inlineEditorCommitters = [
+        { editor: turnoverCustomEditor, trigger: turnoverEditButton, apply: applyCustomTurnoverAmount },
+        { editor: employeeCustomEditor, trigger: employeeEditButton, apply: applyCustomEmployeeCount },
+        { editor: businessObjectCustomEditor, trigger: businessObjectEditButton, apply: applyCustomBusinessObjectCount },
+        { editor: importCustomEditor, trigger: importEditButton, apply: applyCustomImportAmount }
+    ];
+    document.addEventListener('click', (event) => {
+        const activeEditor = inlineEditorCommitters.find(({ editor }) => !editor.hidden);
+        if (!activeEditor || activeEditor.editor.contains(event.target) || activeEditor.trigger.contains(event.target)) return;
+        if (!activeEditor.apply()) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+    }, true);
     turnoverThumb.addEventListener('keydown', (event) => {
         if (event.key === 'Enter' || event.key === ' ') {
             event.preventDefault();
@@ -928,6 +1071,45 @@ function initializeFooterQuoteForm() {
     employeeRange.addEventListener('input', () => {
         if (employeeSummaryInput.value) employeeError.textContent = '';
     });
+    const businessObjectStage = businessObjectRange.parentElement;
+    businessObjectRange.addEventListener('pointerdown', () => businessObjectStage.classList.add('is-moving'));
+    window.addEventListener('pointerup', () => businessObjectStage.classList.remove('is-moving'));
+    window.addEventListener('pointercancel', () => businessObjectStage.classList.remove('is-moving'));
+    businessObjectRange.addEventListener('keydown', () => businessObjectStage.classList.add('is-moving'));
+    businessObjectRange.addEventListener('keyup', () => businessObjectStage.classList.remove('is-moving'));
+    businessObjectRange.addEventListener('blur', () => businessObjectStage.classList.remove('is-moving'));
+    businessObjectRange.addEventListener('input', () => {
+        businessObjectStage.classList.add('is-moving');
+        updateBusinessObjectSlider(false);
+    });
+    businessObjectRange.addEventListener('change', () => {
+        updateBusinessObjectSlider(true);
+        businessObjectStage.classList.remove('is-moving');
+    });
+    bindRangeDoubleClickEditor(businessObjectRange, businessObjectThumb, updateBusinessObjectSlider, openBusinessObjectEditor);
+    businessObjectEditButton.addEventListener('click', openBusinessObjectEditor);
+    businessObjectCustomApply.addEventListener('click', applyCustomBusinessObjectCount);
+    businessObjectCustomCancel.addEventListener('click', closeBusinessObjectEditor);
+    businessObjectCustomInput.addEventListener('input', () => {
+        businessObjectCustomError.textContent = '';
+        businessObjectCustomError.hidden = true;
+        businessObjectCustomInput.removeAttribute('aria-invalid');
+    });
+    businessObjectCustomInput.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            event.stopPropagation();
+            applyCustomBusinessObjectCount();
+        } else if (event.key === 'Escape') {
+            event.preventDefault();
+            event.stopPropagation();
+            closeBusinessObjectEditor();
+        }
+    });
+    businessObjectMarkers.forEach((marker) => marker.addEventListener('click', () => {
+        businessObjectRange.value = marker.dataset.businessObjectMarker;
+        updateBusinessObjectSlider(true);
+    }));
     bindCategorySlider(importRange, updateImportSlider, importMarkers, importAmounts);
     bindRangeDoubleClickEditor(importRange, importThumb, updateImportSlider, openImportEditor);
     importRange.addEventListener('input', () => {
@@ -973,8 +1155,9 @@ function initializeFooterQuoteForm() {
         employeeError.textContent = '';
         importError.textContent = '';
         closeButton.classList.remove('is-highlighted');
-        updateTurnoverSelection(Number(turnoverRange.value) > 0);
+        updateTurnoverSelection(turnoverThumb.classList.contains('is-committed'));
         updateEmployeeSlider();
+        updateBusinessObjectSlider();
         updateImportSlider();
         form.querySelector('[name="activity"]')?.focus();
     }));
@@ -1031,7 +1214,7 @@ function initializeFooterQuoteForm() {
             turnoverCustomError.textContent = '';
             turnoverCustomError.hidden = true;
             turnoverThumb.hidden = false;
-            turnoverRange.value = '0';
+            turnoverRange.value = '1';
             updateTurnoverSelection(false);
             if (customEmployeeCount !== null) {
                 const customIndex = employeeCounts.indexOf(customEmployeeCount);
@@ -1042,8 +1225,10 @@ function initializeFooterQuoteForm() {
                 employeeRange.max = String(employeeOptions.length);
             }
             closeEmployeeEditor();
-            employeeRange.value = '0';
+            employeeRange.value = '1';
             updateEmployeeSlider(false);
+            businessObjectRange.value = '0';
+            updateBusinessObjectSlider(false);
             if (customImportAmount !== null) {
                 const customIndex = importAmounts.indexOf(customImportAmount);
                 if (customIndex >= 0) importAmounts.splice(customIndex, 1);
@@ -1087,7 +1272,7 @@ function initializeFooterQuoteForm() {
             employeeRange.focus();
             return;
         }
-        if (Number(importRange.value) <= 0) {
+        if (!importSummaryInput.value) {
             importError.textContent = 'İdxal dövriyyəsinin illik həcmini sürüşdürərək seçin.';
             importRange.focus();
             return;
@@ -1098,9 +1283,13 @@ function initializeFooterQuoteForm() {
         turnoverAmountInput.value = formatTurnoverNumber(turnoverDigits);
         const turnover = `${formatTurnoverNumber(turnoverDigits)} AZN`;
         const employeeCount = employeeOptions[Number(employeeRange.value) - 1];
-        const importVolume = importOptions[Number(importRange.value) - 1];
+        const businessObjectCount = String(businessObjectRange.value);
+        const importVolume = Number(importRange.value) === 0
+            ? '0 ABŞ dolları'
+            : importOptions[Number(importRange.value) - 1];
         activitySummaryInput.value = activity;
         employeeSummaryInput.value = employeeCount;
+        businessObjectSummaryInput.value = businessObjectCount;
         importSummaryInput.value = importVolume;
 
         if (['localhost', '127.0.0.1', '::1'].includes(window.location.hostname)) {
@@ -1117,6 +1306,7 @@ function initializeFooterQuoteForm() {
             `Fəaliyyət sahəsi: ${activity}`,
             `Gözlənilən illik dövriyyə: ${turnover}`,
             `Şirkətin orta işçi sayı: ${employeeCount}`,
+            `Müəssisənin təsərrüfat obyektlərinin sayı: ${businessObjectCount}`,
             `İdxal olunan malların illik həcmi: ${importVolume}`,
             `Vergi öhdəlikləri: ${selectedTaxes.join(', ')}`,
             `Mobil nömrə: ${phone}`,
