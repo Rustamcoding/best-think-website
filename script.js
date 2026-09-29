@@ -619,7 +619,7 @@ function initializeFooterQuoteForm() {
     };
     const updateEmployeeSlider = (committed = employeeThumb.classList.contains('is-committed')) => updateCategorySlider(employeeRange, employeeOutput, employeeSummaryInput, employeeOptions, employeeThumb, committed, employeeMarkers, employeeCounts, employeeDisplayOptions, sharedMarkerTurnoverAmounts, employeeTooltip);
     const updateImportSlider = (committed = importThumb.classList.contains('is-committed')) => {
-        updateCategorySlider(importRange, importOutput, importSummaryInput, importOptions, importThumb, committed, importMarkers, importAmounts, importOptions, sharedMarkerTurnoverAmounts, importTooltip, (selected, displayed) => selected || '0 ABŞ dolları');
+        updateCategorySlider(importRange, importOutput, importSummaryInput, importOptions, importThumb, committed, importMarkers, importAmounts, importOptions, sharedMarkerTurnoverAmounts, importTooltip, (selected) => selected ? selected.replace(' ABŞ dolları', ' $') : '0 $');
         if (Number(importRange.value) !== 0) return;
         const zeroAmountLabel = '0 ABŞ dolları';
         importOutput.textContent = `${committed ? '✓ ' : ''}${zeroAmountLabel}`;
