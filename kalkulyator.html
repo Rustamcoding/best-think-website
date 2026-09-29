@@ -524,7 +524,7 @@ href="style.css?v=20260924-import-employee-sliders-v23"
 
         .rate-line {
             display: flex;
-            align-items: baseline;
+            align-items: center;
             gap: 8px;
         }
 
@@ -532,6 +532,88 @@ href="style.css?v=20260924-import-employee-sliders-v23"
             color: var(--blue);
             font-size: 24px;
             font-weight: 800;
+        }
+
+        .rate-edit-input {
+            width: 138px;
+            max-width: 48%;
+            height: 38px;
+            box-sizing: border-box;
+            padding: 6px 10px;
+            border: 1px solid #b8cbe6;
+            border-radius: 9px;
+            background: #ffffff;
+            color: var(--text);
+            font: inherit;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .rate-edit-input:focus {
+            outline: 2px solid rgba(36, 102, 211, 0.18);
+            border-color: var(--blue);
+        }
+
+        .rate-edit-button,
+        .rate-reset-button {
+            display: inline-flex;
+            flex: 0 0 34px;
+            align-items: center;
+            justify-content: center;
+            width: 34px;
+            height: 34px;
+            padding: 0;
+            border: 1px solid transparent;
+            border-radius: 9px;
+            background: transparent;
+            color: #667b98;
+            cursor: pointer;
+        }
+
+        .rate-edit-button:hover:not(:disabled),
+        .rate-reset-button:hover {
+            border-color: #d8e5f8;
+            background: #ffffff;
+            color: var(--blue);
+        }
+
+        .rate-edit-button:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+        }
+
+        .rate-edit-button svg,
+        .rate-reset-button svg {
+            width: 17px;
+            height: 17px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 1.8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .rate-manual-status,
+        .rate-edit-error {
+            margin-top: 4px;
+            font-size: 12px;
+            line-height: 1.35;
+        }
+
+        .rate-manual-status {
+            color: #667b98;
+        }
+
+        .rate-edit-error {
+            color: #c92121;
+        }
+
+        .rate-value[hidden],
+        .rate-edit-input[hidden],
+        .rate-manual-status[hidden],
+        .rate-edit-error[hidden],
+        .rate-reset-button[hidden] {
+            display: none !important;
         }
 
         .rate-currency {
@@ -3565,11 +3647,55 @@ href="style.css?v=20260924-import-employee-sliders-v23"
                                 —
                             </div>
 
+                            <input
+                                class="rate-edit-input"
+                                id="payment-rate-editor"
+                                type="number"
+                                min="0.0001"
+                                step="0.0001"
+                                inputmode="decimal"
+                                aria-label="Ödəniş məzənnəsini əl ilə daxil edin"
+                                hidden
+                            >
+
                             <span class="rate-currency">
                                 AZN
                             </span>
 
+                            <button
+                                class="rate-edit-button"
+                                id="payment-rate-edit"
+                                type="button"
+                                aria-label="Ödəniş məzənnəsini əl ilə dəyiş"
+                                title="Məzənnəni əl ilə dəyiş"
+                                disabled
+                            >
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M12 20h9"></path>
+                                    <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L8 18l-4 1 1-4Z"></path>
+                                </svg>
+                            </button>
+
+                            <button
+                                class="rate-reset-button"
+                                id="payment-rate-reset"
+                                type="button"
+                                aria-label="Avtomatik ödəniş məzənnəsini yenidən yüklə"
+                                title="Avtomatik məzənnəni yenidən yüklə"
+                                hidden
+                            >
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M20 7v5h-5"></path>
+                                    <path d="M4 17v-5h5"></path>
+                                    <path d="M5.6 9A7 7 0 0 1 18 6l2 6"></path>
+                                    <path d="M18.4 15A7 7 0 0 1 6 18l-2-6"></path>
+                                </svg>
+                            </button>
+
                         </div>
+
+                        <div class="rate-manual-status" id="payment-rate-status" hidden>Əl ilə dəyişdirilib</div>
+                        <div class="rate-edit-error" id="payment-rate-error" hidden>Düzgün, müsbət məzənnə daxil edin.</div>
 
                     </div>
 
@@ -3607,11 +3733,55 @@ href="style.css?v=20260924-import-employee-sliders-v23"
                                 —
                             </div>
 
+                            <input
+                                class="rate-edit-input"
+                                id="import-rate-editor"
+                                type="number"
+                                min="0.0001"
+                                step="0.0001"
+                                inputmode="decimal"
+                                aria-label="İdxal məzənnəsini əl ilə daxil edin"
+                                hidden
+                            >
+
                             <span class="rate-currency">
                                 AZN
                             </span>
 
+                            <button
+                                class="rate-edit-button"
+                                id="import-rate-edit"
+                                type="button"
+                                aria-label="İdxal məzənnəsini əl ilə dəyiş"
+                                title="Məzənnəni əl ilə dəyiş"
+                                disabled
+                            >
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M12 20h9"></path>
+                                    <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L8 18l-4 1 1-4Z"></path>
+                                </svg>
+                            </button>
+
+                            <button
+                                class="rate-reset-button"
+                                id="import-rate-reset"
+                                type="button"
+                                aria-label="Avtomatik idxal məzənnəsini yenidən yüklə"
+                                title="Avtomatik məzənnəni yenidən yüklə"
+                                hidden
+                            >
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M20 7v5h-5"></path>
+                                    <path d="M4 17v-5h5"></path>
+                                    <path d="M5.6 9A7 7 0 0 1 18 6l2 6"></path>
+                                    <path d="M18.4 15A7 7 0 0 1 6 18l-2-6"></path>
+                                </svg>
+                            </button>
+
                         </div>
+
+                        <div class="rate-manual-status" id="import-rate-status" hidden>Əl ilə dəyişdirilib</div>
+                        <div class="rate-edit-error" id="import-rate-error" hidden>Düzgün, müsbət məzənnə daxil edin.</div>
 
                     </div>
 
@@ -5341,7 +5511,7 @@ href="style.css?v=20260924-import-employee-sliders-v23"
 
 
 <script src="assets/xlsx-js-style.bundle.js"></script>
-<script src="script.js?v=20260929-exchange-rates-v42"></script>
+<script src="script.js?v=20260929-exchange-rates-v45-manual-rate-edit"></script>
 </body>
 
 </html>

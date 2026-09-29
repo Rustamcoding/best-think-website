@@ -1165,6 +1165,39 @@ const paymentRate =
 const importRate =
     document.getElementById('import-rate');
 
+const paymentRateEditor =
+    document.getElementById('payment-rate-editor');
+
+const importRateEditor =
+    document.getElementById('import-rate-editor');
+
+const rateEditControls = {
+    payment: {
+        label: 'Ödəniş',
+        display: paymentRate,
+        editor: paymentRateEditor,
+        editButton: document.getElementById('payment-rate-edit'),
+        resetButton: document.getElementById('payment-rate-reset'),
+        status: document.getElementById('payment-rate-status'),
+        error: document.getElementById('payment-rate-error'),
+        getRate: () => paymentRateValue,
+        setRate: (value) => { paymentRateValue = value; },
+        reload: () => loadPaymentRate()
+    },
+    import: {
+        label: 'İdxal',
+        display: importRate,
+        editor: importRateEditor,
+        editButton: document.getElementById('import-rate-edit'),
+        resetButton: document.getElementById('import-rate-reset'),
+        status: document.getElementById('import-rate-status'),
+        error: document.getElementById('import-rate-error'),
+        getRate: () => importRateValue,
+        setRate: (value) => { importRateValue = value; },
+        reload: () => loadImportRate()
+    }
+};
+
 
 const currencyLabel =
     document.getElementById('currency-label');
@@ -1221,18 +1254,24 @@ let paymentRateValue = null;
 
 let importRateValue = null;
 
+const manualRateOverrides = {
+    payment: false,
+    import: false
+};
+
 let paymentRateRequestId = 0;
 
 let importRateRequestId = 0;
 
 const rateRequestCache = new Map();
+const connectedCbarRateRequests = new Map();
 
 
 /* =========================================================
    4. API-DƏN MƏZƏNNƏNİ AL
    ========================================================= */
 
-async function getRate(
+async function getWorkerRate(
     date,
     selectedCurrency
 ) {
@@ -1247,22 +1286,26 @@ async function getRate(
     }
 
 
-    const cacheKey = `${selectedCurrency.toUpperCase()}:${date}`;
+    const currencyCode = String(selectedCurrency).trim().toUpperCase();
+    const cacheKey = `${currencyCode}:${date}`;
     if (rateRequestCache.has(cacheKey)) {
         return rateRequestCache.get(cacheKey);
     }
 
     const url =
-        `${API_BASE}/rates?date=${encodeURIComponent(date)}&currency=${encodeURIComponent(selectedCurrency)}`;
+        `${API_BASE}/rates?date=${encodeURIComponent(date)}&currency=${encodeURIComponent(currencyCode)}`;
 
     const request = (async () => {
-        const response = await fetch(url);
-
-        if (!response.ok) {
-            throw new Error(`API xətası: ${response.status}`);
-        }
-
-        const data = await response.json();
+        const data = await fetchCbarRateUrl(
+            url,
+            {},
+            async (response) => {
+                if (!response.ok) {
+                    throw new Error(`API xətası: ${response.status}`);
+                }
+                return response.json();
+            }
+        );
         const ratePerUnit = Number(data.ratePerUnit);
 
         if (!data.success || !Number.isFinite(ratePerUnit) || ratePerUnit <= 0) {
@@ -1290,6 +1333,119 @@ async function getRate(
 
 }
 
+function setRateEditButtonState(kind, isEditing) {
+    const control = rateEditControls[kind];
+    const editLabel = `${control.label} məzənnəsini`;
+
+    control.editButton.dataset.editing = isEditing ? 'true' : 'false';
+    control.editButton.title = isEditing
+        ? `${editLabel} yadda saxla`
+        : `${editLabel} əl ilə dəyiş`;
+    control.editButton.setAttribute(
+        'aria-label',
+        isEditing
+            ? `${editLabel} yadda saxla`
+            : `${editLabel} əl ilə dəyiş`
+    );
+    control.editButton.innerHTML = isEditing
+        ? '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"></path></svg>'
+        : '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L8 18l-4 1 1-4Z"></path></svg>';
+}
+
+function closeRateEditor(kind) {
+    const control = rateEditControls[kind];
+    control.editor.hidden = true;
+    control.display.hidden = false;
+    control.error.hidden = true;
+    setRateEditButtonState(kind, false);
+}
+
+function beginRateEdit(kind) {
+    const control = rateEditControls[kind];
+    if (control.editButton.disabled) {
+        return;
+    }
+
+    const currentRate = control.getRate();
+    control.editor.value =
+        Number.isFinite(currentRate) && currentRate > 0
+            ? currentRate.toFixed(4)
+            : '';
+    control.display.hidden = true;
+    control.editor.hidden = false;
+    control.error.hidden = true;
+    setRateEditButtonState(kind, true);
+    control.editor.focus();
+}
+
+function saveRateEdit(kind) {
+    const control = rateEditControls[kind];
+    const enteredRate = control.editor.valueAsNumber;
+    if (!Number.isFinite(enteredRate) || enteredRate < 0.0001) {
+        control.error.hidden = false;
+        control.editor.focus();
+        return;
+    }
+
+    const roundedRate = Number(enteredRate.toFixed(4));
+    control.setRate(roundedRate);
+    manualRateOverrides[kind] = true;
+    control.display.textContent = roundedRate.toFixed(4);
+    control.display.title = 'Bu məzənnə istifadəçi tərəfindən əl ilə daxil edilib.';
+    control.status.hidden = false;
+    control.resetButton.hidden = false;
+    closeRateEditor(kind);
+    calculateResult();
+}
+
+function clearManualRateOverride(kind) {
+    const control = rateEditControls[kind];
+    manualRateOverrides[kind] = false;
+    control.status.hidden = true;
+    control.resetButton.hidden = true;
+    control.display.removeAttribute('title');
+    closeRateEditor(kind);
+}
+
+function initializeRateEditControls() {
+    Object.entries(rateEditControls).forEach(([kind, control]) => {
+        control.editButton.disabled = true;
+        control.editor.hidden = true;
+        control.status.hidden = true;
+        control.error.hidden = true;
+        control.resetButton.hidden = true;
+        setRateEditButtonState(kind, false);
+
+        control.editButton.addEventListener('click', () => {
+            if (control.editButton.dataset.editing === 'true') {
+                saveRateEdit(kind);
+            } else {
+                beginRateEdit(kind);
+            }
+        });
+
+        control.editor.addEventListener('input', () => {
+            control.error.hidden = true;
+        });
+
+        control.editor.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                saveRateEdit(kind);
+            } else if (event.key === 'Escape') {
+                closeRateEditor(kind);
+            }
+        });
+
+        control.resetButton.addEventListener('click', () => {
+            clearManualRateOverride(kind);
+            control.reload();
+        });
+    });
+}
+
+initializeRateEditControls();
+
 
 /* =========================================================
    5. ÖDƏNİŞ MƏZƏNNƏSİNİ YÜKLƏ
@@ -1297,24 +1453,32 @@ async function getRate(
 
 async function loadPaymentRate() {
 
+    if (manualRateOverrides.payment) {
+        return;
+    }
+
+    const rateControl = rateEditControls.payment;
     const requestId = ++paymentRateRequestId;
     const requestedDate = paymentDate.value;
     const requestedCurrency = currency.value;
 
+    rateControl.editButton.disabled = true;
     paymentRateValue = null;
+    paymentRate.removeAttribute('title');
+    calculateResult();
 
 
     if (!paymentDate.value) {
 
         paymentRate.textContent =
             '—';
+        rateControl.editButton.disabled = true;
 
         calculateResult();
 
         return;
 
     }
-
 
     paymentRate.innerHTML =
         '<span class="rate-loading">Yüklənir...</span>';
@@ -1323,7 +1487,7 @@ async function loadPaymentRate() {
     try {
 
         const data =
-            await getRate(
+            await getConnectedCbarRate(
                 requestedDate,
                 requestedCurrency
             );
@@ -1340,6 +1504,10 @@ async function loadPaymentRate() {
         paymentRateValue =
             data.ratePerUnit;
 
+        paymentRate.title =
+            getConnectedRateDateHint(data.rateDate, requestedDate);
+
+        rateControl.editButton.disabled = false;
 
         paymentRate.textContent =
             paymentRateValue.toFixed(4);
@@ -1370,6 +1538,8 @@ async function loadPaymentRate() {
 
         paymentRate.innerHTML =
             '<span class="rate-error">Alınmadı</span>';
+        paymentRate.removeAttribute('title');
+        rateControl.editButton.disabled = false;
 
 
         calculateResult();
@@ -1385,24 +1555,32 @@ async function loadPaymentRate() {
 
 async function loadImportRate() {
 
+    if (manualRateOverrides.import) {
+        return;
+    }
+
+    const rateControl = rateEditControls.import;
     const requestId = ++importRateRequestId;
     const requestedDate = importDate.value;
     const requestedCurrency = currency.value;
 
+    rateControl.editButton.disabled = true;
     importRateValue = null;
+    importRate.removeAttribute('title');
+    calculateResult();
 
 
     if (!importDate.value) {
 
         importRate.textContent =
             '—';
+        rateControl.editButton.disabled = true;
 
         calculateResult();
 
         return;
 
     }
-
 
     importRate.innerHTML =
         '<span class="rate-loading">Yüklənir...</span>';
@@ -1411,7 +1589,7 @@ async function loadImportRate() {
     try {
 
         const data =
-            await getRate(
+            await getConnectedCbarRate(
                 requestedDate,
                 requestedCurrency
             );
@@ -1428,6 +1606,10 @@ async function loadImportRate() {
         importRateValue =
             data.ratePerUnit;
 
+        importRate.title =
+            getConnectedRateDateHint(data.rateDate, requestedDate);
+
+        rateControl.editButton.disabled = false;
 
         importRate.textContent =
             importRateValue.toFixed(4);
@@ -1458,6 +1640,8 @@ async function loadImportRate() {
 
         importRate.innerHTML =
             '<span class="rate-error">Alınmadı</span>';
+        importRate.removeAttribute('title');
+        rateControl.editButton.disabled = false;
 
 
         calculateResult();
@@ -1792,6 +1976,8 @@ if (currency) {
             currencyLabel.textContent =
                 currency.value;
 
+            clearManualRateOverride('payment');
+            clearManualRateOverride('import');
 
             paymentRateValue = null;
 
@@ -1803,6 +1989,9 @@ if (currency) {
 
             importRate.textContent =
                 '—';
+
+            paymentRate.removeAttribute('title');
+            importRate.removeAttribute('title');
 
 
             calculateResult();
@@ -1827,7 +2016,10 @@ if (paymentDate) {
 
     paymentDate.addEventListener(
         'change',
-        loadPaymentRate
+        () => {
+            clearManualRateOverride('payment');
+            loadPaymentRate();
+        }
     );
 
 }
@@ -1841,7 +2033,10 @@ if (importDate) {
 
     importDate.addEventListener(
         'change',
-        loadImportRate
+        () => {
+            clearManualRateOverride('import');
+            loadImportRate();
+        }
     );
 
 }
@@ -4904,77 +5099,27 @@ function addImportCustomsProductRow() {
     calculateImportCustoms();
 }
 
-function importCustomsOfficialRateUrl(dateValue) {
-    const [year, month, day] = String(dateValue).split('-');
-    return `https://cbar.az/currencies/${day}.${month}.${year}.xml`;
+function normalizeCbarRateDate(dateValue) {
+    const value = String(dateValue || '').trim();
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+        return null;
+    }
+
+    const parsedDate = new Date(`${value}T12:00:00Z`);
+    return !Number.isNaN(parsedDate.getTime()) &&
+        parsedDate.toISOString().slice(0, 10) === value
+        ? value
+        : null;
 }
 
-async function getImportCustomsOfficialRate(dateValue, currencyCode) {
-    const requestedDate = new Date(`${dateValue}T12:00:00Z`);
-
-    if (Number.isNaN(requestedDate.getTime())) {
+function getCbarRateDateCandidates(dateValue) {
+    const normalizedDate = normalizeCbarRateDate(dateValue);
+    if (!normalizedDate) {
         throw new Error('Məzənnə tarixi düzgün deyil');
     }
 
-    // AMB qeyri-iş günlərində son dərc olunmuş məzənnəni tətbiq edir.
-    // Buna görə seçilmiş tarixdən geriyə doğru bir neçə gün yoxlanılır.
-    for (let offset = 0; offset <= 7; offset += 1) {
-        const lookupDate = new Date(requestedDate);
-        lookupDate.setUTCDate(lookupDate.getUTCDate() - offset);
-        const lookupDateValue = lookupDate.toISOString().slice(0, 10);
-
-        try {
-            const response = await fetch(
-                importCustomsOfficialRateUrl(lookupDateValue),
-                { cache: 'no-store' }
-            );
-
-            if (!response.ok) {
-                continue;
-            }
-
-            const xml = await response.text();
-            const documentXml = new DOMParser().parseFromString(
-                xml,
-                'application/xml'
-            );
-            const selectedCurrency = Array.from(
-                documentXml.querySelectorAll('Valute')
-            ).find((item) =>
-                String(item.getAttribute('Code') || '').toUpperCase() === currencyCode
-            );
-            const nominal = Number(
-                selectedCurrency?.querySelector('Nominal')?.textContent?.trim() || 1
-            );
-            const value = Number(
-                selectedCurrency?.querySelector('Value')?.textContent
-                    ?.trim()
-                    ?.replace(',', '.')
-            );
-
-            if (selectedCurrency && Number.isFinite(value) && value > 0) {
-                return value / nominal;
-            }
-        } catch (error) {
-            console.warn('AMB məzənnə sorğusu uğursuz oldu:', error);
-        }
-    }
-
-    throw new Error('AMB üzrə valyuta məzənnəsi tapılmadı');
-}
-
-function importCustomsMirrorRateUrl(dateValue) {
-    return `https://cdn.jsdelivr.net/gh/AllRates-Today/central-bank-exchange-rates@main/data/cbar/daily/${dateValue}.json`;
-}
-
-async function getImportCustomsMirrorRate(dateValue, currencyCode) {
-    const requestedDate = new Date(`${dateValue}T12:00:00Z`);
-
-    if (Number.isNaN(requestedDate.getTime())) {
-        throw new Error('Məzənnə tarixi düzgün deyil');
-    }
-
-    const dateCandidates = Array.from({ length: 8 }, (_, offset) => {
+    const requestedDate = new Date(`${normalizedDate}T12:00:00Z`);
+    return Array.from({ length: 8 }, (_, offset) => {
         const lookupDate = new Date(requestedDate);
         lookupDate.setUTCDate(lookupDate.getUTCDate() - offset);
         return {
@@ -4982,30 +5127,111 @@ async function getImportCustomsMirrorRate(dateValue, currencyCode) {
             date: lookupDate.toISOString().slice(0, 10)
         };
     });
+}
 
+function getConnectedRateDateHint(rateDate, requestedDate) {
+    const effectiveDate =
+        normalizeCbarRateDate(rateDate) ||
+        normalizeCbarRateDate(requestedDate);
+    if (!effectiveDate) {
+        return '';
+    }
+
+    const [year, month, day] = effectiveDate.split('-');
+    const formattedDate = `${day}.${month}.${year}`;
+    return effectiveDate === requestedDate
+        ? `Məzənnə ${formattedDate} tarixinə aiddir.`
+        : `Seçilmiş tarixdə məzənnə dərc olunmadığı üçün ${formattedDate} tarixinə aid son məzənnə tətbiq edilib.`;
+}
+
+const cbarRateFetchTimeoutMs = 7000;
+
+async function fetchCbarRateUrl(
+    url,
+    options = {},
+    readResponse = async (response) => response
+) {
+    const controller = typeof AbortController === 'function'
+        ? new AbortController()
+        : null;
+    let timeoutId;
+    const timeout = new Promise((resolve, reject) => {
+        timeoutId = setTimeout(() => {
+            controller?.abort();
+            reject(new Error('Məzənnə mənbəyi vaxtında cavab vermədi'));
+        }, cbarRateFetchTimeoutMs);
+    });
+
+    try {
+        const response = await Promise.race([
+            fetch(url, {
+                ...options,
+                ...(controller ? { signal: controller.signal } : {})
+            }),
+            timeout
+        ]);
+        return await Promise.race([
+            Promise.resolve(readResponse(response)),
+            timeout
+        ]);
+    } finally {
+        clearTimeout(timeoutId);
+    }
+}
+
+function importCustomsOfficialRateUrl(dateValue) {
+    const [year, month, day] = String(dateValue).split('-');
+    return `https://cbar.az/currencies/${day}.${month}.${year}.xml`;
+}
+
+async function getImportCustomsOfficialRate(dateValue, currencyCode) {
+    const dateCandidates = getCbarRateDateCandidates(dateValue);
     const results = await Promise.all(
         dateCandidates.map(async ({ offset, date }) => {
             try {
-                const response = await fetch(
-                    importCustomsMirrorRateUrl(date),
-                    { cache: 'no-store' }
+                return await fetchCbarRateUrl(
+                    importCustomsOfficialRateUrl(date),
+                    { cache: 'no-store' },
+                    async (response) => {
+                        if (!response.ok) {
+                            return null;
+                        }
+
+                        const xml = await response.text();
+                        const documentXml = new DOMParser().parseFromString(
+                            xml,
+                            'application/xml'
+                        );
+                        if (documentXml.querySelector('parsererror')) {
+                            return null;
+                        }
+
+                        const selectedCurrency = Array.from(
+                            documentXml.querySelectorAll('Valute')
+                        ).find((item) =>
+                            String(item.getAttribute('Code') || '').toUpperCase() === currencyCode
+                        );
+                        const nominal = Number(
+                            selectedCurrency?.querySelector('Nominal')?.textContent
+                                ?.trim()
+                                ?.replace(',', '.') || 1
+                        );
+                        const value = Number(
+                            selectedCurrency?.querySelector('Value')?.textContent
+                                ?.trim()
+                                ?.replace(',', '.')
+                        );
+                        const ratePerUnit = value / nominal;
+
+                        return selectedCurrency &&
+                            Number.isFinite(nominal) &&
+                            nominal > 0 &&
+                            Number.isFinite(ratePerUnit) &&
+                            ratePerUnit > 0
+                            ? { offset, ratePerUnit, rateDate: date, source: 'cbar-official' }
+                            : null;
+                    }
                 );
-
-                if (!response.ok) {
-                    return null;
-                }
-
-                const data = await response.json();
-                const selectedRate = (data.rates || []).find((item) =>
-                    String(item.base || '').toUpperCase() === currencyCode &&
-                    String(item.quote || '').toUpperCase() === 'AZN' &&
-                    String(item.type || '').toLowerCase() === 'reference'
-                );
-                const rate = Number(selectedRate?.value);
-
-                return Number.isFinite(rate) && rate > 0
-                    ? { offset, rate }
-                    : null;
             } catch (error) {
                 return null;
             }
@@ -5016,168 +5242,248 @@ async function getImportCustomsMirrorRate(dateValue, currencyCode) {
         .filter(Boolean)
         .sort((first, second) => first.offset - second.offset)[0];
 
-    if (nearestRate) {
-        return nearestRate.rate;
+    if (!nearestRate) {
+        throw new Error('AMB üzrə valyuta məzənnəsi tapılmadı');
     }
-
-    throw new Error('AMB ehtiyat məzənnə mənbəyində valyuta tapılmadı');
+    return nearestRate;
 }
 
-const importCustomsRateCachePrefix = 'best-think-cbar-rate:';
+function importCustomsMirrorRateUrl(dateValue) {
+    return `https://cdn.jsdelivr.net/gh/AllRates-Today/central-bank-exchange-rates@main/data/cbar/daily/${dateValue}.json`;
+}
 
-function getImportCustomsCachedRate(dateValue, currencyCode) {
+async function getImportCustomsMirrorRate(dateValue, currencyCode) {
+    const dateCandidates = getCbarRateDateCandidates(dateValue);
+    const results = await Promise.all(
+        dateCandidates.map(async ({ offset, date }) => {
+            try {
+                return await fetchCbarRateUrl(
+                    importCustomsMirrorRateUrl(date),
+                    { cache: 'no-store' },
+                    async (response) => {
+                        if (!response.ok) {
+                            return null;
+                        }
+
+                        const data = await response.json();
+                        const selectedRate = (Array.isArray(data.rates) ? data.rates : []).find((item) =>
+                            String(item.base || '').toUpperCase() === currencyCode &&
+                            String(item.quote || '').toUpperCase() === 'AZN' &&
+                            String(item.type || '').toLowerCase() === 'reference'
+                        );
+                        const ratePerUnit = Number(selectedRate?.value);
+
+                        return Number.isFinite(ratePerUnit) && ratePerUnit > 0
+                            ? { offset, ratePerUnit, rateDate: date, source: 'cbar-mirror' }
+                            : null;
+                    }
+                );
+            } catch (error) {
+                return null;
+            }
+        })
+    );
+
+    const nearestRate = results
+        .filter(Boolean)
+        .sort((first, second) => first.offset - second.offset)[0];
+
+    if (!nearestRate) {
+        throw new Error('AMB ehtiyat məzənnə mənbəyində valyuta tapılmadı');
+    }
+    return nearestRate;
+}
+
+const connectedRateCachePrefix = 'best-think-cbar-rate:v2:';
+const importCustomsRateRequestIds = new WeakMap();
+
+function getConnectedCbarCachedRate(dateValue, currencyCode) {
     try {
-        const cached = sessionStorage.getItem(
-            `${importCustomsRateCachePrefix}${dateValue}:${currencyCode}`
-        );
-        const rate = Number(cached);
-        return Number.isFinite(rate) && rate > 0 ? rate : null;
+        const cacheKey = `${connectedRateCachePrefix}${dateValue}:${currencyCode}`;
+        const cached = JSON.parse(sessionStorage.getItem(cacheKey) || 'null');
+        const ratePerUnit = Number(cached?.ratePerUnit);
+        const rateDate = normalizeCbarRateDate(cached?.rateDate);
+        return Number.isFinite(ratePerUnit) && ratePerUnit > 0 && rateDate
+            ? { ratePerUnit, rateDate, source: cached.source || 'session-cache' }
+            : null;
     } catch (error) {
         return null;
     }
 }
 
-function setImportCustomsCachedRate(dateValue, currencyCode, rate) {
+function setConnectedCbarCachedRate(dateValue, currencyCode, rateData) {
     try {
-        sessionStorage.setItem(
-            `${importCustomsRateCachePrefix}${dateValue}:${currencyCode}`,
-            String(rate)
-        );
+        const cacheKey = `${connectedRateCachePrefix}${dateValue}:${currencyCode}`;
+        sessionStorage.setItem(cacheKey, JSON.stringify(rateData));
     } catch (error) {
-        // Keş əlçatan olmadıqda hesablama normal şəkildə davam edir.
+        // Keş əlçatan olmadıqda sorğu və hesablama normal davam edir.
     }
 }
 
-async function getImportCustomsConnectedRate(dateValue, currencyCode) {
-    const cachedRate = getImportCustomsCachedRate(dateValue, currencyCode);
-    if (cachedRate !== null) {
+async function getConnectedCbarRate(dateValue, selectedCurrency) {
+    const requestedDate = normalizeCbarRateDate(dateValue);
+    const currencyCode = String(selectedCurrency || '').trim().toUpperCase();
+    if (!requestedDate || !currencyCode) {
+        throw new Error('Məzənnə tarixi və valyuta düzgün göstərilməyib');
+    }
+
+    const cacheKey = `${currencyCode}:${requestedDate}`;
+    const cachedRate = getConnectedCbarCachedRate(requestedDate, currencyCode);
+    if (cachedRate) {
         return cachedRate;
     }
 
-    let rate;
+    const existingRequest = connectedCbarRateRequests.get(cacheKey);
+    if (existingRequest) {
+        return existingRequest;
+    }
 
-    try {
-        rate = await getImportCustomsMirrorRate(dateValue, currencyCode);
-    } catch (mirrorError) {
+    const request = (async () => {
+        let rateData;
         try {
-            rate = await getImportCustomsOfficialRate(dateValue, currencyCode);
-        } catch (officialError) {
-            const data = await getRate(dateValue, currencyCode);
-            rate = Number(data.ratePerUnit);
+            rateData = await getImportCustomsMirrorRate(requestedDate, currencyCode);
+        } catch (mirrorError) {
+            try {
+                rateData = await getImportCustomsOfficialRate(requestedDate, currencyCode);
+            } catch (officialError) {
+                const data = await getWorkerRate(requestedDate, currencyCode);
+                const workerRateDate =
+                    normalizeCbarRateDate(data.rateDate) ||
+                    normalizeCbarRateDate(data.date);
+                const workerRateOffset = workerRateDate
+                    ? (
+                        new Date(`${requestedDate}T12:00:00Z`).getTime() -
+                        new Date(`${workerRateDate}T12:00:00Z`).getTime()
+                    ) / 86400000
+                    : 0;
+
+                if (workerRateOffset < 0 || workerRateOffset > 7) {
+                    throw new Error('API məzənnəni başqa tarix üçün qaytardı');
+                }
+
+                rateData = {
+                    ratePerUnit: Number(data.ratePerUnit),
+                    rateDate: workerRateDate ||
+                        requestedDate,
+                    source: 'best-think-api'
+                };
+            }
+        }
+
+        const ratePerUnit = Number(rateData?.ratePerUnit);
+        const rateDate =
+            normalizeCbarRateDate(rateData?.rateDate) ||
+            requestedDate;
+        if (!Number.isFinite(ratePerUnit) || ratePerUnit <= 0) {
+            throw new Error('Məzənnə məlumatı düzgün əldə olunmadı');
+        }
+
+        const validatedRate = {
+            ratePerUnit,
+            rateDate,
+            source: rateData.source || 'cbar'
+        };
+        setConnectedCbarCachedRate(requestedDate, currencyCode, validatedRate);
+        return validatedRate;
+    })();
+
+    connectedCbarRateRequests.set(cacheKey, request);
+    try {
+        return await request;
+    } finally {
+        if (connectedCbarRateRequests.get(cacheKey) === request) {
+            connectedCbarRateRequests.delete(cacheKey);
         }
     }
+}
 
-    if (!Number.isFinite(rate) || rate <= 0) {
-        throw new Error('Məzənnə məlumatı əldə olunmadı');
+async function loadImportCustomsConnectedRate(
+    dateInput,
+    currencyInput,
+    rateInput,
+    errorLabel
+) {
+    if (!dateInput || !currencyInput || !rateInput) {
+        return;
     }
 
-    setImportCustomsCachedRate(dateValue, currencyCode, rate);
-    return rate;
+    const requestId = (importCustomsRateRequestIds.get(rateInput) || 0) + 1;
+    importCustomsRateRequestIds.set(rateInput, requestId);
+    const requestedDate = dateInput.value;
+    const requestedCurrency = String(currencyInput.value || '').toUpperCase();
+    const isCurrentRequest = () =>
+        importCustomsRateRequestIds.get(rateInput) === requestId &&
+        dateInput.value === requestedDate &&
+        String(currencyInput.value || '').toUpperCase() === requestedCurrency;
+
+    rateInput.title = '';
+    if (requestedCurrency === 'AZN') {
+        rateInput.value = '1.0000';
+        rateInput.readOnly = true;
+        calculateImportCustoms();
+        return;
+    }
+
+    if (!requestedDate) {
+        rateInput.value = '';
+        rateInput.readOnly = true;
+        calculateImportCustoms();
+        return;
+    }
+
+    rateInput.value = '';
+    rateInput.readOnly = true;
+    calculateImportCustoms();
+    try {
+        const rateData = await getConnectedCbarRate(
+            requestedDate,
+            requestedCurrency
+        );
+        if (!isCurrentRequest()) {
+            return;
+        }
+
+        rateInput.value = rateData.ratePerUnit.toFixed(4);
+        rateInput.title = getConnectedRateDateHint(
+            rateData.rateDate,
+            requestedDate
+        );
+    } catch (error) {
+        if (!isCurrentRequest()) {
+            return;
+        }
+        console.error(`${errorLabel} məzənnə xətası:`, error);
+        rateInput.readOnly = false;
+    }
+
+    calculateImportCustoms();
 }
 
 async function loadImportCustomsRate() {
-    if (!importCustomsDate || !importCustomsCurrency || !importCustomsRate) {
-        return;
-    }
-
-    if (!importCustomsDate.value) {
-        importCustomsRate.value = '';
-        importCustomsRate.readOnly = true;
-        calculateImportCustoms();
-        return;
-    }
-
-    importCustomsRate.value = '';
-    importCustomsRate.readOnly = true;
-
-    try {
-        const rate = await getImportCustomsConnectedRate(
-            importCustomsDate.value,
-            importCustomsCurrency.value
-        );
-        importCustomsRate.value = rate.toFixed(4);
-    } catch (error) {
-        console.error('İdxal kalkulyatoru məzənnə xətası:', error);
-        importCustomsRate.readOnly = false;
-    }
-
-    calculateImportCustoms();
+    return loadImportCustomsConnectedRate(
+        importCustomsDate,
+        importCustomsCurrency,
+        importCustomsRate,
+        'İdxal kalkulyatoru'
+    );
 }
 
 async function loadImportCustomsTransportRate() {
-    if (
-        !importCustomsDate ||
-        !importCustomsTransportCurrency ||
-        !importCustomsTransportRate
-    ) {
-        return;
-    }
-
-    if (importCustomsTransportCurrency.value === 'AZN') {
-        importCustomsTransportRate.value = '1.0000';
-        importCustomsTransportRate.readOnly = true;
-        calculateImportCustoms();
-        return;
-    }
-
-    if (!importCustomsDate.value) {
-        importCustomsTransportRate.value = '';
-        importCustomsTransportRate.readOnly = true;
-        calculateImportCustoms();
-        return;
-    }
-
-    importCustomsTransportRate.value = '';
-    importCustomsTransportRate.readOnly = true;
-
-    try {
-        const rate = await getImportCustomsConnectedRate(
-            importCustomsDate.value,
-            importCustomsTransportCurrency.value
-        );
-        importCustomsTransportRate.value = rate.toFixed(4);
-    } catch (error) {
-        console.error('Nəqliyyat məzənnəsi xətası:', error);
-        importCustomsTransportRate.readOnly = false;
-    }
-
-    calculateImportCustoms();
+    return loadImportCustomsConnectedRate(
+        importCustomsDate,
+        importCustomsTransportCurrency,
+        importCustomsTransportRate,
+        'Nəqliyyat'
+    );
 }
 
 async function loadImportCustomsOtherRate() {
-    if (!importCustomsDate || !importCustomsOtherCurrency || !importCustomsOtherRate) {
-        return;
-    }
-
-    if (importCustomsOtherCurrency.value === 'AZN') {
-        importCustomsOtherRate.value = '1.0000';
-        importCustomsOtherRate.readOnly = true;
-        calculateImportCustoms();
-        return;
-    }
-
-    if (!importCustomsDate.value) {
-        importCustomsOtherRate.value = '';
-        importCustomsOtherRate.readOnly = true;
-        calculateImportCustoms();
-        return;
-    }
-
-    importCustomsOtherRate.value = '';
-    importCustomsOtherRate.readOnly = true;
-
-    try {
-        const rate = await getImportCustomsConnectedRate(
-            importCustomsDate.value,
-            importCustomsOtherCurrency.value
-        );
-        importCustomsOtherRate.value = rate.toFixed(4);
-    } catch (error) {
-        console.error('Digər xərclər üçün məzənnə xətası:', error);
-        importCustomsOtherRate.readOnly = false;
-    }
-
-    calculateImportCustoms();
+    return loadImportCustomsConnectedRate(
+        importCustomsDate,
+        importCustomsOtherCurrency,
+        importCustomsOtherRate,
+        'Digər xərclər üçün'
+    );
 }
 
 function calculateImportCustoms() {
