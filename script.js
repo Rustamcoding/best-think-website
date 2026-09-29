@@ -1601,6 +1601,17 @@ function clearManualRateOverride(kind) {
 
 function initializeRateEditControls() {
     Object.entries(rateEditControls).forEach(([kind, control]) => {
+        if (
+            !control.display ||
+            !control.editor ||
+            !control.editButton ||
+            !control.resetButton ||
+            !control.status ||
+            !control.error
+        ) {
+            return;
+        }
+
         control.editButton.disabled = true;
         control.editor.hidden = true;
         control.status.hidden = true;
@@ -3642,31 +3653,23 @@ if (salaryExemptionSearchInput) {
    Eyni anda yalnız bir xidmətin məlumatı açıq qalsın.
    ========================================================= */
 
-const accordionDetails =
-    document.querySelectorAll(
-        '.service-grid details, .industry-grid details'
-    );
+const accordionDetails = document.querySelectorAll(
+    '.service-grid details, .industry-grid details'
+);
 
 if (accordionDetails.length) {
-    document.addEventListener('click', (event) => {
-        const summary = event.target.closest?.('summary');
-        const detail = summary?.closest('details');
-
-    if (!summary || !detail || !Array.from(accordionDetails).includes(detail)) {
-            return;
-        }
-
-        event.preventDefault();
-
-        const shouldOpen = !detail.open;
-
-        accordionDetails.forEach((otherDetail) => {
-            if (otherDetail !== detail) {
-                otherDetail.open = false;
+    accordionDetails.forEach((detail) => {
+        detail.addEventListener('toggle', () => {
+            if (!detail.open) {
+                return;
             }
-        });
 
-        detail.open = shouldOpen;
+            accordionDetails.forEach((otherDetail) => {
+                if (otherDetail !== detail && otherDetail.open) {
+                    otherDetail.open = false;
+                }
+            });
+        });
     });
 
     const accordionSections = Array.from(
