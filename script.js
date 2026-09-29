@@ -267,7 +267,8 @@ function initializeFooterContactForm() {
     let responseTimer = 0;
 
     window.addEventListener('message', (event) => {
-        if (event.source !== frame.contentWindow || !event.data || event.data.type !== 'best-think-contact-result' || event.data.requestId !== activeRequestId) return;
+        const isGoogleAppsScriptOrigin = event.origin === 'https://script.google.com' || event.origin.endsWith('.googleusercontent.com');
+        if (!isGoogleAppsScriptOrigin || !event.data || event.data.type !== 'best-think-contact-result' || event.data.requestId !== activeRequestId) return;
         window.clearTimeout(responseTimer);
         status.textContent = event.data.message || (event.data.ok ? 'Müraciətiniz qəbul edildi.' : 'Müraciət göndərilmədi. Yenidən cəhd edin.');
         status.classList.toggle('is-error', !event.data.ok);
@@ -1191,7 +1192,8 @@ function initializeFooterQuoteForm() {
     form.addEventListener('change', (event) => event.target.setCustomValidity?.(''), true);
 
     window.addEventListener('message', (event) => {
-        if (event.source !== frame.contentWindow || !event.data || event.data.type !== 'best-think-contact-result' || event.data.requestId !== activeRequestId) return;
+        const isGoogleAppsScriptOrigin = event.origin === 'https://script.google.com' || event.origin.endsWith('.googleusercontent.com');
+        if (!isGoogleAppsScriptOrigin || !event.data || event.data.type !== 'best-think-contact-result' || event.data.requestId !== activeRequestId) return;
         window.clearTimeout(responseTimer);
         status.textContent = event.data.message || (event.data.ok ? 'Təklif sorğunuz qəbul edildi.' : 'Sorğu göndərilmədi. Yenidən cəhd edin.');
         status.classList.toggle('is-error', !event.data.ok);
