@@ -1284,6 +1284,20 @@ body.footer-contact-open{overflow:hidden}
   color:var(--muted);
   font-size:15px;
 }
+.home-services-intro{
+  max-width:none;
+  white-space:nowrap;
+}
+@media(max-width:900px){
+  .home-services-intro{white-space:normal}
+}
+.home-coverage-intro{
+  max-width:none;
+  white-space:nowrap;
+}
+@media(max-width:700px){
+  .home-coverage-intro{white-space:normal}
+}
 .service-summary{
   margin:0 0 15px;
   color:var(--muted);
