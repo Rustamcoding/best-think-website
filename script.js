@@ -21,8 +21,8 @@ async function loadHeader() {
         const isBlogArticle = window.location.pathname.includes('/Bloglar/');
 
 const headerPath = isBlogArticle
-    ? '../header.html?v=4'
-    : './header.html?v=4';
+    ? '../header.html?v=6'
+    : './header.html?v=6';
 
 const response = await fetch(headerPath);
 
@@ -35,6 +35,42 @@ const response = await fetch(headerPath);
         const headerHTML = await response.text();
 
         headerContainer.innerHTML = headerHTML;
+
+        const collapseToggle = headerContainer.querySelector('.header-collapse-toggle');
+        const mainHeader = headerContainer.querySelector('.header');
+
+        const updateHeaderScrollState = () => {
+            const isPastOriginalHeader =
+                window.scrollY > 0 &&
+                headerContainer.getBoundingClientRect().bottom <= 0;
+            const isCompact = headerContainer.classList.contains('is-compact');
+
+            if (isPastOriginalHeader && !isCompact) {
+                headerContainer.style.height = `${headerContainer.getBoundingClientRect().height}px`;
+                headerContainer.classList.add('is-compact');
+                headerContainer.inert = false;
+                headerContainer.setAttribute('aria-hidden', 'false');
+            } else if (!isPastOriginalHeader && isCompact) {
+                headerContainer.classList.remove('is-compact', 'is-dismissed');
+                headerContainer.style.height = '';
+                headerContainer.inert = false;
+                headerContainer.setAttribute('aria-hidden', 'false');
+            } else if (!isPastOriginalHeader) {
+                headerContainer.classList.remove('is-dismissed');
+                headerContainer.inert = false;
+                headerContainer.setAttribute('aria-hidden', 'false');
+            }
+        };
+
+        updateHeaderScrollState();
+        window.addEventListener('scroll', updateHeaderScrollState, { passive: true });
+        window.addEventListener('resize', updateHeaderScrollState, { passive: true });
+
+        collapseToggle?.addEventListener('click', () => {
+            headerContainer.classList.add('is-dismissed');
+            headerContainer.inert = true;
+            headerContainer.setAttribute('aria-hidden', 'true');
+        });
 
 
         /* =========================================

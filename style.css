@@ -2086,6 +2086,125 @@ body.footer-contact-open{overflow:hidden}
     }
 }
 
+#site-header {
+    position: relative;
+    z-index: 30;
+}
+
+#site-header .header {
+    position: relative;
+    top: auto;
+    z-index: auto;
+    transition: border-bottom-width 220ms ease, transform 600ms ease;
+}
+
+#site-header .container.nav {
+    position: relative;
+}
+
+#site-header.is-compact .header {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 30;
+    border-bottom-width: 2px;
+    animation: compact-header-slide-in 600ms ease both;
+}
+
+#site-header.is-dismissed .header {
+    transform: translateY(calc(-100% - 4px));
+    pointer-events: none;
+    animation: none;
+}
+
+@keyframes compact-header-slide-in {
+    from { transform: translateY(calc(-100% - 4px)); }
+    to { transform: translateY(0); }
+}
+
+.header-collapse-toggle {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: calc(100% + 8px);
+    flex: 0 0 36px;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    background: #f4f8ff;
+    color: var(--blue);
+    cursor: pointer;
+    transform: translateY(-50%);
+    transition: background-color 180ms ease, border-color 180ms ease, color 180ms ease;
+}
+
+.header-collapse-toggle:hover {
+    border-color: var(--blue);
+    background: #eaf2ff;
+}
+
+.header-collapse-toggle svg {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 2;
+    transition: transform 180ms ease;
+}
+
+#site-header.is-compact .header-collapse-toggle {
+    display: inline-flex;
+}
+
+#site-header .nav,
+#site-header .brand img {
+    transition: min-height 220ms ease, padding 220ms ease, width 220ms ease;
+}
+
+#site-header.is-compact .nav {
+    min-height: 78px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+}
+
+#site-header.is-compact .brand img {
+    width: 135px;
+}
+
+@media (max-width: 600px) {
+    #site-header.is-compact .nav {
+        min-height: 68px;
+    }
+
+    #site-header.is-compact .brand img {
+        width: 112.5px;
+    }
+}
+
+@media (max-width: 1050px) {
+    #site-header.is-compact .header-collapse-toggle {
+        position: static;
+        top: auto;
+        left: auto;
+        transform: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #site-header .header,
+    #site-header.is-compact .header {
+        animation: none;
+        transition: none;
+    }
+}
+
 .home-advisory-section {
     padding: 58px 0 64px;
     border-top: 1px solid var(--line);
