@@ -103,8 +103,6 @@
       <g class="finance-step-three"><rect x="389" y="183" width="116" height="22" rx="7" fill="#FFFFFF" stroke="#CBD9EB"/><text x="447" y="198">Vicdanlı yanaşma</text></g>
       <g class="finance-step-four"><rect x="462" y="228" width="98" height="22" rx="7" fill="#FFFFFF" stroke="#CBD9EB"/><text x="511" y="243">Aydın təhlil</text></g>
     </g>
-    <circle cx="153" cy="313" r="3" fill="#2466D3"/>
-    <text x="164" y="317" fill="#527197" font-size="10.5" font-weight="700" letter-spacing=".3">Dəqiq məlumatdan aydın nəticəyə</text>
   </g>
   </g>
 

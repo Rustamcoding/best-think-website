@@ -8621,3 +8621,86 @@ document.addEventListener('click', (event) => {
     renderCurrentWageMonths();
     calculate();
 })();
+
+(() => {
+    const homeServices = document.querySelector('.home-services-section');
+    if (!homeServices || !('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const slideTargets = [
+        ['.home-services-section .section-head', 0],
+        ['.home-services-section .service-grid', 140],
+        ['.service-offer-section .service-offer-banner', 0],
+        ['.home-coverage-section .section-head', 0],
+        ['.home-coverage-section .industry-grid', 140],
+        ['.outcomes-section .section-head', 0],
+        ['.outcomes-section .outcome-grid', 140],
+        ['.home-advisory-section .section-head', 0]
+    ].flatMap(([selector, delay]) => {
+        const target = document.querySelector(selector);
+        return target ? [{ target, delay }] : [];
+    });
+
+    if (!slideTargets.length) return;
+
+    let previousScrollY = window.scrollY;
+    let scrollDirection = 'down';
+    window.addEventListener('scroll', () => {
+        const currentScrollY = window.scrollY;
+        if (currentScrollY !== previousScrollY) {
+            scrollDirection = currentScrollY > previousScrollY ? 'down' : 'up';
+            previousScrollY = currentScrollY;
+        }
+    }, { passive: true });
+
+    const observer = new IntersectionObserver((entries, activeObserver) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                entry.target.style.setProperty('--home-slide-offset', scrollDirection === 'up' ? '-36px' : '36px');
+                requestAnimationFrame(() => entry.target.classList.add('home-slide-in-visible'));
+            } else {
+                entry.target.classList.remove('home-slide-in-visible');
+            }
+        });
+    }, {
+        threshold: 0.12,
+        rootMargin: '0px 0px -8% 0px'
+    });
+
+    slideTargets.forEach(({ target, delay }) => {
+        target.style.setProperty('--home-slide-delay', `${delay}ms`);
+        target.classList.add('home-slide-in');
+        observer.observe(target);
+    });
+})();
+
+(() => {
+    const section = document.querySelector('.home-advisory-section');
+    if (!section || !('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const messageCards = [
+        ['.home-advisory-message--left', '-42px', 0],
+        ['.home-advisory-message--right', '42px', 100]
+    ].flatMap(([selector, offset, delay]) => {
+        const card = section.querySelector(selector);
+        return card ? [{ card, offset, delay }] : [];
+    });
+
+    if (!messageCards.length) return;
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                requestAnimationFrame(() => entry.target.classList.add('home-side-reveal-visible'));
+            } else {
+                entry.target.classList.remove('home-side-reveal-visible');
+            }
+        });
+    }, { threshold: 0.18, rootMargin: '0px 0px -6% 0px' });
+
+    messageCards.forEach(({ card, offset, delay }) => {
+        card.style.setProperty('--home-side-offset', offset);
+        card.style.setProperty('--home-side-delay', `${delay}ms`);
+        card.classList.add('home-side-reveal');
+        observer.observe(card);
+    });
+})();

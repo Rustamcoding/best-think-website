@@ -84,8 +84,6 @@
       <g class="finance-step-three"><rect x="210" y="207" width="108" height="21" rx="7" fill="#FFFFFF" stroke="#CBD9EB"/><text x="264" y="221">Vicdanlı yanaşma</text></g>
       <g class="finance-step-four"><rect x="249" y="239" width="92" height="21" rx="7" fill="#FFFFFF" stroke="#CBD9EB"/><text x="295" y="253">Aydın təhlil</text></g>
     </g>
-    <circle cx="47" cy="311" r="2.5" fill="#2466D3"/>
-    <text x="56" y="315" fill="#527197" font-size="9.5" font-weight="700">Dəqiq məlumatdan aydın nəticəyə</text>
   </g>
   </g>
 
