@@ -314,6 +314,202 @@ href="style.css?v=20260929-turnover-live-tooltip-v24"
             line-height: 1.6;
         }
 
+        .calculator-page .calculator-section-head {
+            display: flex;
+            width: 100%;
+            max-width: 1050px;
+            align-items: center;
+            justify-content: space-between;
+            gap: 22px;
+            padding: 0;
+            border: 0;
+            border-radius: 0;
+            background: transparent;
+            box-shadow: none;
+            text-align: left;
+        }
+
+        .calculator-page .calculator-section-head .kicker {
+            display: flex;
+            flex: 1 1 420px;
+            min-width: 0;
+            min-height: 54px;
+            box-sizing: border-box;
+            align-items: center;
+            padding: 12px 16px;
+            border: 1px solid #dce7f5;
+            border-radius: 15px;
+            background: #f5f8fc;
+            text-align: left;
+        }
+
+        .calculator-trust-indicators {
+            display: flex;
+            flex: 0 0 auto;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .calculator-trust-indicator {
+            display: grid;
+            width: 54px;
+            height: 54px;
+            flex: 0 0 54px;
+            place-items: center;
+            border: 1px solid #dce7f5;
+            border-radius: 15px;
+            background: #f8fbff;
+            color: #2466d3;
+            cursor: help;
+            transition: border-color .2s ease, background .2s ease, transform .2s ease;
+        }
+
+        .calculator-trust-indicator-law {
+            display: flex;
+            width: 128px;
+            height: 54px;
+            flex: 0 0 128px;
+            box-sizing: border-box;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 5px;
+            padding: 0 6px;
+            border-color: #cfe9da;
+            background: #f0f8f3;
+            color: #198052;
+        }
+
+        .calculator-trust-indicator-law .calculator-trust-icon {
+            width: 42px;
+            height: 42px;
+            flex: 0 0 42px;
+        }
+
+        .calculator-trust-indicator-law .calculator-trust-icon svg {
+            width: 42px;
+            height: 42px;
+        }
+
+        .calculator-trust-indicator-law .calculator-law-paper {
+            fill: #e6f4eb;
+        }
+
+        .calculator-trust-indicator-law .calculator-law-check {
+            stroke: #198052;
+            stroke-width: 10;
+        }
+
+        .calculator-trust-indicator-law .calculator-law-scales {
+            stroke-width: 7;
+        }
+
+        .calculator-trust-law-copy {
+            display: flex;
+            min-width: 0;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 3px;
+            color: inherit;
+            line-height: 1;
+            white-space: nowrap;
+        }
+
+        .calculator-trust-law-copy strong {
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .calculator-trust-law-copy span {
+            font-size: 9px;
+            font-weight: 700;
+        }
+
+        .calculator-trust-indicator-tested {
+            display: flex;
+            width: 128px;
+            height: 54px;
+            flex: 0 0 128px;
+            box-sizing: border-box;
+            align-items: center;
+            padding: 0 9px;
+            gap: 7px;
+            border-color: #cfe9da;
+            background: #f0f8f3;
+            color: #198052;
+            cursor: help;
+        }
+
+        .calculator-trust-indicator-law:hover {
+            border-color: #a8d5bb;
+            background: #e6f4eb;
+        }
+
+        .calculator-trust-indicator-tested:hover {
+            border-color: #a8d5bb;
+            background: #e6f4eb;
+        }
+
+        .calculator-trust-indicator:hover {
+            transform: translateY(-1px);
+            border-color: #bdd3f2;
+            background: #f1f6ff;
+        }
+
+        .calculator-trust-icon {
+            display: grid;
+            width: 42px;
+            height: 42px;
+            place-items: center;
+            color: inherit;
+        }
+
+        .calculator-trust-icon svg {
+            display: block;
+            width: 42px;
+            height: 42px;
+            fill: none;
+            stroke: currentColor;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-width: 1.8;
+        }
+
+        .calculator-trust-icon svg text {
+            fill: currentColor;
+            stroke: none;
+            font-family: Inter, "Segoe UI", sans-serif;
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: -.3px;
+        }
+
+        .calculator-trust-label {
+            color: inherit;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: .06em;
+            line-height: 1;
+        }
+
+        @media (max-width: 900px) {
+            .calculator-page .calculator-section-head {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 12px;
+                text-align: left;
+            }
+
+            .calculator-page .calculator-section-head .kicker {
+                flex-basis: auto;
+            }
+
+            .calculator-trust-indicators {
+                flex-wrap: wrap;
+                justify-content: flex-start;
+            }
+        }
+
         .calculator-card {
             max-width: 1050px;
             margin: 0 auto;
@@ -3488,12 +3684,49 @@ href="style.css?v=20260929-turnover-live-tooltip-v24"
 
         <div class="container">
 
-            <div class="section-head">
+            <div class="section-head calculator-section-head">
 
                 <p class="kicker">
                     Mühasibat və biznes əməliyyatlarında istifadə edə biləcəyiniz
                     praktik hesablayıcılar.
                 </p>
+
+                <div class="calculator-trust-indicators" role="group" aria-label="Kalkulyatorların hazırlanması və yoxlanması">
+                    <span
+                        class="calculator-trust-indicator calculator-trust-indicator-law"
+                        role="img"
+                        aria-label="2026-cı ilin qanunvericiliyinə uyğun"
+                        title="2026-cı ilin qanunvericiliyinə uyğun"
+                    >
+                        <span class="calculator-trust-icon" aria-hidden="true">
+                            <svg viewBox="0 0 300 300" preserveAspectRatio="xMidYMid meet">
+                                <path class="calculator-law-paper" d="M58 24h101l37 37v113a16 16 0 0 1-16 16H58a15 15 0 0 1-15-15V39a15 15 0 0 1 15-15Z"></path>
+                                <path d="M159 25v26a10 10 0 0 0 10 10h26M68 84h52M68 106h93M68 129h88M68 152h55"></path>
+                                <path class="calculator-law-check" d="m157 105 28 27 54-65"></path>
+                                <path class="calculator-law-scales" d="M198 146v100m-46-82h92m-92 0-15 37m15-37 15 37m77-37-15 37m15-37 15 37M134 201h63m4 0h63m-130 0q31 32 63 0m4 0q31 32 63 0M168 246h61"></path>
+                            </svg>
+                        </span>
+                        <span class="calculator-trust-law-copy" aria-hidden="true">
+                            <strong>2026</strong>
+                            <span>qanunvericiliyi</span>
+                        </span>
+                    </span>
+                    <span
+                        class="calculator-trust-indicator calculator-trust-indicator-tested"
+                        role="img"
+                        aria-label="Ekspert tərəfindən yoxlanılıb"
+                        title="Ekspert tərəfindən yoxlanılıb"
+                    >
+                        <span class="calculator-trust-icon" aria-hidden="true">
+                            <svg viewBox="0 0 48 48">
+                                <path d="m24 4.5 5.1 2.8 5.8-.4 2.8 5 4.8 3.3-.9 5.7.9 5.7-4.8 3.3-2.8 5-5.8-.4L24 37.3l-5.1-2.8-5.8.4-2.8-5-4.8-3.3.9-5.7-.9-5.7 4.8-3.3 2.8-5 5.8.4L24 4.5Z"></path>
+                                <path d="m16.6 20.6 5 5 10-10"></path>
+                                <path d="M15.5 34.1v9.4l8.5-4.2 8.5 4.2v-9.4"></path>
+                            </svg>
+                        </span>
+                        <span class="calculator-trust-label" aria-hidden="true">TESTED</span>
+                    </span>
+                </div>
 
             </div>
 
@@ -5511,7 +5744,7 @@ href="style.css?v=20260929-turnover-live-tooltip-v24"
 
 
 <script src="assets/xlsx-js-style.bundle.js"></script>
-<script src="script.js?v=20260929-turnover-live-tooltip-v50"></script>
+<script src="script.js?v=20260929-turnover-live-tooltip-v52"></script>
 </body>
 
 </html>

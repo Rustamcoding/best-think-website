@@ -171,7 +171,7 @@ async function loadFooter() {
     }
 
     try {
-        const response = await fetch('/footer.html?v=20260929-turnover-live-tooltip-v35');
+        const response = await fetch('/footer.html?v=20260930-service-footer-anchor-v36');
 
         if (!response.ok) {
             throw new Error(`footer.html yüklənmədi: ${response.status}`);
@@ -188,6 +188,34 @@ async function loadFooter() {
 }
 
 loadFooter();
+
+function openLinkedServiceCard() {
+    const servicePage = document.querySelector('.services-detail-page');
+    if (!servicePage || !window.location.hash) return;
+
+    let targetId = '';
+    try {
+        targetId = decodeURIComponent(window.location.hash.slice(1));
+    } catch {
+        return;
+    }
+
+    const targetCard = document.getElementById(targetId);
+    if (!targetCard || !targetCard.matches('.service-story-list > .service-story-row')) return;
+
+    window.requestAnimationFrame(() => {
+        window.requestAnimationFrame(() => {
+            targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+    });
+}
+
+window.addEventListener('hashchange', openLinkedServiceCard);
+if (document.readyState === 'complete') {
+    window.setTimeout(openLinkedServiceCard, 120);
+} else {
+    window.addEventListener('load', () => window.setTimeout(openLinkedServiceCard, 120), { once: true });
+}
 
 /* =========================================================
    FOOTER ƏLAQƏ FORMASI
