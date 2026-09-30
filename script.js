@@ -210,6 +210,7 @@ function initializeFooterContactForm() {
     const maxFileSize = 1024 * 1024;
     const acceptedTypes = new Set(['image/jpeg', 'image/png', 'image/gif']);
     const acceptedName = /\.(?:jpe?g|png|gif)$/i;
+    let activeTrigger = trigger;
 
     if (!modal || !dialog || !trigger || !closeButton || !form || !purpose || !details || !message || !attachmentInput || !status || !frame || form.dataset.initialized === 'true') {
         return;
@@ -235,10 +236,12 @@ function initializeFooterContactForm() {
         modal.hidden = true;
         closeButton.classList.remove('is-highlighted');
         document.body.classList.remove('footer-contact-open');
-        trigger.focus();
+        activeTrigger?.focus();
     };
 
-    trigger.addEventListener('click', () => {
+    const openModal = (sourceTrigger = trigger, initialPurpose = '') => {
+        activeTrigger = sourceTrigger;
+        purpose.value = initialPurpose;
         modal.hidden = false;
         document.body.classList.add('footer-contact-open');
         status.textContent = '';
@@ -246,6 +249,14 @@ function initializeFooterContactForm() {
         closeButton.classList.remove('is-highlighted');
         updateComposerAccess();
         nameInput?.focus();
+    };
+
+    trigger.addEventListener('click', () => openModal(trigger));
+    document.querySelectorAll('[data-contact-purpose]').forEach((contactTrigger) => {
+        contactTrigger.addEventListener('click', (event) => {
+            event.preventDefault();
+            openModal(contactTrigger, contactTrigger.dataset.contactPurpose || '');
+        });
     });
 
     closeButton.addEventListener('click', closeModal);
@@ -8670,7 +8681,9 @@ document.addEventListener('click', (event) => {
         ['.home-coverage-section .industry-grid', 140],
         ['.outcomes-section .section-head', 0],
         ['.outcomes-section .outcome-grid', 140],
-        ['.home-advisory-section .section-head', 0]
+        ['.home-advisory-section .section-head', 0],
+        ['.home-latest-blogs-section .section-head', 0],
+        ['.home-latest-blogs-section .home-latest-blog-grid', 140]
     ].flatMap(([selector, delay]) => {
         const target = document.querySelector(selector);
         return target ? [{ target, delay }] : [];

@@ -2220,6 +2220,41 @@ body.footer-contact-open{overflow:hidden}
     background: linear-gradient(180deg, #fff 0%, #f7faff 100%);
 }
 
+.home-latest-blogs-section .section-head p {
+    margin: 10px 0 0;
+    color: var(--muted);
+}
+
+.home-latest-blog-grid .blog-card-image {
+    height: 185px;
+}
+
+.home-latest-blog-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 28px;
+}
+
+.home-latest-blog-actions .btn {
+    gap: 9px;
+}
+
+.home-blog-send-icon {
+    width: 16px;
+    height: 16px;
+    fill: var(--blue);
+    transition: transform 180ms ease;
+}
+
+.home-blog-send-fold {
+    fill: #fff;
+    opacity: .94;
+}
+
+.home-latest-blog-actions .btn:hover .home-blog-send-icon {
+    transform: translate(2px, -2px);
+}
+
 .home-advisory-head {
     max-width: 760px;
     margin: 0 auto 30px;
