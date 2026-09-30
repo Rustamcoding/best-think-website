@@ -2115,12 +2115,17 @@ body.footer-contact-open{overflow:hidden}
 #site-header.is-dismissed .header {
     transform: translateY(calc(-100% - 4px));
     pointer-events: none;
-    animation: none;
+    animation: compact-header-slide-out 600ms ease both;
 }
 
 @keyframes compact-header-slide-in {
     from { transform: translateY(calc(-100% - 4px)); }
     to { transform: translateY(0); }
+}
+
+@keyframes compact-header-slide-out {
+    from { transform: translateY(0); }
+    to { transform: translateY(calc(-100% - 4px)); }
 }
 
 .header-collapse-toggle {
@@ -2169,22 +2174,26 @@ body.footer-contact-open{overflow:hidden}
 }
 
 #site-header.is-compact .nav {
-    min-height: 78px;
-    padding-top: 6px;
-    padding-bottom: 6px;
+    min-height: 66px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+#site-header.is-compact .nav nav {
+    font-size: 14.25px;
 }
 
 #site-header.is-compact .brand img {
-    width: 135px;
+    width: 114.75px;
 }
 
 @media (max-width: 600px) {
     #site-header.is-compact .nav {
-        min-height: 68px;
+        min-height: 58px;
     }
 
     #site-header.is-compact .brand img {
-        width: 112.5px;
+        width: 95.6px;
     }
 }
 
