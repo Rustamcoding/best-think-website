@@ -12,27 +12,27 @@
 
 <meta
     name="description"
-    content="Əmək haqqı, yığım sığortası, məzənnə fərqi və idxal mallarının gömrük dəyərini Best Think kalkulyatorları ilə hesablayın."
+    content="Net və gross əmək haqqını, məzuniyyət haqqını, yığım sığortasını, məzənnə fərqini və idxal xərclərini onlayn hesablayın."
 >
 
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://besthink.az/kalkulyator.html">
 
 <title>
-    Əmək Haqqı, Yığım Sığortası və İdxal Kalkulyatorları | Best Think
+    Əmək haqqı və biznes kalkulyatorları | Best Think
 </title>
 
 <meta property="og:type" content="website">
-<meta property="og:title" content="Əmək Haqqı, Yığım Sığortası və İdxal Kalkulyatorları | Best Think">
-<meta property="og:description" content="Əmək haqqı, yığım sığortası, məzənnə fərqi və idxal mallarının gömrük dəyərini praktik şəkildə hesablayın.">
+<meta property="og:title" content="Əmək haqqı və biznes kalkulyatorları | Best Think">
+<meta property="og:description" content="Net və gross əmək haqqını, məzuniyyət haqqını, yığım sığortasını, məzənnə fərqini və idxal xərclərini onlayn hesablayın.">
 <meta property="og:url" content="https://besthink.az/kalkulyator.html">
 <meta property="og:image" content="https://besthink.az/assets/logo.png">
 <meta property="og:site_name" content="Best Think Konsaltinq">
 <meta property="og:locale" content="az_AZ">
 
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Əmək Haqqı, Yığım Sığortası və İdxal Kalkulyatorları | Best Think">
-<meta name="twitter:description" content="Əmək haqqı, yığım sığortası, məzənnə fərqi və idxal mallarının gömrük dəyərini praktik şəkildə hesablayın.">
+<meta name="twitter:title" content="Əmək haqqı və biznes kalkulyatorları | Best Think">
+<meta name="twitter:description" content="Net və gross əmək haqqını, məzuniyyət haqqını, yığım sığortasını, məzənnə fərqini və idxal xərclərini onlayn hesablayın.">
 <meta name="twitter:image" content="https://besthink.az/assets/logo.png">
 
 <link
@@ -343,6 +343,18 @@ href="style.css?v=20260929-turnover-live-tooltip-v24"
             text-align: left;
         }
 
+        .calculator-page-heading {
+            flex: 1 1 420px;
+            min-width: 0;
+        }
+
+        .calculator-page-title {
+            margin: 0 0 10px;
+            color: var(--text);
+            font-size: 30px;
+            line-height: 1.2;
+        }
+
         .calculator-trust-indicators {
             display: flex;
             flex: 0 0 auto;
@@ -500,6 +512,10 @@ href="style.css?v=20260929-turnover-live-tooltip-v24"
             }
 
             .calculator-page .calculator-section-head .kicker {
+                flex-basis: auto;
+            }
+
+            .calculator-page .calculator-page-heading {
                 flex-basis: auto;
             }
 
@@ -3685,10 +3701,12 @@ href="style.css?v=20260929-turnover-live-tooltip-v24"
 
             <div class="section-head calculator-section-head">
 
-                <p class="kicker">
-                    Mühasibat və biznes əməliyyatlarında istifadə edə biləcəyiniz
-                    praktik hesablayıcılar.
-                </p>
+                <div class="calculator-page-heading">
+                    <h1 class="calculator-page-title">Əmək haqqı və biznes kalkulyatorları</h1>
+                    <p class="kicker">
+                        Net və gross əmək haqqını, məzuniyyət haqqını, yığım sığortasını, məzənnə fərqini və idxal xərclərini onlayn hesablayın.
+                    </p>
+                </div>
 
                 <div class="calculator-trust-indicators" role="group" aria-label="Kalkulyatorların hazırlanması və yoxlanması">
                     <span
@@ -3745,9 +3763,9 @@ href="style.css?v=20260929-turnover-live-tooltip-v24"
 
                     <div>
 
-                        <h1 class="calculator-main-title">
+                        <h2 class="calculator-main-title">
     Məzənnə Fərqi Kalkulyatoru
-</h1>
+</h2>
 
                         <p>
                             Xarici valyuta ilə əməliyyatlarda məzənnə fərqini hesabla. Alış və satış məzənnələri arasındakı fərqin nəticəsini aydın şəkildə gör.
