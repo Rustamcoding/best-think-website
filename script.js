@@ -6486,6 +6486,11 @@ document.addEventListener('click', (event) => {
 (() => {
     const storageKey = 'bestThinkCalculatorPromoSeen';
 
+    const isHomePage = () => {
+        const pagePath = window.location.pathname.replace(/\/+$/, '').toLowerCase();
+        return pagePath === '' || pagePath === '/index.html';
+    };
+
     const hasSeenPromo = () => {
         try {
             return window.localStorage.getItem(storageKey) === '1';
@@ -6503,7 +6508,7 @@ document.addEventListener('click', (event) => {
     };
 
     const showCalculatorPromo = () => {
-        if (hasSeenPromo() || document.querySelector('.site-calculator-promo')) {
+        if (!isHomePage() || hasSeenPromo() || document.querySelector('.site-calculator-promo')) {
             return;
         }
 
