@@ -315,12 +315,13 @@ href="style.css?v=20260929-turnover-live-tooltip-v24"
         }
 
         .calculator-page .calculator-section-head {
-            display: flex;
+            display: grid;
             width: 100%;
-            max-width: 1050px;
-            align-items: center;
-            justify-content: space-between;
-            gap: 22px;
+            max-width: 1220px;
+            grid-template-columns: minmax(0, 1fr);
+            grid-template-rows: auto auto;
+            align-items: start;
+            row-gap: 12px;
             padding: 0;
             border: 0;
             border-radius: 0;
@@ -329,37 +330,63 @@ href="style.css?v=20260929-turnover-live-tooltip-v24"
             text-align: left;
         }
 
-        .calculator-page .calculator-section-head .kicker {
+        .calculator-summary-row {
             display: flex;
-            flex: 1 1 420px;
+            grid-column: 1;
+            grid-row: 2;
+            width: 100%;
             min-width: 0;
-            min-height: 54px;
             box-sizing: border-box;
             align-items: center;
-            padding: 12px 16px;
+            gap: 10px;
+            padding: 8px 10px;
             border: 1px solid #dce7f5;
             border-radius: 15px;
             background: #f5f8fc;
             text-align: left;
         }
 
-        .calculator-page-heading {
-            flex: 1 1 420px;
+        .calculator-page .calculator-section-head .kicker {
+            display: flex;
+            flex: 1 1 auto;
+            order: 2;
+            width: auto;
             min-width: 0;
+            min-height: 0;
+            box-sizing: border-box;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+            border: 0;
+            border-radius: 0;
+            background: transparent;
+            text-align: left;
+            font-size: 12.5px;
+            white-space: nowrap;
+        }
+
+        .calculator-page-heading {
+            display: contents;
         }
 
         .calculator-page-title {
+            grid-column: 1;
+            grid-row: 1;
+            justify-self: center;
             margin: 0 0 10px;
             color: var(--text);
             font-size: 30px;
             line-height: 1.2;
+            text-align: center;
         }
 
         .calculator-trust-indicators {
             display: flex;
             flex: 0 0 auto;
+            order: 1;
+            align-self: center;
             align-items: center;
-            justify-content: flex-end;
+            justify-content: flex-start;
             gap: 10px;
         }
 
@@ -503,23 +530,33 @@ href="style.css?v=20260929-turnover-live-tooltip-v24"
             line-height: 1;
         }
 
-        @media (max-width: 900px) {
+        @media (max-width: 1280px) {
             .calculator-page .calculator-section-head {
                 align-items: flex-start;
-                flex-direction: column;
-                gap: 12px;
+                grid-template-columns: minmax(0, 1fr);
+                grid-template-rows: auto auto;
+                row-gap: 12px;
                 text-align: left;
             }
 
-            .calculator-page .calculator-section-head .kicker {
-                flex-basis: auto;
+            .calculator-page .calculator-page-title {
+                grid-column: 1;
+                grid-row: 1;
             }
 
-            .calculator-page .calculator-page-heading {
-                flex-basis: auto;
+            .calculator-summary-row {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .calculator-page .calculator-section-head .kicker {
+                width: 100%;
+                font-size: 14px;
+                white-space: normal;
             }
 
             .calculator-trust-indicators {
+                align-self: flex-start;
                 flex-wrap: wrap;
                 justify-content: flex-start;
             }
@@ -3703,11 +3740,9 @@ href="style.css?v=20260929-turnover-live-tooltip-v24"
 
                 <div class="calculator-page-heading">
                     <h1 class="calculator-page-title">Əmək haqqı və biznes kalkulyatorları</h1>
-                    <p class="kicker">
-                        Net və gross əmək haqqını, məzuniyyət haqqını, yığım sığortasını, məzənnə fərqini və idxal xərclərini onlayn hesablayın.
-                    </p>
                 </div>
 
+                <div class="calculator-summary-row">
                 <div class="calculator-trust-indicators" role="group" aria-label="Kalkulyatorların hazırlanması və yoxlanması">
                     <span
                         class="calculator-trust-indicator calculator-trust-indicator-law"
@@ -3743,6 +3778,10 @@ href="style.css?v=20260929-turnover-live-tooltip-v24"
                         </span>
                         <span class="calculator-trust-label" aria-hidden="true">TESTED</span>
                     </span>
+                </div>
+                    <p class="kicker">
+                        Net və gross əmək haqqını, məzuniyyət haqqını, yığım sığortasını, məzənnə fərqini və idxal xərclərini onlayn hesablayın.
+                    </p>
                 </div>
 
             </div>
