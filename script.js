@@ -171,7 +171,7 @@ async function loadFooter() {
     }
 
     try {
-        const response = await fetch('/footer.html?v=20260930-service-footer-anchor-v36');
+        const response = await fetch('/footer.html?v=20261006-dvx-footer-useful-v2');
 
         if (!response.ok) {
             throw new Error(`footer.html yüklənmədi: ${response.status}`);
@@ -6474,7 +6474,7 @@ document.addEventListener('click', (event) => {
         return;
     }
 
-    document.querySelectorAll('details[open]:not(.vacation-earnings-details)').forEach((details) => {
+    document.querySelectorAll('details[open]:not(.vacation-earnings-details):not(.useful-info-entry)').forEach((details) => {
         details.removeAttribute('open');
     });
 });

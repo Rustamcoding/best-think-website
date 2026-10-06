@@ -1,0 +1,29 @@
+{
+  "source": "https://taxes.gov.az/az/page/reqemsal-iqtisadiyyat-uzre-vergitutma",
+  "updatedAt": "2026-10-06T12:00:00.000Z",
+  "entries": [
+    { "number": 1, "company": "Apple Distribution International Limited", "country": "İrlandiya", "registrationDate": "01.12.2024" },
+    { "number": 2, "company": "Adobe Systems Software Ireland Limited", "country": "İrlandiya", "registrationDate": "01.03.2025" },
+    { "number": 3, "company": "Sony Interactive Entertainment Network Europe Limited", "country": "Birləşmiş Krallıq", "registrationDate": "01.04.2025" },
+    { "number": 4, "company": "Elsevier BV", "country": "Niderland", "registrationDate": "01.07.2025" },
+    { "number": 5, "company": "Hyperconnect LLC", "country": "Cənubi Koreya", "registrationDate": "01.07.2025" },
+    { "number": 6, "company": "Tinder LLC", "country": "Amerika Birləşmiş Ştatları", "registrationDate": "01.07.2025" },
+    { "number": 7, "company": "PPG DIGITAL SP. Z O.O.", "country": "Polşa", "registrationDate": "01.10.2025" },
+    { "number": 8, "company": "Epic Games Commerce GmbH", "country": "İsveçrə", "registrationDate": "01.03.2026" },
+    { "number": 9, "company": "Contabo GmbH", "country": "Almaniya", "registrationDate": "01.03.2026" },
+    { "number": 10, "company": "Chess.Com LLC", "country": "Amerika Birləşmiş Ştatları", "registrationDate": "01.05.2026" },
+    { "number": 11, "company": "Xsolla (USA), Inc.", "country": "Amerika Birləşmiş Ştatları", "registrationDate": "01.07.2026" },
+    { "number": 12, "company": "Formula One Digital Media Limited", "country": "Birləşmiş Krallıq", "registrationDate": "01.08.2026" },
+    { "number": 13, "company": "Valve Corporation", "country": "Amerika Birləşmiş Ştatları", "registrationDate": "01.09.2026" },
+    { "number": 14, "company": "Cleverbridge GmbH", "country": "Almaniya", "registrationDate": "01.09.2026" },
+    { "number": 15, "company": "Aghanim Inc", "country": "Amerika Birləşmiş Ştatları", "registrationDate": "01.09.2026" },
+    { "number": 16, "company": "Netflix International B.V.", "country": "Niderland", "registrationDate": "01.09.2026" },
+    { "number": 17, "company": "ANTHROPIC, PBC", "country": "Amerika Birləşmiş Ştatları", "registrationDate": "01.09.2026" },
+    { "number": 18, "company": "EBAY MARKETPLACES GMBH", "country": "İsveçrə", "registrationDate": "01.09.2026" },
+    { "number": 19, "company": "Zoho Corporation B.V.", "country": "Niderland", "registrationDate": "01.09.2026" },
+    { "number": 20, "company": "Zoom Communications, Inc.", "country": "Amerika Birləşmiş Ştatları", "registrationDate": "01.09.2026" },
+    { "number": 21, "company": "OpenAI OpCo, LLC", "country": "Amerika Birləşmiş Ştatları", "registrationDate": "01.09.2026" },
+    { "number": 22, "company": "Spotify AB", "country": "İsveçrə", "registrationDate": "01.10.2026" },
+    { "number": 23, "company": "TikTok Pte. Ltd.", "country": "Sinqapur", "registrationDate": "01.10.2026" }
+  ]
+}

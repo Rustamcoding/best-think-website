@@ -1,0 +1,66 @@
+name: Publish site and sync DVX register
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  schedule:
+    # Avoid the top of the hour, when GitHub scheduled jobs are busiest.
+    - cron: '17 * * * *'
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Check out site
+        uses: actions/checkout@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Test DVX table parser
+        run: node scripts/test-dvx-nonresidents.mjs
+
+      - name: Check the official DVX register
+        id: sync
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        run: node scripts/sync-dvx-nonresidents.mjs
+
+      - name: Save changed register data
+        if: steps.sync.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/dvx-digital-nonresidents.json
+          git commit -m "Sync DVX digital service provider register"
+          git push origin HEAD:main
+
+      - name: Configure GitHub Pages
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch' || steps.sync.outputs.changed == 'true'
+        uses: actions/configure-pages@v5
+
+      - name: Upload site artifact
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch' || steps.sync.outputs.changed == 'true'
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: .
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch' || steps.sync.outputs.changed == 'true'
+        uses: actions/deploy-pages@v4

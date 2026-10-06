@@ -2086,6 +2086,103 @@ body.footer-contact-open{overflow:hidden}
     }
 }
 
+/* DVX qeyri-rezidentlər siyahısı — footer-dəki faydalı məlumatlar keçidi */
+.hero { background: #fff; }
+.home-services-section { background: var(--pale); }
+
+/* Qeyri-rezidentlərin siyahısı */
+.dvx-registry-hero { min-height: calc(100vh - 150px); padding: 36px 0 72px; }
+.dvx-breadcrumb { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 28px; color: var(--muted); font-size: 13px; }
+.dvx-breadcrumb a { color: var(--blue); font-weight: 700; }
+.dvx-registry-heading { max-width: 850px; margin: 0 auto 28px; text-align: center; }
+.dvx-registry-kicker { display: inline-flex; align-items: center; gap: 9px; margin-bottom: 12px; padding: 7px 12px; border: 1px solid #d8e7f6; border-radius: 999px; background: #fff; color: #315b96; font-size: 12px; font-weight: 800; }
+.dvx-live-dot { width: 8px; height: 8px; border-radius: 50%; background: #20a66a; box-shadow: 0 0 0 4px rgba(32,166,106,.12); }
+.dvx-registry-heading h1 { margin: 0 0 12px; color: var(--navy); font-size: clamp(30px, 3vw, 42px); line-height: 1.16; letter-spacing: -.8px; }
+.dvx-registry-heading > p { margin: 0; color: var(--muted); font-size: 16px; }
+.dvx-registry-panel { max-width: 1040px; margin: 0 auto; padding: 24px; border: 1px solid #dce7f5; border-radius: 22px; background: #fff; box-shadow: 0 18px 48px rgba(19,35,62,.08); }
+.dvx-registry-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 19px; }
+.dvx-registry-count-wrap h2 { margin: 0 0 3px; color: var(--navy); font-size: 18px; }
+.dvx-registry-count { margin: 0; color: var(--muted); font-size: 13px; }
+.dvx-search { display: flex; align-items: center; gap: 9px; width: min(100%, 310px); min-width: 0; flex: 0 1 310px; min-height: 44px; padding: 0 12px; border: 1px solid #dce7f5; border-radius: 12px; background: #fbfdff; color: #6680a3; }
+.dvx-search:focus-within { border-color: #87afe6; box-shadow: 0 0 0 3px rgba(36,102,211,.1); }
+.dvx-search svg { width: 19px; height: 19px; flex: 0 0 auto; }
+.dvx-search input { width: 100%; min-width: 0; padding: 0; border: 0; outline: 0; background: transparent; color: var(--text); font: inherit; font-size: 13px; }
+.dvx-search input::placeholder { color: #8293aa; }
+.dvx-table-scroll { overflow-x: auto; border: 1px solid #e1e9f3; border-radius: 14px; }
+.dvx-registry-table { width: 100%; border-collapse: collapse; text-align: left; }
+.dvx-registry-table th { padding: 13px 15px; background: #f4f8fd; color: #315b96; font-size: 11px; font-weight: 800; letter-spacing: .045em; text-transform: uppercase; white-space: nowrap; }
+.dvx-registry-table td { padding: 13px 15px; border-top: 1px solid #edf1f6; color: #263a57; font-size: 14px; }
+.dvx-registry-table tbody tr:nth-child(even) { background: #f2f7fd; }
+.dvx-registry-table tbody tr:hover { background: #e8f1fc; }
+.dvx-registry-table td:first-child { width: 56px; color: #73839a; font-variant-numeric: tabular-nums; }
+.dvx-registry-table td:last-child { width: 150px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.dvx-table-state { padding: 28px !important; color: var(--muted) !important; text-align: center; }
+.dvx-registry-empty,.dvx-registry-error { margin: 15px 0 0; padding: 12px 15px; border-radius: 12px; color: #5d6e85; background: #f4f8fd; font-size: 13px; }
+.dvx-registry-error { color: #9e3b3b; background: #fff4f3; }
+.dvx-registry-footnote { display: flex; align-items: flex-start; gap: 11px; margin-top: 19px; padding: 14px; border-radius: 12px; background: #f5f8fc; }
+.dvx-source-mark { display: inline-flex; width: 20px; height: 20px; flex: 0 0 20px; align-items: center; justify-content: center; border-radius: 50%; background: #e5eefb; color: #315b96; font-size: 12px; font-weight: 800; }
+.dvx-registry-footnote p { margin: 0; color: #61728a; font-size: 12px; line-height: 1.6; }
+.dvx-registry-meta { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; margin-top: 13px; color: #73839a; font-size: 12px; }
+.dvx-registry-meta a { color: var(--blue); font-weight: 700; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; clip-path: inset(50%); }
+
+/* Faydalı məlumatlar kataloqu */
+.useful-info-hero { min-height: calc(100vh - 150px); padding: 36px 0 72px; }
+.useful-info-breadcrumb { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 28px; color: var(--muted); font-size: 13px; }
+.useful-info-breadcrumb a { color: var(--blue); font-weight: 700; }
+.useful-info-heading { max-width: 850px; margin: 0 auto 30px; text-align: center; }
+.useful-info-heading h1 { margin: 0 0 12px; color: var(--navy); font-size: clamp(30px, 3vw, 42px); line-height: 1.16; letter-spacing: -.8px; }
+.useful-info-heading p { margin: 0; color: var(--muted); font-size: 16px; }
+.useful-info-list { display: grid; max-width: 1040px; gap: 14px; margin: 0 auto; }
+.useful-info-entry { overflow: hidden; border: 1px solid #dce7f5; border-radius: 18px; background: #fff; box-shadow: 0 12px 30px rgba(19,35,62,.055); transition: border-color .2s ease, box-shadow .2s ease; }
+.useful-info-entry:hover,.useful-info-entry:focus-within { border-color: #b7cdeb; box-shadow: 0 16px 34px rgba(19,35,62,.09); }
+.useful-info-item { display: grid; grid-template-columns: 54px minmax(0, 1fr) 32px; align-items: center; gap: 18px; width: 100%; padding: 21px 23px; border: 0; border-radius: 0; background: transparent; color: var(--navy); cursor: pointer; list-style: none; text-align: left; }
+.useful-info-item::-webkit-details-marker { display: none; }
+.useful-info-item::marker { content: ""; }
+.useful-info-item-icon { display: grid; width: 54px; height: 54px; place-items: center; border: 1px solid #dce8fa; border-radius: 15px; background: #eff5ff; color: var(--blue); }
+.useful-info-item-icon svg { width: 27px; height: 27px; }
+.useful-info-item-copy { display: grid; gap: 4px; }
+.useful-info-item-copy small { color: #426ba5; font-size: 11px; font-weight: 800; letter-spacing: .045em; text-transform: uppercase; }
+.useful-info-item-copy strong { font-size: 18px; line-height: 1.35; }
+.useful-info-item-copy span { color: var(--muted); font-size: 14px; line-height: 1.55; }
+.useful-info-item-arrow { display: grid; width: 32px; height: 32px; place-items: center; border: 1px solid #cbdcf5; border-radius: 8px; background: #fff; color: var(--blue); font-size: 16px; font-weight: 800; line-height: 1; transition: background .2s ease; }
+.useful-info-item-arrow::before { content: "↓"; }
+.useful-info-entry-panel { padding: 0 20px 20px; }
+.useful-info-entry[open] > .useful-info-item .useful-info-item-arrow { background: #edf4ff; }
+.useful-info-entry[open] > .useful-info-item .useful-info-item-arrow::before { content: "↑"; }
+.useful-info-entry-panel .dvx-registry-panel { max-width: none; margin: 0; padding: 19px; border-radius: 14px; box-shadow: none; }
+.useful-info-entry-panel .dvx-registry-content { max-height: none; overflow: visible; }
+.useful-info-entry-panel .dvx-table-scroll { max-height: none; overflow-x: auto; }
+.useful-info-entry-panel .dvx-registry-table thead { position: sticky; top: 0; z-index: 1; }
+
+@media (max-width: 700px) {
+    .dvx-registry-hero { padding: 27px 0 50px; }
+    .dvx-breadcrumb { margin-bottom: 22px; }
+    .dvx-registry-heading { margin-bottom: 21px; text-align: left; }
+    .dvx-registry-heading h1 { font-size: 30px; }
+    .dvx-registry-heading > p { font-size: 14px; }
+    .dvx-registry-panel { padding: 17px 14px; border-radius: 17px; }
+    .dvx-registry-toolbar { align-items: stretch; flex-direction: column; gap: 13px; }
+    .dvx-search { width: 100%; }
+    .dvx-registry-table { min-width: 650px; }
+    .dvx-registry-table th,.dvx-registry-table td { padding: 12px; }
+    .dvx-registry-meta { flex-direction: column; }
+    .useful-info-hero { padding: 27px 0 50px; }
+    .useful-info-breadcrumb { margin-bottom: 22px; }
+    .useful-info-heading { margin-bottom: 21px; text-align: left; }
+    .useful-info-heading h1 { font-size: 30px; }
+    .useful-info-heading p { font-size: 14px; }
+    .useful-info-entry { border-radius: 15px; }
+    .useful-info-item { grid-template-columns: 44px minmax(0, 1fr) 32px; gap: 12px; padding: 16px 14px; }
+    .useful-info-item-icon { width: 44px; height: 44px; border-radius: 12px; }
+    .useful-info-item-icon svg { width: 23px; height: 23px; }
+    .useful-info-item-copy strong { font-size: 16px; }
+    .useful-info-item-copy span { font-size: 13px; }
+    .useful-info-item-arrow { width: 32px; height: 32px; }
+    .useful-info-entry-panel { padding: 0 10px 10px; }
+    .useful-info-entry-panel .dvx-registry-panel { padding: 12px; }
+}
+
 #site-header {
     position: relative;
     z-index: 30;
