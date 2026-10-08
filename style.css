@@ -1575,6 +1575,25 @@ body.footer-contact-open{overflow:hidden}
   display:block;
   object-fit:contain;
 }
+.vergi-illustration-stage{
+  position:relative;
+  width:100%;
+  max-width:520px;
+  aspect-ratio:900 / 380;
+}
+.vergi-illustration-stage img{
+  position:absolute;
+  inset:0;
+  width:100%;
+  max-width:none;
+  height:100%;
+  object-fit:contain;
+  transform:scale(1.35);
+  transform-origin:center;
+  opacity:0;
+  transition:opacity 1800ms ease-in-out;
+}
+.vergi-illustration-stage img.is-active{opacity:1}
 .service-story-copy{
   align-self:start;
   padding:0 8px;
@@ -1901,6 +1920,7 @@ body.footer-contact-open{overflow:hidden}
   }
   .service-story-visual{min-height:210px;padding:24px}
   .service-story-visual img{height:auto}
+  .vergi-illustration-stage img{height:100%}
   .service-story-copy{padding:0 2px}
   .service-story-copy h3{font-size:22px}
   .service-story-copy p{font-size:14px}
@@ -2084,6 +2104,12 @@ body.footer-contact-open{overflow:hidden}
         transform: none;
         transition: none;
     }
+}
+@media(max-width:600px){
+  .vergi-illustration-stage img{transform:scale(1.2)}
+}
+@media(prefers-reduced-motion:reduce){
+  .vergi-illustration-stage img{transition:none}
 }
 
 /* DVX qeyri-rezidentlər siyahısı — footer-dəki faydalı məlumatlar keçidi */

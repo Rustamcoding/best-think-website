@@ -6543,6 +6543,31 @@ document.addEventListener('click', (event) => {
     }
 })();
 
+(() => {
+    const slides = [...document.querySelectorAll('#service-vergi-ucotu .vergi-illustration-stage img')];
+    if (slides.length < 2) return;
+
+    let activeIndex = 0;
+    let rotationTimer;
+
+    function scheduleNextSlide() {
+        clearTimeout(rotationTimer);
+        if (document.hidden) return;
+        rotationTimer = setTimeout(() => {
+            activeIndex = (activeIndex + 1) % slides.length;
+            slides.forEach((slide, index) => {
+                const active = index === activeIndex;
+                slide.classList.toggle('is-active', active);
+                slide.setAttribute('aria-hidden', String(!active));
+            });
+            scheduleNextSlide();
+        }, 4500);
+    }
+
+    document.addEventListener('visibilitychange', scheduleNextSlide);
+    scheduleNextSlide();
+})();
+
 /* =========================================================
    KALKULYATOR XƏTA BİLDİRİŞİ
    ========================================================= */
