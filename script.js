@@ -6544,87 +6544,65 @@ document.addEventListener('click', (event) => {
 })();
 
 (() => {
-    const slides = [...document.querySelectorAll('#service-vergi-ucotu .vergi-illustration-stage img')];
-    if (slides.length < 2) return;
+    const carousels = [
+        { section: '#service-vergi-ucotu', slide: '.vergi-illustration-stage img', delay: () => 4500 },
+        { section: '#service-muhasibat-ucotu', slide: '.accounting-illustration-slide', delay: index => index === 0 ? 7000 : 5500, flow: true },
+        { section: '#service-kadr-karguzarligi', slide: '.kadr-illustration-slide', delay: () => 6000 },
+        { section: '#service-huquq', slide: '.huquq-illustration-slide', delay: () => 6000 }
+    ];
 
-    let activeIndex = 0;
-    let rotationTimer;
+    carousels.forEach(({ section: sectionSelector, slide: slideSelector, delay, flow }) => {
+        const section = document.querySelector(sectionSelector);
+        const slides = section ? [...section.querySelectorAll(slideSelector)] : [];
+        if (slides.length < 2) return;
 
-    function scheduleNextSlide() {
-        clearTimeout(rotationTimer);
-        if (document.hidden) return;
-        rotationTimer = setTimeout(() => {
-            activeIndex = (activeIndex + 1) % slides.length;
-            slides.forEach((slide, index) => {
-                const active = index === activeIndex;
+        let activeIndex = 0;
+        let rotationTimer;
+        let inViewport = false;
+        let running = false;
+
+        function showSlide(index) {
+            activeIndex = index;
+            slides.forEach((slide, slideIndex) => {
+                const active = slideIndex === index;
                 slide.classList.toggle('is-active', active);
                 slide.setAttribute('aria-hidden', String(!active));
+                if (flow) slide.classList.toggle('is-playing', active && slideIndex === 0 && running);
             });
-            scheduleNextSlide();
-        }, 4500);
-    }
+        }
 
-    document.addEventListener('visibilitychange', scheduleNextSlide);
-    scheduleNextSlide();
-})();
+        function scheduleNextSlide() {
+            clearTimeout(rotationTimer);
+            if (!running) return;
+            rotationTimer = setTimeout(() => {
+                showSlide((activeIndex + 1) % slides.length);
+                scheduleNextSlide();
+            }, delay(activeIndex));
+        }
 
-(() => {
-    const slides = [...document.querySelectorAll('#service-muhasibat-ucotu .accounting-illustration-slide')];
-    if (slides.length < 2) return;
+        function updateRunningState() {
+            const shouldRun = inViewport && !document.hidden;
+            if (shouldRun === running) return;
+            running = shouldRun;
+            clearTimeout(rotationTimer);
+            if (running) {
+                // Returning to this section begins its sequence again; other sections stay still.
+                showSlide(0);
+                scheduleNextSlide();
+            } else if (flow) {
+                slides[0].classList.remove('is-playing');
+            }
+        }
 
-    let activeIndex = 0;
-    let rotationTimer;
-
-    function showSlide(index) {
-        activeIndex = index;
-        slides.forEach((slide, slideIndex) => {
-            const active = slideIndex === index;
-            slide.classList.toggle('is-active', active);
-            slide.classList.toggle('is-playing', active && slideIndex === 0);
-            slide.setAttribute('aria-hidden', String(!active));
-        });
-    }
-
-    function scheduleNextSlide() {
-        clearTimeout(rotationTimer);
-        if (document.hidden) return;
-        rotationTimer = setTimeout(() => {
-            showSlide((activeIndex + 1) % slides.length);
-            scheduleNextSlide();
-        }, activeIndex === 0 ? 7000 : 5500);
-    }
-
-    document.addEventListener('visibilitychange', scheduleNextSlide);
-    scheduleNextSlide();
-})();
-
-(() => {
-    const slides = [...document.querySelectorAll('#service-kadr-karguzarligi .kadr-illustration-slide')];
-    if (slides.length < 2) return;
-
-    let activeIndex = 0;
-    let rotationTimer;
-
-    function showSlide(index) {
-        activeIndex = index;
-        slides.forEach((slide, slideIndex) => {
-            const active = slideIndex === index;
-            slide.classList.toggle('is-active', active);
-            slide.setAttribute('aria-hidden', String(!active));
-        });
-    }
-
-    function scheduleNextSlide() {
-        clearTimeout(rotationTimer);
-        if (document.hidden) return;
-        rotationTimer = setTimeout(() => {
-            showSlide((activeIndex + 1) % slides.length);
-            scheduleNextSlide();
-        }, 6000);
-    }
-
-    document.addEventListener('visibilitychange', scheduleNextSlide);
-    scheduleNextSlide();
+        // The accounting flow must not start before its section reaches the viewport.
+        if (flow) slides[0].classList.remove('is-playing');
+        const observer = new IntersectionObserver(entries => {
+            inViewport = entries[0].intersectionRatio >= 0.15;
+            updateRunningState();
+        }, { threshold: [0, 0.15] });
+        observer.observe(section);
+        document.addEventListener('visibilitychange', updateRunningState);
+    });
 })();
 
 /* =========================================================

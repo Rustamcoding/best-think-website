@@ -1660,6 +1660,29 @@ body.footer-contact-open{overflow:hidden}
   object-fit:contain;
   transform:scale(1.35);
 }
+.huquq-illustration-visual{padding:24px 20px}
+.huquq-illustration-stage{
+  position:relative;
+  width:100%;
+  max-width:520px;
+  aspect-ratio:900 / 380;
+}
+.huquq-illustration-slide{
+  position:absolute;
+  inset:0;
+  opacity:0;
+  transition:opacity 1800ms ease-in-out;
+}
+.huquq-illustration-slide.is-active{opacity:1}
+.huquq-illustration-slide img{
+  position:absolute;
+  inset:0;
+  width:100%;
+  max-width:none;
+  height:100%;
+  object-fit:contain;
+  transform:scale(1.35);
+}
 .service-story-copy{
   align-self:start;
   padding:0 8px;
@@ -1989,6 +2012,7 @@ body.footer-contact-open{overflow:hidden}
   .vergi-illustration-stage img{height:100%}
   .accounting-illustration-slide > img,.accounting-flow-art img{height:100%}
   .kadr-illustration-slide img{height:100%}
+  .huquq-illustration-slide img{height:100%}
   .service-story-copy{padding:0 2px}
   .service-story-copy h3{font-size:22px}
   .service-story-copy p{font-size:14px}
@@ -2179,6 +2203,8 @@ body.footer-contact-open{overflow:hidden}
   .accounting-illustration-slide > img{transform:scale(1.2)}
   .kadr-preview-visual{padding:20px 12px}
   .kadr-illustration-slide img{transform:scale(1.2)}
+  .huquq-illustration-visual{padding:20px 12px}
+  .huquq-illustration-slide img{transform:scale(1.2)}
 }
 @media(prefers-reduced-motion:reduce){
   .vergi-illustration-stage img{transition:none}
@@ -2186,6 +2212,7 @@ body.footer-contact-open{overflow:hidden}
   .accounting-flow-art img{opacity:1}
   .accounting-illustration-slide--flow.is-playing .accounting-flow-art img{animation:none}
   .kadr-illustration-slide{transition:none}
+  .huquq-illustration-slide{transition:none}
 }
 
 /* DVX qeyri-rezidentlər siyahısı — footer-dəki faydalı məlumatlar keçidi */
