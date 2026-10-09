@@ -6549,7 +6549,8 @@ document.addEventListener('click', (event) => {
         { section: '#service-muhasibat-ucotu', slide: '.accounting-illustration-slide', delay: index => index === 0 ? 7000 : 5500, flow: true },
         { section: '#service-kadr-karguzarligi', slide: '.kadr-illustration-slide', delay: () => 6000 },
         { section: '#service-huquq', slide: '.huquq-illustration-slide', delay: () => 6000 },
-        { section: '#service-meslehet', slide: '.meslehet-illustration-slide', delay: () => 6000 }
+        { section: '#service-meslehet', slide: '.meslehet-illustration-slide', delay: () => 6000 },
+        { section: '#service-diger', slide: '.diger-illustration-slide', delay: () => 6000 }
     ];
 
     carousels.forEach(({ section: sectionSelector, slide: slideSelector, delay, flow }) => {
