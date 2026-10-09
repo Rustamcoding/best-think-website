@@ -6568,6 +6568,36 @@ document.addEventListener('click', (event) => {
     scheduleNextSlide();
 })();
 
+(() => {
+    const slides = [...document.querySelectorAll('#service-muhasibat-ucotu .accounting-illustration-slide')];
+    if (slides.length < 2) return;
+
+    let activeIndex = 0;
+    let rotationTimer;
+
+    function showSlide(index) {
+        activeIndex = index;
+        slides.forEach((slide, slideIndex) => {
+            const active = slideIndex === index;
+            slide.classList.toggle('is-active', active);
+            slide.classList.toggle('is-playing', active && slideIndex === 0);
+            slide.setAttribute('aria-hidden', String(!active));
+        });
+    }
+
+    function scheduleNextSlide() {
+        clearTimeout(rotationTimer);
+        if (document.hidden) return;
+        rotationTimer = setTimeout(() => {
+            showSlide((activeIndex + 1) % slides.length);
+            scheduleNextSlide();
+        }, activeIndex === 0 ? 7000 : 5500);
+    }
+
+    document.addEventListener('visibilitychange', scheduleNextSlide);
+    scheduleNextSlide();
+})();
+
 /* =========================================================
    KALKULYATOR XƏTA BİLDİRİŞİ
    ========================================================= */
