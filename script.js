@@ -576,7 +576,7 @@ function initializeFooterQuoteForm() {
         submitLabel.textContent = isQuickMode ? 'Əlaqə üçün müraciət et' : 'Təklif sorğusunu göndər';
         if (clearStatus) {
             status.textContent = '';
-            status.classList.remove('is-error');
+            status.classList.remove('is-error', 'is-success');
         }
         if (focusQuick && isQuickMode) quickFields.querySelector('[name="quickName"]')?.focus();
     };
@@ -584,6 +584,7 @@ function initializeFooterQuoteForm() {
 
     let activeRequestId = '';
     let responseTimer = 0;
+    let quickContactSubmitted = false;
     let turnoverPointerX = null;
     const positionSliderTooltip = (stage, tooltip, thumbCenter, rangeWidth, value) => {
         tooltip.textContent = value;
@@ -1279,6 +1280,11 @@ function initializeFooterQuoteForm() {
 
     triggers.forEach((trigger) => trigger.addEventListener('click', (event) => {
         activeTrigger = event.currentTarget;
+        if (quickContactSubmitted) {
+            form.reset();
+            quickContactSubmitted = false;
+            form.querySelector('.footer-contact-submit').disabled = false;
+        }
         contactModeToggle.checked = false;
         form.querySelector('[name="reporterName"]').value = 'Təklif sorğusu';
         form.querySelector('[name="purpose"]').value = 'Təklif əldə et';
@@ -1340,7 +1346,16 @@ function initializeFooterQuoteForm() {
         window.clearTimeout(responseTimer);
         status.textContent = event.data.message || (event.data.ok ? 'Təklif sorğunuz qəbul edildi.' : 'Sorğu göndərilmədi. Yenidən cəhd edin.');
         status.classList.toggle('is-error', !event.data.ok);
+        status.classList.remove('is-success');
         if (event.data.ok) {
+            if (contactModeToggle.checked) {
+                quickContactSubmitted = true;
+                status.classList.add('is-success');
+                form.querySelector('.footer-contact-submit').disabled = true;
+                submitLabel.textContent = 'Müraciət göndərildi';
+                activeRequestId = '';
+                return;
+            }
             form.reset();
             contactModeToggle.checked = false;
             updateContactMode(false, false);

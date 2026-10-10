@@ -3114,3 +3114,18 @@ body.footer-contact-open{overflow:hidden}
     .cta-home .cta-home-button { transition: none; }
     .cta-home .cta-home-button:hover { transform: none; }
 }
+
+.footer-quote-form > .footer-contact-status.is-success {
+    padding: 11px 13px;
+    border: 1px solid #b9e7ce;
+    border-radius: 9px;
+    background: #effaf4;
+    color: #087447;
+    font-size: 14px;
+    font-weight: 600;
+}
+.footer-quote-form .footer-contact-submit:disabled {
+    background: #21845d !important;
+    cursor: default;
+    opacity: 1;
+}
