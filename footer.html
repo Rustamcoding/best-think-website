@@ -126,9 +126,15 @@
                 <div>
                     <span class="footer-contact-kicker">BEST THINK KONSALTİNQ</span>
                     <h2 id="footer-quote-title">Təklif əldə et</h2>
-                    <p>Sizə daha yaxşı xidmət göstərməyimiz üçün zəhmət olmasa məlumatlarınızı daxil edin.</p>
+                    <p id="footer-quote-description">Sizə daha yaxşı xidmət göstərməyimiz üçün zəhmət olmasa məlumatlarınızı daxil edin.</p>
                 </div>
-                <button class="footer-contact-close" type="button" aria-label="Pəncərəni bağla">×</button>
+                <div class="footer-quote-header-actions">
+                    <label class="footer-quote-contact-mode" for="footer-quote-contact-mode">
+                        <input id="footer-quote-contact-mode" type="checkbox">
+                        <span>Mənimlə əlaqə saxlanılsın</span>
+                    </label>
+                    <button class="footer-contact-close" type="button" aria-label="Pəncərəni bağla">×</button>
+                </div>
             </div>
 
             <form class="footer-contact-form footer-quote-form" id="footer-quote-form"
@@ -140,6 +146,7 @@
                 <input type="hidden" name="purpose" value="Təklif əldə et">
                 <input type="hidden" name="problem">
 
+                <fieldset class="footer-quote-detailed-fields" id="footer-quote-detailed-fields" aria-label="Ətraflı təklif məlumatları">
                 <div class="footer-quote-activity-field footer-quote-section-card">
                     <div class="footer-quote-activity-copy">
                         <span id="footer-quote-activity-title">Şirkətin fəaliyyət sahəsi <i aria-hidden="true">*</i></span>
@@ -329,6 +336,18 @@
                     <small class="footer-quote-tax-error" id="footer-quote-tax-error" aria-live="polite"></small>
                 </div>
 
+                <section class="footer-quote-summary" id="footer-quote-summary" aria-labelledby="footer-quote-summary-title" aria-live="polite">
+                    <h3 id="footer-quote-summary-title">Sorğunuzun xülasəsi</h3>
+                    <dl>
+                        <div><dt>Fəaliyyət sahəsi</dt><dd id="footer-quote-summary-activity">Seçilməyib</dd></div>
+                        <div><dt>İllik dövriyyə</dt><dd id="footer-quote-summary-turnover">—</dd></div>
+                        <div><dt>İdxal həcmi</dt><dd id="footer-quote-summary-import">—</dd></div>
+                        <div><dt>Obyekt sayı</dt><dd id="footer-quote-summary-objects">—</dd></div>
+                        <div><dt>İşçi sayı</dt><dd id="footer-quote-summary-employees">—</dd></div>
+                        <div><dt>Vergi öhdəlikləri</dt><dd id="footer-quote-summary-taxes">Seçilməyib</dd></div>
+                    </dl>
+                </section>
+
                 <div class="footer-quote-contact-details footer-quote-section-card">
                     <label>
                         <span>Mobil nömrə <i aria-hidden="true">*</i></span>
@@ -345,10 +364,30 @@
                         <textarea name="quoteMessage" maxlength="3000" placeholder="Ehtiyacınız və gözləntiləriniz barədə yaza bilərsiniz"></textarea>
                     </label>
                 </div>
+                </fieldset>
+
+                <div class="footer-quote-quick-fields footer-quote-section-card" id="footer-quote-quick-fields" hidden>
+                    <label>
+                        <span>Ad <i aria-hidden="true">*</i></span>
+                        <input name="quickName" type="text" autocomplete="name" required maxlength="120" placeholder="Adınız və soyadınız" disabled>
+                    </label>
+                    <label>
+                        <span>Mövzu <i aria-hidden="true">*</i></span>
+                        <input name="quickSubject" type="text" required maxlength="180" placeholder="Müraciətinizin mövzusu" disabled>
+                    </label>
+                    <label>
+                        <span>Əlaqə nömrəsi <i aria-hidden="true">*</i></span>
+                        <input name="quickPhone" type="tel" autocomplete="tel" inputmode="tel" required maxlength="24" pattern="[0-9+() -]{9,24}" placeholder="050 123 45 67" disabled>
+                    </label>
+                    <label>
+                        <span>E-poçt ünvanı <i aria-hidden="true">*</i></span>
+                        <input name="quickEmail" type="email" autocomplete="email" required maxlength="160" placeholder="mail@example.com" disabled>
+                    </label>
+                </div>
 
                 <input name="userAgent" type="hidden">
                 <p class="footer-contact-status" id="footer-quote-status" aria-live="polite"></p>
-                <button class="footer-contact-submit" type="submit">Təklif sorğusunu göndər <span aria-hidden="true">→</span></button>
+                <button class="footer-contact-submit" type="submit"><span id="footer-quote-submit-label">Təklif sorğusunu göndər</span><span aria-hidden="true">→</span></button>
             </form>
             <iframe name="footer-quote-frame" title="Təklif sorğusunun göndərilməsi" hidden></iframe>
         </section>

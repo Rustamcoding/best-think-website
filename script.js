@@ -418,11 +418,18 @@ function initializeFooterContactForm() {
 function initializeFooterQuoteForm() {
     const modal = document.querySelector('#footer-quote-modal');
     const dialog = modal?.querySelector('.footer-quote-dialog');
+    const quoteTitle = modal?.querySelector('#footer-quote-title');
+    const quoteDescription = modal?.querySelector('#footer-quote-description');
     const triggers = [...document.querySelectorAll('.footer-quote-trigger')];
     let activeTrigger = triggers[0] || null;
     const closeButton = modal?.querySelector('.footer-contact-close');
     const form = modal?.querySelector('#footer-quote-form');
     const status = modal?.querySelector('#footer-quote-status');
+    const contactModeToggle = modal?.querySelector('#footer-quote-contact-mode');
+    const detailedFields = form?.querySelector('#footer-quote-detailed-fields');
+    const quickFields = form?.querySelector('#footer-quote-quick-fields');
+    const quickInputs = [...(quickFields?.querySelectorAll('input') || [])];
+    const submitLabel = form?.querySelector('#footer-quote-submit-label');
     const taxError = modal?.querySelector('#footer-quote-tax-error');
     const taxOptions = [...(form?.querySelectorAll('[name="taxes"]') || [])];
     const activityOptions = [...(form?.querySelectorAll('[name="activityOption"]') || [])];
@@ -481,6 +488,14 @@ function initializeFooterQuoteForm() {
     const importCustomApply = modal?.querySelector('#footer-quote-import-custom-apply');
     const importCustomCancel = modal?.querySelector('#footer-quote-import-custom-cancel');
     const importCustomError = modal?.querySelector('#footer-quote-import-custom-error');
+    const quoteSummaryValues = {
+        activity: modal?.querySelector('#footer-quote-summary-activity'),
+        turnover: modal?.querySelector('#footer-quote-summary-turnover'),
+        importVolume: modal?.querySelector('#footer-quote-summary-import'),
+        businessObjects: modal?.querySelector('#footer-quote-summary-objects'),
+        employees: modal?.querySelector('#footer-quote-summary-employees'),
+        taxes: modal?.querySelector('#footer-quote-summary-taxes')
+    };
     const turnoverMin = 5000;
     const turnoverMax = 35000000;
     const turnoverStops = [];
@@ -528,8 +543,42 @@ function initializeFooterQuoteForm() {
     let importOptions = importAmounts.map((amount) => `${formatTurnoverNumber(amount)} ABŞ dolları`);
     let importThumbOptions = importAmounts.map((amount) => amount >= 1000000 ? '$1M' : `$${amount / 1000}K`);
 
-    if (!modal || !dialog || !triggers.length || !closeButton || !form || !status || !taxError || !taxOptions.length || !activityOptions.length || !activitySummaryInput || !activityError || !frame || !turnoverAmountInput || !turnoverRange || !turnoverThumb || !turnoverOutput || !turnoverTooltip || !turnoverError || !turnoverSummaryInput || !turnoverEditButton || !turnoverCustomEditor || !turnoverCustomInput || !turnoverCustomApply || !turnoverCustomCancel || !turnoverCustomError || !employeeRange || !employeeOutput || !employeeThumb || !employeeTooltip || !employeeEditButton || !employeeCustomEditor || !employeeCustomInput || !employeeCustomApply || !employeeCustomCancel || !employeeCustomError || !employeeSummaryInput || !employeeError || !employeeMarkers.length || !businessObjectRange || !businessObjectOutput || !businessObjectThumb || !businessObjectTooltip || !businessObjectEditButton || !businessObjectCustomEditor || !businessObjectCustomInput || !businessObjectCustomApply || !businessObjectCustomCancel || !businessObjectCustomError || !businessObjectSummaryInput || !businessObjectMarkers.length || !importRange || !importOutput || !importThumb || !importTooltip || !importSummaryInput || !importError || !importMarkers.length || !importEditButton || !importCustomEditor || !importCustomInput || !importCustomApply || !importCustomCancel || !importCustomError || form.dataset.initialized === 'true') return;
+    if (!modal || !dialog || !quoteTitle || !quoteDescription || !triggers.length || !closeButton || !form || !status || !contactModeToggle || !detailedFields || !quickFields || !quickInputs.length || !submitLabel || !taxError || !taxOptions.length || !activityOptions.length || !activitySummaryInput || !activityError || !frame || !turnoverAmountInput || !turnoverRange || !turnoverThumb || !turnoverOutput || !turnoverTooltip || !turnoverError || !turnoverSummaryInput || !turnoverEditButton || !turnoverCustomEditor || !turnoverCustomInput || !turnoverCustomApply || !turnoverCustomCancel || !turnoverCustomError || !employeeRange || !employeeOutput || !employeeThumb || !employeeTooltip || !employeeEditButton || !employeeCustomEditor || !employeeCustomInput || !employeeCustomApply || !employeeCustomCancel || !employeeCustomError || !employeeSummaryInput || !employeeError || !employeeMarkers.length || !businessObjectRange || !businessObjectOutput || !businessObjectThumb || !businessObjectTooltip || !businessObjectEditButton || !businessObjectCustomEditor || !businessObjectCustomInput || !businessObjectCustomApply || !businessObjectCustomCancel || !businessObjectCustomError || !businessObjectSummaryInput || !businessObjectMarkers.length || !importRange || !importOutput || !importThumb || !importTooltip || !importSummaryInput || !importError || !importMarkers.length || !importEditButton || !importCustomEditor || !importCustomInput || !importCustomApply || !importCustomCancel || !importCustomError || Object.values(quoteSummaryValues).some((element) => !element) || form.dataset.initialized === 'true') return;
     form.dataset.initialized = 'true';
+
+    const updateQuoteSummary = () => {
+        const selectedActivities = activityOptions.filter((option) => option.checked).map((option) => option.value);
+        const selectedTaxes = taxOptions.filter((option) => option.checked).map((option) => option.value);
+        const turnover = turnoverAmountInput.value ? `${turnoverAmountInput.value} manat` : 'Seçilməyib';
+        const businessObjects = `${businessObjectSummaryInput.value || '0'} obyekt`;
+        const employees = employeeSummaryInput.value || 'Seçilməyib';
+
+        quoteSummaryValues.activity.textContent = selectedActivities.join(', ') || 'Seçilməyib';
+        quoteSummaryValues.turnover.textContent = turnover;
+        quoteSummaryValues.importVolume.textContent = importSummaryInput.value || 'Seçilməyib';
+        quoteSummaryValues.businessObjects.textContent = businessObjects;
+        quoteSummaryValues.employees.textContent = employees;
+        quoteSummaryValues.taxes.textContent = selectedTaxes.join(', ') || 'Seçilməyib';
+    };
+
+    const updateContactMode = (focusQuick = false, clearStatus = true) => {
+        const isQuickMode = contactModeToggle.checked;
+        detailedFields.disabled = isQuickMode;
+        detailedFields.hidden = isQuickMode;
+        quickFields.hidden = !isQuickMode;
+        quickInputs.forEach((input) => { input.disabled = !isQuickMode; });
+        quoteTitle.textContent = isQuickMode ? 'Mənimlə əlaqə saxlanılsın' : 'Təklif əldə et';
+        quoteDescription.textContent = isQuickMode
+            ? 'Müraciətinizin mövzusunu və əlaqə məlumatlarınızı yazın, sizinlə əlaqə saxlayaq.'
+            : 'Sizə daha yaxşı xidmət göstərməyimiz üçün zəhmət olmasa məlumatlarınızı daxil edin.';
+        submitLabel.textContent = isQuickMode ? 'Əlaqə üçün müraciət et' : 'Təklif sorğusunu göndər';
+        if (clearStatus) {
+            status.textContent = '';
+            status.classList.remove('is-error');
+        }
+        if (focusQuick && isQuickMode) quickFields.querySelector('[name="quickName"]')?.focus();
+    };
+    contactModeToggle.addEventListener('change', () => updateContactMode(true));
 
     let activeRequestId = '';
     let responseTimer = 0;
@@ -582,6 +631,7 @@ function initializeFooterQuoteForm() {
         });
         turnoverRange.setAttribute('aria-valuetext', amount ? `${formattedAmount} manat` : 'Məbləğ seçilməyib');
         updateTurnoverSlider();
+        updateQuoteSummary();
     };
     const openTurnoverEditor = () => {
         if (!turnoverCustomEditor.hidden) {
@@ -693,17 +743,22 @@ function initializeFooterQuoteForm() {
         thumb.classList.toggle('is-committed', Boolean(selected && committed));
         range.setAttribute('aria-valuetext', displayed || 'Hələ seçim edilməyib');
     };
-    const updateEmployeeSlider = (committed = employeeThumb.classList.contains('is-committed')) => updateCategorySlider(employeeRange, employeeOutput, employeeSummaryInput, employeeOptions, employeeThumb, committed, employeeMarkers, employeeCounts, employeeDisplayOptions, sharedMarkerTurnoverAmounts, employeeTooltip);
+    const updateEmployeeSlider = (committed = employeeThumb.classList.contains('is-committed')) => {
+        updateCategorySlider(employeeRange, employeeOutput, employeeSummaryInput, employeeOptions, employeeThumb, committed, employeeMarkers, employeeCounts, employeeDisplayOptions, sharedMarkerTurnoverAmounts, employeeTooltip);
+        updateQuoteSummary();
+    };
     const updateImportSlider = (committed = importThumb.classList.contains('is-committed')) => {
         updateCategorySlider(importRange, importOutput, importSummaryInput, importOptions, importThumb, committed, importMarkers, importAmounts, importOptions, sharedMarkerTurnoverAmounts, importTooltip, (selected) => selected ? selected.replace(' ABŞ dolları', ' $') : '0 $');
-        if (Number(importRange.value) !== 0) return;
-        const zeroAmountLabel = '0 ABŞ dolları';
-        importOutput.textContent = `${committed ? '✓ ' : ''}${zeroAmountLabel}`;
-        importOutput.classList.add('has-value');
-        importOutput.classList.toggle('is-committed', committed);
-        importSummaryInput.value = zeroAmountLabel;
-        importThumb.classList.toggle('is-committed', committed);
-        importRange.setAttribute('aria-valuetext', zeroAmountLabel);
+        if (Number(importRange.value) === 0) {
+            const zeroAmountLabel = '0 ABŞ dolları';
+            importOutput.textContent = `${committed ? '✓ ' : ''}${zeroAmountLabel}`;
+            importOutput.classList.add('has-value');
+            importOutput.classList.toggle('is-committed', committed);
+            importSummaryInput.value = zeroAmountLabel;
+            importThumb.classList.toggle('is-committed', committed);
+            importRange.setAttribute('aria-valuetext', zeroAmountLabel);
+        }
+        updateQuoteSummary();
     };
     const updateBusinessObjectSlider = (committed = businessObjectThumb.classList.contains('is-committed')) => {
         const rawCount = Number(businessObjectRange.value);
@@ -736,6 +791,7 @@ function initializeFooterQuoteForm() {
             marker.classList.toggle('is-active', isActive);
             marker.setAttribute('aria-pressed', String(isActive));
         });
+        updateQuoteSummary();
     };
     const openBusinessObjectEditor = () => {
         if (!businessObjectCustomEditor.hidden) {
@@ -1122,6 +1178,7 @@ function initializeFooterQuoteForm() {
     activityOptions.forEach((option) => option.addEventListener('change', () => {
         activitySummaryInput.value = activityOptions.filter((item) => item.checked).map((item) => item.value).join(', ');
         activityError.textContent = '';
+        updateQuoteSummary();
     }));
     bindCategorySlider(employeeRange, updateEmployeeSlider, employeeMarkers, employeeCounts);
     bindRangeDoubleClickEditor(employeeRange, employeeThumb, updateEmployeeSlider, openEmployeeEditor);
@@ -1220,6 +1277,10 @@ function initializeFooterQuoteForm() {
 
     triggers.forEach((trigger) => trigger.addEventListener('click', (event) => {
         activeTrigger = event.currentTarget;
+        contactModeToggle.checked = false;
+        form.querySelector('[name="reporterName"]').value = 'Təklif sorğusu';
+        form.querySelector('[name="purpose"]').value = 'Təklif əldə et';
+        updateContactMode();
         modal.hidden = false;
         playQuoteOpenSound();
         document.body.classList.add('footer-contact-open');
@@ -1248,6 +1309,7 @@ function initializeFooterQuoteForm() {
 
     form.addEventListener('change', () => {
         if (taxOptions.some((option) => option.checked)) taxError.textContent = '';
+        updateQuoteSummary();
     });
 
     form.addEventListener('invalid', (event) => {
@@ -1257,11 +1319,15 @@ function initializeFooterQuoteForm() {
             employeeCount: 'Şirkətin orta işçi sayı aralığını seçin.',
             importVolume: 'İdxal olunan malların illik həcmini seçin.',
             reporterPhone: 'Mobil nömrənizi daxil edin.',
-            reporterEmail: 'E-poçt ünvanınızı daxil edin.'
+            reporterEmail: 'E-poçt ünvanınızı daxil edin.',
+            quickName: 'Adınızı daxil edin.',
+            quickSubject: 'Müraciətinizin mövzusunu yazın.',
+            quickPhone: 'Əlaqə nömrənizi daxil edin.',
+            quickEmail: 'E-poçt ünvanınızı daxil edin.'
         };
         if (field.validity.valueMissing) field.setCustomValidity(messages[field.name] || 'Bu sahəni doldurun.');
-        else if (field.name === 'reporterEmail' && field.validity.typeMismatch) field.setCustomValidity('Düzgün e-poçt ünvanı daxil edin.');
-        else if (field.name === 'reporterPhone' && field.validity.patternMismatch) field.setCustomValidity('Mobil nömrəni düzgün formatda daxil edin.');
+        else if (['reporterEmail', 'quickEmail'].includes(field.name) && field.validity.typeMismatch) field.setCustomValidity('Düzgün e-poçt ünvanı daxil edin.');
+        else if (['reporterPhone', 'quickPhone'].includes(field.name) && field.validity.patternMismatch) field.setCustomValidity('Mobil nömrəni düzgün formatda daxil edin.');
     }, true);
     form.addEventListener('input', (event) => event.target.setCustomValidity?.(''), true);
     form.addEventListener('change', (event) => event.target.setCustomValidity?.(''), true);
@@ -1274,6 +1340,8 @@ function initializeFooterQuoteForm() {
         status.classList.toggle('is-error', !event.data.ok);
         if (event.data.ok) {
             form.reset();
+            contactModeToggle.checked = false;
+            updateContactMode(false, false);
             taxError.textContent = '';
             activityError.textContent = '';
             turnoverError.textContent = '';
@@ -1325,6 +1393,43 @@ function initializeFooterQuoteForm() {
     form.addEventListener('submit', (event) => {
         event.preventDefault();
         status.classList.remove('is-error');
+
+        if (contactModeToggle.checked) {
+            const name = form.querySelector('[name="quickName"]').value.trim();
+            const subject = form.querySelector('[name="quickSubject"]').value.trim();
+            const phone = form.querySelector('[name="quickPhone"]').value.trim();
+            const email = form.querySelector('[name="quickEmail"]').value.trim();
+            const summary = [
+                'MƏNİMLƏ ƏLAQƏ SAXLANILSIN SORĞUSU',
+                `Ad: ${name}`,
+                `Mövzu: ${subject}`,
+                `Əlaqə nömrəsi: ${phone}`,
+                `E-poçt: ${email}`
+            ].join('\n');
+
+            if (['localhost', '127.0.0.1', '::1'].includes(window.location.hostname)) {
+                status.textContent = 'Bu yerli preview-dir. Müraciətin göndərilməsi real saytda aktiv olacaq.';
+                status.classList.add('is-error');
+                return;
+            }
+
+            status.textContent = 'Sorğu göndərilir…';
+            form.querySelector('[name="reporterName"]').value = name;
+            form.querySelector('[name="purpose"]').value = 'Mənimlə əlaqə saxlanılsın';
+            form.querySelector('[name="problem"]').value = summary;
+            form.querySelector('[name="userAgent"]').value = navigator.userAgent;
+            activeRequestId = (window.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`).replace(/[^a-zA-Z0-9-]/g, '');
+            form.querySelector('[name="requestId"]').value = activeRequestId;
+            HTMLFormElement.prototype.submit.call(form);
+            responseTimer = window.setTimeout(() => {
+                if (activeRequestId) {
+                    status.textContent = 'Göndərişin cavabı alınmadı. Bir az sonra yenidən cəhd edin və ya info@besthink.az ünvanına yazın.';
+                    status.classList.add('is-error');
+                    activeRequestId = '';
+                }
+            }, 25000);
+            return;
+        }
 
         const selectedTaxes = taxOptions.filter((option) => option.checked).map((option) => option.value);
         if (!selectedTaxes.length) {
