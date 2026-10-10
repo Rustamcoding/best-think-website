@@ -171,7 +171,7 @@ async function loadFooter() {
     }
 
     try {
-        const response = await fetch('/footer.html?v=20261006-dvx-footer-useful-v2');
+        const response = await fetch('/footer.html?v=20261010-quote-summary-v1');
 
         if (!response.ok) {
             throw new Error(`footer.html yüklənmədi: ${response.status}`);
