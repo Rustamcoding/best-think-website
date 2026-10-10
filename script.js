@@ -171,7 +171,7 @@ async function loadFooter() {
     }
 
     try {
-        const response = await fetch('/footer.html?v=20261010-contact-mode-v2');
+        const response = await fetch('/footer.html?v=20261010-contact-mode-v3');
 
         if (!response.ok) {
             throw new Error(`footer.html yüklənmədi: ${response.status}`);
@@ -1409,6 +1409,12 @@ function initializeFooterQuoteForm() {
                 `E-poçt: ${email}`
             ].join('\n');
 
+            form.querySelector('[name="reporterName"]').value = name;
+            quickReporterEmail.value = email;
+            form.querySelector('[name="purpose"]').value = 'Digər';
+            form.querySelector('[name="problem"]').value = summary;
+            form.querySelector('[name="userAgent"]').value = navigator.userAgent;
+
             if (['localhost', '127.0.0.1', '::1'].includes(window.location.hostname)) {
                 status.textContent = 'Bu yerli preview-dir. Müraciətin göndərilməsi real saytda aktiv olacaq.';
                 status.classList.add('is-error');
@@ -1416,11 +1422,6 @@ function initializeFooterQuoteForm() {
             }
 
             status.textContent = 'Sorğu göndərilir…';
-            form.querySelector('[name="reporterName"]').value = name;
-            quickReporterEmail.value = email;
-            form.querySelector('[name="purpose"]').value = 'Mənimlə əlaqə saxlanılsın';
-            form.querySelector('[name="problem"]').value = summary;
-            form.querySelector('[name="userAgent"]').value = navigator.userAgent;
             activeRequestId = (window.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`).replace(/[^a-zA-Z0-9-]/g, '');
             form.querySelector('[name="requestId"]').value = activeRequestId;
             HTMLFormElement.prototype.submit.call(form);
