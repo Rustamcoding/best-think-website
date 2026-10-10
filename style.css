@@ -2698,3 +2698,217 @@ body.footer-contact-open{overflow:hidden}
         transition: none;
     }
 }
+
+/* Xidmətlər səhifəsinin sonunda, footer-dən əvvəl müraciət banneri */
+.services-bottom-cta {
+    position: relative;
+    padding: 30px 0 36px;
+    overflow: hidden;
+    border-top: 1px solid #e8eef6;
+    border-bottom: 1px solid #e8eef6;
+    background: radial-gradient(ellipse at 82% 45%, rgba(36, 102, 211, .075), transparent 38%), linear-gradient(180deg, #fff 0%, #f5f8fc 100%);
+}
+
+.services-bottom-cta-banner {
+    position: relative;
+    display: grid;
+    grid-template-columns: 118px minmax(0, 1fr) 238px;
+    align-items: center;
+    gap: 22px;
+    min-height: 158px;
+    margin: 0;
+    padding: 10px 24px 10px 18px;
+    overflow: hidden;
+    border: 1px solid #d7e3f3;
+    border-radius: 18px;
+    background: linear-gradient(112deg, #fff 0%, #fff 64%, #f7faff 100%);
+    box-shadow: 0 14px 36px #0d1f3a12;
+}
+
+.services-bottom-cta-banner::before {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 4px;
+    background: var(--blue);
+    content: "";
+}
+
+.services-bottom-cta-visual {
+    position: relative;
+    display: grid;
+    min-height: 136px;
+    place-items: center;
+    align-self: stretch;
+    isolation: isolate;
+}
+
+.services-bottom-cta-visual::before {
+    position: absolute;
+    z-index: -1;
+    width: 102px;
+    height: 102px;
+    border: 1px solid #edf2f8;
+    border-radius: 50%;
+    background: radial-gradient(circle, #f1f6fc 0%, #f8fafd 66%, transparent 68%);
+    content: "";
+}
+
+.services-bottom-cta-visual img {
+    display: block;
+    width: 96px;
+    height: 132px;
+    object-fit: contain;
+    object-position: center bottom;
+}
+
+.services-bottom-cta-copy {
+    min-width: 0;
+}
+
+.services-bottom-cta-copy h2 {
+    margin: 0;
+    color: var(--navy);
+    font-size: clamp(22px, 2.1vw, 28px);
+    font-weight: 650;
+    line-height: 1.28;
+    letter-spacing: -.025em;
+}
+
+.services-bottom-cta-copy p {
+    margin: 8px 0 0;
+    color: var(--muted);
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.services-bottom-cta-actions {
+    display: grid;
+    gap: 9px;
+    align-content: center;
+}
+
+.services-bottom-cta-button {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 0 15px;
+    border: 1px solid transparent;
+    border-radius: 9px;
+    font: 600 13px/1.3 Inter, "Segoe UI", Arial, sans-serif;
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+    transition: color .18s ease, background-color .18s ease, border-color .18s ease, transform .18s ease;
+}
+
+.services-bottom-cta-button span {
+    flex: 0 0 auto;
+    font-size: 20.7px;
+    line-height: 1;
+}
+
+.services-bottom-cta-button-primary {
+    border-color: var(--navy);
+    background: var(--navy);
+    color: #fff;
+}
+
+.services-bottom-cta-button-primary span {
+    color: #cfe0f6;
+}
+
+.services-bottom-cta-button-primary:hover {
+    border-color: var(--blue);
+    background: var(--blue);
+}
+
+.services-bottom-cta-button-secondary {
+    border-color: #cbdaf0;
+    background: #fff;
+    color: var(--navy);
+}
+
+.services-bottom-cta-button-secondary span {
+    color: var(--blue);
+}
+
+.services-bottom-cta-button-secondary:hover {
+    border-color: var(--blue);
+    background: #f5f8fc;
+    color: var(--blue);
+}
+
+.services-bottom-cta-button:focus-visible {
+    outline: 3px solid rgba(36, 102, 211, .35);
+    outline-offset: 3px;
+}
+
+@media (max-width: 900px) {
+    .services-bottom-cta-banner {
+        grid-template-columns: 88px minmax(0, 1fr);
+        gap: 14px;
+        padding: 12px 16px 16px 12px;
+    }
+
+    .services-bottom-cta-visual img {
+        width: 78px;
+        height: 112px;
+    }
+
+    .services-bottom-cta-visual::before {
+        width: 76px;
+        height: 76px;
+    }
+
+    .services-bottom-cta-actions {
+        grid-column: 2;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .services-bottom-cta {
+        padding: 22px 0 26px;
+    }
+
+    .services-bottom-cta-banner {
+        grid-template-columns: 68px minmax(0, 1fr);
+        gap: 12px;
+        padding: 14px 14px 15px 10px;
+    }
+
+    .services-bottom-cta-visual {
+        min-height: 94px;
+    }
+
+    .services-bottom-cta-visual img {
+        width: 68px;
+        height: 94px;
+    }
+
+    .services-bottom-cta-visual::before {
+        width: 64px;
+        height: 64px;
+    }
+
+    .services-bottom-cta-copy h2 {
+        font-size: 19px;
+    }
+
+    .services-bottom-cta-copy p {
+        margin-top: 5px;
+        font-size: 14px;
+    }
+
+    .services-bottom-cta-actions {
+        grid-column: 1 / -1;
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .services-bottom-cta-button {
+        min-height: 43px;
+    }
+}
