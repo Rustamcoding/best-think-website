@@ -126,13 +126,15 @@
                 <div>
                     <span class="footer-contact-kicker">BEST THINK KONSALTİNQ</span>
                     <h2 id="footer-quote-title">Təklif əldə et</h2>
-                    <p id="footer-quote-description">Sizə daha yaxşı xidmət göstərməyimiz üçün zəhmət olmasa məlumatlarınızı daxil edin.</p>
+                    <div class="footer-quote-description-row">
+                        <p id="footer-quote-description">Sizə daha yaxşı xidmət göstərməyimiz üçün zəhmət olmasa məlumatlarınızı daxil edin.</p>
+                        <label class="footer-quote-contact-mode" for="footer-quote-contact-mode">
+                            <input id="footer-quote-contact-mode" type="checkbox">
+                            <span>Mənimlə əlaqə saxlanılsın</span>
+                        </label>
+                    </div>
                 </div>
                 <div class="footer-quote-header-actions">
-                    <label class="footer-quote-contact-mode" for="footer-quote-contact-mode">
-                        <input id="footer-quote-contact-mode" type="checkbox">
-                        <span>Mənimlə əlaqə saxlanılsın</span>
-                    </label>
                     <button class="footer-contact-close" type="button" aria-label="Pəncərəni bağla">×</button>
                 </div>
             </div>
@@ -145,6 +147,7 @@
                 <input type="hidden" name="reporterName" value="Təklif sorğusu">
                 <input type="hidden" name="purpose" value="Təklif əldə et">
                 <input type="hidden" name="problem">
+                <input type="hidden" id="footer-quote-quick-reporter-email" name="reporterEmail" disabled>
 
                 <fieldset class="footer-quote-detailed-fields" id="footer-quote-detailed-fields" aria-label="Ətraflı təklif məlumatları">
                 <div class="footer-quote-activity-field footer-quote-section-card">

@@ -171,7 +171,7 @@ async function loadFooter() {
     }
 
     try {
-        const response = await fetch('/footer.html?v=20261010-quote-summary-v1');
+        const response = await fetch('/footer.html?v=20261010-contact-mode-v2');
 
         if (!response.ok) {
             throw new Error(`footer.html yüklənmədi: ${response.status}`);
@@ -429,6 +429,7 @@ function initializeFooterQuoteForm() {
     const detailedFields = form?.querySelector('#footer-quote-detailed-fields');
     const quickFields = form?.querySelector('#footer-quote-quick-fields');
     const quickInputs = [...(quickFields?.querySelectorAll('input') || [])];
+    const quickReporterEmail = form?.querySelector('#footer-quote-quick-reporter-email');
     const submitLabel = form?.querySelector('#footer-quote-submit-label');
     const taxError = modal?.querySelector('#footer-quote-tax-error');
     const taxOptions = [...(form?.querySelectorAll('[name="taxes"]') || [])];
@@ -566,6 +567,7 @@ function initializeFooterQuoteForm() {
         detailedFields.disabled = isQuickMode;
         detailedFields.hidden = isQuickMode;
         quickFields.hidden = !isQuickMode;
+        quickReporterEmail.disabled = !isQuickMode;
         quickInputs.forEach((input) => { input.disabled = !isQuickMode; });
         quoteTitle.textContent = isQuickMode ? 'Mənimlə əlaqə saxlanılsın' : 'Təklif əldə et';
         quoteDescription.textContent = isQuickMode
@@ -1415,6 +1417,7 @@ function initializeFooterQuoteForm() {
 
             status.textContent = 'Sorğu göndərilir…';
             form.querySelector('[name="reporterName"]').value = name;
+            quickReporterEmail.value = email;
             form.querySelector('[name="purpose"]').value = 'Mənimlə əlaqə saxlanılsın';
             form.querySelector('[name="problem"]').value = summary;
             form.querySelector('[name="userAgent"]').value = navigator.userAgent;
