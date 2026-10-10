@@ -1,0 +1,102 @@
+/* Approved "Yüksəliş xətti" background for the shared site footer.
+   Only the decorative layer clips; dialogs retain their viewport-wide stacking. */
+.footer.footer-growth {
+    position: relative;
+    border-top: 1px solid rgba(124, 175, 241, .25);
+    background:
+        radial-gradient(ellipse at 100% 100%, #103e49 0%, transparent 57%),
+        linear-gradient(115deg, #07172c 0%, #10223d 60%, #101f37 100%);
+}
+
+.footer-growth-background {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    isolation: isolate;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.footer-growth-background::after {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(4, 15, 31, .10), rgba(4, 15, 31, .42) 62%, rgba(4, 15, 31, .04));
+    content: "";
+}
+
+.footer.footer-growth > .footer-grid,
+.footer.footer-growth > .copyright {
+    position: relative;
+    z-index: 1;
+}
+
+.footer-growth-mesh {
+    position: absolute;
+    inset: 0 0 0 43%;
+    background-image:
+        linear-gradient(rgba(136, 183, 239, .07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(136, 183, 239, .07) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: linear-gradient(90deg, transparent, #000);
+}
+
+.footer-growth-lane {
+    position: absolute;
+    top: -105px;
+    bottom: -180px;
+    width: 160px;
+    transform: rotate(31deg);
+    border-left: 1px solid rgba(128, 181, 255, .24);
+    border-right: 1px solid rgba(128, 181, 255, .08);
+    background: linear-gradient(90deg, rgba(66, 118, 211, .20), rgba(13, 54, 98, .04));
+}
+
+.footer-growth-lane-a { right: 13%; }
+.footer-growth-lane-b {
+    right: -8%;
+    width: 260px;
+    border-left-color: rgba(35, 191, 153, .33);
+    background: linear-gradient(90deg, rgba(21, 146, 115, .18), transparent);
+}
+.footer-growth-lane-c { right: 40%; width: 52px; opacity: .55; }
+
+.footer-growth-step {
+    position: absolute;
+    bottom: 0;
+    width: 6%;
+    min-width: 24px;
+    border-top: 1px solid rgba(135, 183, 250, .28);
+    border-left: 1px solid rgba(135, 183, 250, .10);
+    background: linear-gradient(180deg, rgba(50, 105, 195, .16), transparent);
+}
+
+.footer-growth-step-a { right: 41%; height: 30px; }
+.footer-growth-step-b { right: 34%; height: 56px; }
+.footer-growth-step-c { right: 27%; height: 88px; }
+.footer-growth-step-d { right: 20%; height: 126px; }
+.footer-growth-step-e {
+    right: 13%;
+    height: 166px;
+    border-top-color: rgba(37, 203, 160, .35);
+    background: linear-gradient(180deg, rgba(20, 151, 116, .13), transparent);
+}
+
+.footer.footer-growth .footer-grid > div > a,
+.footer.footer-growth .footer-contact-item a {
+    color: #e4eefb;
+}
+.footer.footer-growth .footer-grid p { color: #c5d6ed; }
+.footer.footer-growth .footer-grid .footer-quote-trigger,
+.footer.footer-growth .footer-grid .footer-contact-trigger { color: #e4eefb !important; }
+.footer.footer-growth .footer-grid a:hover,
+.footer.footer-growth .footer-grid button:hover { color: #fff !important; }
+.footer.footer-growth > .copyright {
+    border-top-color: rgba(152, 186, 232, .22);
+    color: #c5d6ed;
+}
+.footer.footer-growth .footer-logo-tagline { background: #0a2038; }
+
+@media (max-width: 560px) {
+    .footer-growth-lane-a { right: -10%; }
+    .footer-growth-mesh { left: 0; }
+}
