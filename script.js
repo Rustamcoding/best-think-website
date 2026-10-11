@@ -9000,3 +9000,70 @@ document.addEventListener('click', (event) => {
         observer.observe(card);
     });
 })();
+
+(() => {
+    const grid = document.getElementById('blog-article-grid');
+    if (!grid) return;
+
+    const searchInput = document.getElementById('blog-search-input');
+    const resultCount = document.getElementById('blog-result-count');
+    const emptyMessage = document.getElementById('blog-empty-message');
+    const filters = Array.from(document.querySelectorAll('[data-blog-filter]'));
+    const articles = Array.from(grid.querySelectorAll('.blog-card'));
+    const replacements = { 'ə': 'e', 'ı': 'i', 'ö': 'o', 'ü': 'u', 'ş': 's', 'ç': 'c', 'ğ': 'g' };
+    const categoryNames = {
+        tax: 'Vergi',
+        accounting: 'Mühasibatlıq',
+        social: 'Sosial müdafiə',
+        guides: 'Praktiki təlimatlar'
+    };
+    const activeCategories = new Set();
+
+    const normalize = (value) => String(value)
+        .toLocaleLowerCase('az')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[əıöüşçğ]/g, (character) => replacements[character])
+        .replace(/\s+/g, ' ')
+        .trim();
+
+    const updateArticles = () => {
+        const query = normalize(searchInput?.value || '');
+        let visibleCount = 0;
+
+        articles.forEach((article) => {
+            const categories = (article.dataset.blogCategories || '').split(/\s+/).filter(Boolean);
+            const searchableText = normalize([
+                article.textContent,
+                ...Array.from(article.querySelectorAll('img'), (image) => image.alt),
+                ...categories.map((category) => categoryNames[category] || '')
+            ].join(' '));
+            const categoryMatches = activeCategories.size === 0
+                || categories.some((category) => activeCategories.has(category));
+            const searchMatches = !query || searchableText.includes(query);
+            article.hidden = !(categoryMatches && searchMatches);
+            if (!article.hidden) visibleCount += 1;
+        });
+
+        if (resultCount) resultCount.textContent = `${visibleCount} məqalə`;
+        if (emptyMessage) emptyMessage.hidden = visibleCount > 0;
+    };
+
+    filters.forEach((filter) => {
+        filter.addEventListener('click', () => {
+            const category = filter.dataset.blogFilter;
+            if (!category) return;
+
+            if (activeCategories.has(category)) activeCategories.delete(category);
+            else activeCategories.add(category);
+
+            const isActive = activeCategories.has(category);
+            filter.classList.toggle('is-active', isActive);
+            filter.setAttribute('aria-pressed', String(isActive));
+            updateArticles();
+        });
+    });
+
+    searchInput?.addEventListener('input', updateArticles);
+    updateArticles();
+})();

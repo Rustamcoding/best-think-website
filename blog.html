@@ -29,7 +29,7 @@
 <meta name="twitter:title" content="Vergi, Mühasibatlıq və Biznes Bloqu | Best Think">
 <meta name="twitter:description" content="Vergi qanunvericiliyi, mühasibat uçotu, əmək haqqı və biznes mühiti üzrə aktual məqalələr.">
 <meta name="twitter:image" content="https://besthink.az/assets/Siyah%C4%B1%20%C3%BC%C3%A7%C3%BCn.png">
-<link rel="stylesheet" href="style.css?v=20261010-contact-mode-v4">
+<link rel="stylesheet" href="style.css?v=20261012-blog-discovery-v2">
 
 </head>
 
@@ -63,9 +63,29 @@
 
 
             
-<div class="blog-placeholder">
+<div class="blog-discovery">
+    <div class="blog-discovery-top">
+        <label class="blog-search" for="blog-search-input">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <circle cx="10.8" cy="10.8" r="6.3"></circle>
+                <path d="m15.5 15.5 4.2 4.2"></path>
+            </svg>
+            <input id="blog-search-input" type="search" placeholder="Məqalələrdə axtar..." autocomplete="off">
+        </label>
+        <div class="blog-filters" role="group" aria-label="Məqalələri kateqoriyaya görə süzün">
+            <button class="blog-filter" type="button" data-blog-filter="tax" aria-pressed="false">Vergi</button>
+            <button class="blog-filter" type="button" data-blog-filter="accounting" aria-pressed="false">Mühasibatlıq</button>
+            <button class="blog-filter" type="button" data-blog-filter="social" aria-pressed="false">Sosial müdafiə</button>
+            <button class="blog-filter" type="button" data-blog-filter="guides" aria-pressed="false">Praktiki təlimatlar</button>
+        </div>
+    </div>
+    <p class="blog-result-count" id="blog-result-count" role="status" aria-live="polite">8 məqalə</p>
+    <p class="blog-empty-message" id="blog-empty-message" hidden>Axtarışa uyğun məqalə tapılmadı. Başqa söz və ya kateqoriya seçin.</p>
+</div>
 
-    <article class="blog-card blog-card-featured">
+<div class="blog-placeholder" id="blog-article-grid">
+
+    <article class="blog-card blog-card-featured" data-blog-categories="social">
 
         <a href="Bloglar/minimum-emekhaqqi-2027.html" class="blog-image-link">
             <img
@@ -79,7 +99,7 @@
 
         <div class="blog-card-content">
             <div class="blog-meta">
-                <span class="blog-category">Əmək və sosial təminat</span>
+                <span class="blog-category">Sosial müdafiə</span>
                 <time class="blog-date" datetime="2026-10-05">05.10.2026</time>
             </div>
 
@@ -92,7 +112,7 @@
         </div>
     </article>
 
-    <article class="blog-card blog-card-featured">
+    <article class="blog-card blog-card-featured" data-blog-categories="tax accounting guides">
 
         <a href="Bloglar/elektron-kocurmeler-ayliq-50-min-hedd.html" class="blog-image-link">
             <img
@@ -121,7 +141,7 @@
 
     <!-- Ən yeni məqalə -->
 
-    <article class="blog-card blog-card-featured">
+    <article class="blog-card blog-card-featured" data-blog-categories="guides">
 
         <a href="Bloglar/biznesde-birlikde-mikro-sahibkarlar.html" class="blog-image-link">
             <img
@@ -148,7 +168,7 @@
         </div>
     </article>
 
-    <article class="blog-card blog-card-featured">
+    <article class="blog-card blog-card-featured" data-blog-categories="">
 
         <a href="Bloglar/bank-respublika-accessbank.html" class="blog-image-link">
             <img
@@ -175,7 +195,7 @@
 
     <!-- Ən yeni məqalə -->
 
-    <article class="blog-card blog-card-featured">
+    <article class="blog-card blog-card-featured" data-blog-categories="tax guides">
 
         <a href="Bloglar/netflix-anthropic-edv-qeydiyyati.html" class="blog-image-link">
             <img
@@ -202,7 +222,7 @@
 
     <!-- 1-ci məqalə: ən yeni -->
 
-    <article class="blog-card blog-card-featured">
+    <article class="blog-card blog-card-featured" data-blog-categories="tax accounting guides">
 
         <a href="Bloglar/reqabetin-inkisafi-milli-fealiyyet-plani.html" class="blog-image-link">
 
@@ -247,7 +267,7 @@
 
     <!-- 2-ci məqalə -->
 
-    <article class="blog-card">
+    <article class="blog-card" data-blog-categories="tax accounting guides">
 
         <a href="Bloglar/cenubi-koreyada-ai-vergi-gelirleri.html" class="blog-image-link">
 
@@ -292,7 +312,7 @@
 
     <!-- 1-ci məqalə -->
 
-    <article class="blog-card">
+    <article class="blog-card" data-blog-categories="tax accounting guides">
 
         <a href="Bloglar/edv-depozit-hesabi-2027.html" class="blog-image-link">
 
@@ -548,7 +568,7 @@
 
 
 
-<script src="script.js?v=20261010-contact-mode-v4"></script>
+<script src="script.js?v=20261012-blog-discovery-v3"></script>
 
 
 </body>
