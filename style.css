@@ -2514,6 +2514,149 @@ body.footer-contact-open{overflow:hidden}
     }
 }
 
+/* Ana səhifə: müştərinin növbəti addımını izah edən dörd mərhələ. */
+.home-workflow-section {
+    padding: 44px 0 50px;
+    border-top: 1px solid var(--line);
+    background: #fff;
+    scroll-margin-top: 110px;
+}
+.home-workflow-head {
+    margin-bottom: 26px;
+}
+.home-workflow-head h2 {
+    margin: 0;
+    color: var(--navy);
+    font-size: clamp(25px, 2.7vw, 32px);
+    line-height: 1.25;
+    letter-spacing: -.025em;
+}
+.home-workflow-head p {
+    margin: 10px 0 0;
+    color: var(--muted);
+    font-size: 15px;
+}
+.home-workflow-list {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 22px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.home-workflow-list::before {
+    position: absolute;
+    top: 78px;
+    right: 7%;
+    left: 7%;
+    z-index: -1;
+    height: 2px;
+    background: linear-gradient(90deg, #d5e5fb, #bcd8f3 70%, #c3e6dc);
+    content: "";
+    pointer-events: none;
+}
+.home-workflow-card {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-width: 0;
+    padding: 22px;
+    border: 1px solid #dce7f4;
+    border-radius: 20px;
+    background: radial-gradient(ellipse at 100% 0%, var(--workflow-card-tint, #eaf3ff) 0%, transparent 62%), #fff;
+    box-shadow: 0 10px 26px #0d1f3a09;
+}
+.home-workflow-card:nth-child(1) { --workflow-card-tint: #eaf3ff; }
+.home-workflow-card:nth-child(2) { --workflow-card-tint: #eaf4fc; }
+.home-workflow-card:nth-child(3) { --workflow-card-tint: #edf7f2; }
+.home-workflow-card:nth-child(4) { --workflow-card-tint: #e8f6ee; }
+.home-workflow-card:nth-child(2) .home-workflow-number {
+    border-color: #c6dfef;
+    background: #eaf5fb;
+    color: #287fab;
+}
+.home-workflow-card:nth-child(3) .home-workflow-number {
+    border-color: #c8e8dc;
+    background: #eaf6f0;
+    color: #148a70;
+}
+.home-workflow-stephead {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    min-height: 101px;
+    border-bottom: 1px solid #e7eef7;
+    padding-bottom: 10px;
+}
+.home-workflow-illustration {
+    display: block;
+    width: 101px;
+    height: 101px;
+    flex: 0 0 101px;
+    object-fit: contain;
+}
+.home-workflow-number {
+    display: grid;
+    width: 40px;
+    height: 40px;
+    flex: 0 0 40px;
+    place-items: center;
+    border: 1px solid #ccdef9;
+    border-radius: 12px;
+    background: #eaf2ff;
+    color: var(--blue);
+    font-size: 16px;
+    font-weight: 800;
+    line-height: 1;
+}
+.home-workflow-card:last-child .home-workflow-number {
+    border-color: #cbe8de;
+    background: #ebf7f1;
+    color: #07835c;
+}
+.home-workflow-copy {
+    display: grid;
+    grid-template-rows: minmax(68px, auto) 1fr;
+    gap: 12px;
+}
+.home-workflow-copy h3 {
+    margin: 0;
+    color: var(--navy);
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.4;
+}
+.home-workflow-copy p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.65;
+    text-align: justify;
+}
+@media (max-width: 1000px) {
+    .home-workflow-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .home-workflow-list::before { display: none; }
+    .home-workflow-copy { grid-template-rows: auto 1fr; }
+}
+@media (max-width: 600px) {
+    .home-workflow-section { padding: 34px 0 38px; }
+    .home-workflow-head { margin-bottom: 22px; }
+    .home-workflow-head p { font-size: 14px; }
+    .home-workflow-list { grid-template-columns: 1fr; gap: 14px; }
+    .home-workflow-list::before { display: block; top: 24px; bottom: 24px; left: 36px; right: auto; width: 2px; height: auto; background: linear-gradient(#d5e5fb, #c3e6dc); }
+    .home-workflow-card { flex-direction: column; gap: 14px; padding: 18px; border-radius: 17px; }
+    .home-workflow-stephead { min-height: 77px; padding-bottom: 9px; }
+    .home-workflow-illustration { width: 77px; height: 77px; flex-basis: 77px; }
+    .home-workflow-copy { min-width: 0; gap: 8px; }
+    .home-workflow-copy h3 { font-size: 15px; }
+    .home-workflow-copy p { font-size: 13px; }
+}
+
 .home-advisory-section {
     padding: 58px 0 64px;
     border-top: 1px solid var(--line);
