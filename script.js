@@ -8903,6 +8903,7 @@ document.addEventListener('click', (event) => {
         ['.outcomes-section .section-head', 0],
         ['.outcomes-section .outcome-grid', 140],
         ['.home-advisory-section .section-head', 0],
+        ['.home-workflow-section .section-head', 0],
         ['.home-latest-blogs-section .section-head', 0],
         ['.home-latest-blogs-section .home-latest-blog-grid', 140]
     ].flatMap(([selector, delay]) => {
@@ -8940,6 +8941,31 @@ document.addEventListener('click', (event) => {
         target.style.setProperty('--home-slide-delay', `${delay}ms`);
         target.classList.add('home-slide-in');
         observer.observe(target);
+    });
+})();
+
+(() => {
+    const section = document.querySelector('.home-workflow-section');
+    if (!section || !('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const cards = Array.from(section.querySelectorAll('.home-workflow-card'));
+    if (!cards.length) return;
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                requestAnimationFrame(() => entry.target.classList.add('home-side-reveal-visible'));
+            } else {
+                entry.target.classList.remove('home-side-reveal-visible');
+            }
+        });
+    }, { threshold: 0.18, rootMargin: '0px 0px -6% 0px' });
+
+    cards.forEach((card, index) => {
+        card.style.setProperty('--home-side-offset', index % 2 === 0 ? '-42px' : '42px');
+        card.style.setProperty('--home-side-delay', `${index * 100}ms`);
+        card.classList.add('home-side-reveal');
+        observer.observe(card);
     });
 })();
 
