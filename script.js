@@ -228,6 +228,8 @@ function initializeFooterContactForm() {
     const closeButton = modal?.querySelector('.footer-contact-close');
     const form = modal?.querySelector('#footer-contact-form');
     const purpose = modal?.querySelector('#footer-contact-purpose');
+    const consultationTermsToggle = modal?.querySelector('#footer-consultation-terms-toggle');
+    const consultationTerms = modal?.querySelector('#footer-consultation-terms');
     const details = modal?.querySelector('#footer-contact-details');
     const nameInput = form?.querySelector('[name="reporterName"]');
     const emailInput = form?.querySelector('[name="reporterEmail"]');
@@ -244,6 +246,15 @@ function initializeFooterContactForm() {
         return;
     }
     form.dataset.initialized = 'true';
+    function updateConsultationTermsAccess() {
+        const isConsultation = purpose.value === 'Pulsuz konsultasiya';
+        if (consultationTermsToggle) consultationTermsToggle.hidden = !isConsultation;
+        if (!isConsultation && consultationTerms && consultationTermsToggle) {
+            consultationTerms.hidden = true;
+            consultationTermsToggle.setAttribute('aria-expanded', 'false');
+        }
+    }
+
     function updateComposerAccess() {
         const ready = Boolean(
             nameInput?.value.trim() &&
@@ -256,9 +267,16 @@ function initializeFooterContactForm() {
         attachmentInput.disabled = !ready;
         message.required = ready;
         message.placeholder = '';
+        updateConsultationTermsAccess();
     }
 
     updateComposerAccess();
+
+    consultationTermsToggle?.addEventListener('click', () => {
+        const isExpanded = consultationTermsToggle.getAttribute('aria-expanded') === 'true';
+        consultationTermsToggle.setAttribute('aria-expanded', String(!isExpanded));
+        consultationTerms.hidden = isExpanded;
+    });
 
     const closeModal = () => {
         modal.hidden = true;
@@ -412,6 +430,10 @@ function initializeFooterContactForm() {
             reader.onerror = reject;
             reader.readAsDataURL(file);
         });
+    }
+
+    if (new URLSearchParams(window.location.search).get('preview') === 'consultation-terms') {
+        openModal(trigger, 'Pulsuz konsultasiya');
     }
 }
 
