@@ -614,11 +614,12 @@
     font-size: 15px;
 }
 
-.article-business-program .article-source a {
-    color: var(--blue);
+.article-source a {
+    color: #2563eb;
     font-weight: 700;
     text-decoration: underline;
     text-underline-offset: 3px;
+    overflow-wrap: anywhere;
 }
 
 
