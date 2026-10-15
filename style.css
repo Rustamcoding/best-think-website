@@ -744,6 +744,46 @@
     margin: 0 0 20px;
 }
 
+.article-tariff-table-wrap {
+    overflow-x: auto;
+    margin: 8px 0 24px;
+    border: 1px solid #e1e9f3;
+    border-radius: 14px;
+    background: #fff;
+}
+
+.article-tariff-table {
+    width: 100%;
+    min-width: 560px;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.article-tariff-table th {
+    padding: 14px 16px;
+    background: #f4f8fd;
+    color: #315b96;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.45;
+}
+
+.article-tariff-table td {
+    padding: 13px 16px;
+    border-top: 1px solid #edf1f6;
+    color: #263a57;
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+.article-tariff-table tbody tr:nth-child(even) {
+    background: #f8fbff;
+}
+
+.article-tariff-table td:last-child {
+    white-space: nowrap;
+}
+
 .article-inline-image {
     max-width: 560px;
     margin: 10px auto 62px;
