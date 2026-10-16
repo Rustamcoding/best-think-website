@@ -1,0 +1,55 @@
+/* A light counterpart to the site's blue-to-green growth-line footer. */
+.hero.hero--growth {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    border-bottom-color: #dce7f3;
+    background:
+        radial-gradient(ellipse at 0% 12%, rgba(62, 126, 234, .13), transparent 43%),
+        radial-gradient(ellipse at 100% 100%, rgba(30, 164, 139, .16), transparent 46%),
+        linear-gradient(112deg, #f4f8ff 0%, #fff 44%, #f1f7ff 76%, #eef8f6 100%);
+}
+
+.hero--growth::before,
+.hero--growth::after {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    content: "";
+    pointer-events: none;
+}
+
+.hero--growth::before {
+    background: url("assets/hero-growth-contours.svg") center / cover no-repeat;
+}
+
+.hero--growth::after {
+    background: linear-gradient(180deg, rgba(255, 255, 255, .12), transparent 65%, rgba(255, 255, 255, .4));
+}
+
+.hero--growth > .hero-grid {
+    position: relative;
+    z-index: 1;
+}
+
+@media (max-width: 1050px) {
+    .hero--growth::before {
+        background-position: 65% center;
+        opacity: .75;
+    }
+}
+
+@media (max-width: 600px) {
+    .hero.hero--growth {
+        background:
+            radial-gradient(ellipse at 0% 0%, rgba(62, 126, 234, .12), transparent 38%),
+            radial-gradient(ellipse at 100% 100%, rgba(30, 164, 139, .14), transparent 45%),
+            linear-gradient(160deg, #f5f9ff, #fff 48%, #f0f8f7);
+    }
+
+    .hero--growth::before {
+        background-position: 64% bottom;
+        background-size: auto 70%;
+        opacity: .55;
+    }
+}
