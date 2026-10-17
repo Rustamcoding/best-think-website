@@ -52,19 +52,21 @@
 
     searchElement.addEventListener('input', render);
 
-    fetch('data/dvx-digital-nonresidents.json', { cache: 'no-store' })
-        .then((response) => {
+    async function loadRegistry() {
+        try {
+            const response = await fetch('data/dvx-digital-nonresidents.json', { cache: 'no-store' });
             if (!response.ok) throw new Error(`Siyahı yüklənmədi: ${response.status}`);
-            return response.json();
-        })
-        .then((data) => {
+            const data = await response.json();
             if (!Array.isArray(data.entries) || data.entries.length === 0) throw new Error('Siyahının formatı düzgün deyil.');
-            entries = data.entries.filter((entry) => entry && entry.company && entry.country && entry.registrationDate);
-            if (!entries.length) throw new Error('Siyahıda göstəriləcək qeyd yoxdur.');
+            const nextEntries = data.entries.filter((entry) => entry && entry.company && entry.country && entry.registrationDate);
+            if (!nextEntries.length) throw new Error('Siyahıda göstəriləcək qeyd yoxdur.');
+            entries = nextEntries;
             render();
+            errorElement.hidden = true;
 
-            if (updatedElement && data.updatedAt) {
-                const date = new Date(data.updatedAt);
+            const lastCheck = data.checkedAt || data.updatedAt;
+            if (updatedElement && lastCheck) {
+                const date = new Date(lastCheck);
                 if (!Number.isNaN(date.valueOf())) {
                     const timestamp = new Intl.DateTimeFormat('en-GB', {
                         timeZone: 'Asia/Baku',
@@ -75,11 +77,19 @@
                         minute: '2-digit',
                         hourCycle: 'h23'
                     }).format(date).replace(',', '');
-                    updatedElement.textContent = `Siyahı rəsmi mənbədəki son dəyişikliyə əsasən yenilənib: ${timestamp}`;
+                    updatedElement.textContent = data.checkedAt
+                        ? `Rəsmi mənbə ilə son uğurlu yoxlama: ${timestamp}`
+                        : `Siyahının son yenilənməsi: ${timestamp}`;
                 }
             }
-        })
-        .catch(() => showError());
+        } catch {
+            // Keep the last verified list and timestamp if a background refresh fails.
+            if (!entries.length) showError();
+        }
+    }
+
+    loadRegistry();
+    setInterval(loadRegistry, 60 * 60 * 1_000);
 
     const sourceLink = document.querySelector('.dvx-registry-meta a');
     if (sourceLink) sourceLink.href = sourceUrl;

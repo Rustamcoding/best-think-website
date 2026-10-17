@@ -1,4 +1,5 @@
 import { appendFileSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
+import { setTimeout as sleep } from 'node:timers/promises';
 import { pathToFileURL } from 'node:url';
 
 export const SOURCE_URL = 'https://taxes.gov.az/az/page/reqemsal-iqtisadiyyat-uzre-vergitutma';
@@ -80,44 +81,65 @@ function appendOutput(name, value) {
     if (process.env.GITHUB_OUTPUT) appendFileSync(process.env.GITHUB_OUTPUT, `${name}=${value}\n`);
 }
 
-export async function syncRegistry() {
-    const response = await fetch(SOURCE_URL, {
-        headers: { 'user-agent': 'BestThink-DVX-Registry-Sync/1.0 (+https://besthink.az)' },
-        signal: AbortSignal.timeout(25_000)
-    });
-    if (!response.ok) throw new Error(`DVX səhifəsindən cavab alınmadı: HTTP ${response.status}.`);
-    const finalUrl = new URL(response.url);
-    const allowedHost = finalUrl.hostname === 'taxes.gov.az' || finalUrl.hostname.endsWith('.taxes.gov.az');
-    if (finalUrl.protocol !== 'https:' || !allowedHost) throw new Error('Sorğu rəsmi DVX domenindən kənara yönləndirildi.');
+async function fetchOfficialRegistry(fetchImpl, wait) {
+    for (let attempt = 1; attempt <= 3; attempt++) {
+        let html;
+        try {
+            const response = await fetchImpl(SOURCE_URL, {
+                headers: { 'user-agent': 'BestThink-DVX-Registry-Sync/1.0 (+https://besthink.az)' },
+                signal: AbortSignal.timeout(25_000)
+            });
+            const finalUrl = new URL(response.url);
+            const allowedHost = finalUrl.hostname === 'taxes.gov.az' || finalUrl.hostname.endsWith('.taxes.gov.az');
+            if (finalUrl.protocol !== 'https:' || !allowedHost) {
+                throw Object.assign(new Error('Sorğu rəsmi DVX domenindən kənara yönləndirildi.'), { retryable: false });
+            }
+            if (!response.ok) {
+                throw Object.assign(new Error(`DVX səhifəsindən cavab alınmadı: HTTP ${response.status}.`), {
+                    retryable: response.status === 429 || response.status >= 500
+                });
+            }
+            html = await response.text();
+        } catch (error) {
+            if (attempt === 3 || error.retryable === false) throw error;
+            console.warn(`DVX bağlantısı alınmadı (${attempt}/3); təkrar cəhd ediləcək: ${error.cause?.message || error.message}`);
+            await wait(attempt * 2_000);
+            continue;
+        }
+        // Invalid or incomplete tables must never advance the successful-check timestamp.
+        return parseRegistry(html);
+    }
+}
 
-    const records = parseRegistry(await response.text());
-    const oldData = JSON.parse(readFileSync(DATA_PATH, 'utf8'));
+export async function syncRegistry({ fetchImpl = fetch, wait = sleep, dataPath = DATA_PATH, now = () => new Date() } = {}) {
+    const records = await fetchOfficialRegistry(fetchImpl, wait);
+    const oldData = JSON.parse(readFileSync(dataPath, 'utf8'));
     const oldComparable = JSON.stringify(oldData.entries.map(({ number, company, country, registrationDate }) => ({ number, company, country, registrationDate })));
     const newComparable = JSON.stringify(records);
     const changed = oldComparable !== newComparable;
 
-    if (!changed) {
-        console.log(`Rəsmi siyahı yoxlanıldı; dəyişiklik yoxdur (${records.length} qeyd).`);
-        appendOutput('changed', 'false');
-        return { changed, count: records.length };
-    }
-
+    const checkedAt = now().toISOString();
     const nextData = {
         source: SOURCE_URL,
-        updatedAt: new Date().toISOString(),
+        updatedAt: changed ? checkedAt : oldData.updatedAt,
+        checkedAt,
         entries: records
     };
-    const tempUrl = new URL('../data/.dvx-digital-nonresidents.tmp', import.meta.url);
+    const tempUrl = new URL(`${dataPath.href}.tmp`);
     writeFileSync(tempUrl, `${JSON.stringify(nextData, null, 2)}\n`, 'utf8');
-    renameSync(tempUrl, DATA_PATH);
-    console.log(`DVX siyahısındakı dəyişikliklər yadda saxlanıldı (${records.length} qeyd).`);
-    appendOutput('changed', 'true');
-    return { changed, count: records.length };
+    renameSync(tempUrl, dataPath);
+    console.log(changed
+        ? `DVX siyahısındakı dəyişikliklər yadda saxlanıldı (${records.length} qeyd).`
+        : `Rəsmi siyahı yoxlanıldı; dəyişiklik yoxdur (${records.length} qeyd).`);
+    console.log(`Son uğurlu yoxlama: ${checkedAt}`);
+    appendOutput('changed', String(changed));
+    appendOutput('refreshed', 'true');
+    return { changed, refreshed: true, count: records.length, checkedAt };
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
     syncRegistry().catch((error) => {
-        console.error(`DVX siyahısının yenilənməsi alınmadı: ${error.message}`);
+        console.error(`DVX siyahısının yenilənməsi alınmadı: ${error.message}${error.cause?.message ? ` (${error.cause.message})` : ''}`);
         process.exitCode = 1;
     });
 }

@@ -41,26 +41,26 @@ jobs:
         if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
         run: node scripts/sync-dvx-nonresidents.mjs
 
-      - name: Save changed register data
-        if: steps.sync.outputs.changed == 'true'
+      - name: Save register data and successful check time
+        if: steps.sync.outputs.refreshed == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/dvx-digital-nonresidents.json
-          git commit -m "Sync DVX digital service provider register"
+          git commit -m "Refresh DVX register and successful check time"
           git push origin HEAD:main
 
       - name: Configure GitHub Pages
-        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch' || steps.sync.outputs.changed == 'true'
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch' || steps.sync.outputs.refreshed == 'true'
         uses: actions/configure-pages@v5
 
       - name: Upload site artifact
-        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch' || steps.sync.outputs.changed == 'true'
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch' || steps.sync.outputs.refreshed == 'true'
         uses: actions/upload-pages-artifact@v4
         with:
           path: .
 
       - name: Deploy to GitHub Pages
         id: deployment
-        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch' || steps.sync.outputs.changed == 'true'
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch' || steps.sync.outputs.refreshed == 'true'
         uses: actions/deploy-pages@v4
