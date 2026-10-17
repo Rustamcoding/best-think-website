@@ -89,7 +89,8 @@
     }
 
     loadRegistry();
-    setInterval(loadRegistry, 60 * 60 * 1_000);
+    // Poll only our published snapshot, not DVX. The hourly check may finish after the hour begins.
+    setInterval(loadRegistry, 60 * 1_000);
 
     const sourceLink = document.querySelector('.dvx-registry-meta a');
     if (sourceLink) sourceLink.href = sourceUrl;

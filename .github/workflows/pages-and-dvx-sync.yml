@@ -5,8 +5,8 @@ on:
     branches: [main]
   workflow_dispatch:
   schedule:
-    # Avoid the top of the hour, when GitHub scheduled jobs are busiest.
-    - cron: '17 * * * *'
+    # Every full hour in UTC and Asia/Baku (UTC+4). GitHub can delay scheduled runs.
+    - cron: '0 * * * *'
 
 permissions:
   contents: write

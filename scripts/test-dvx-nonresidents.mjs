@@ -139,7 +139,9 @@ runInNewContext(readFileSync(new URL('../qeyri-rezidentler.js', import.meta.url)
 });
 await new Promise((resolve) => setImmediate(resolve));
 assert.equal(intervals.length, 1);
-assert.equal(intervals[0].milliseconds, 3_600_000);
+assert.equal(intervals[0].milliseconds, 60_000);
+const workflow = readFileSync(new URL('../.github/workflows/pages-and-dvx-sync.yml', import.meta.url), 'utf8');
+assert.match(workflow, /cron: '0 \* \* \* \*'/);
 assert.equal(elements['dvx-registry-updated'].textContent, 'Rəsmi mənbə ilə son uğurlu yoxlama: 17/10/2026 14:00');
 assert.equal(elements['dvx-registry-rows'].children.length, 2);
 payload = { ...payload, checkedAt: '2026-10-17T11:00:00.000Z' };
