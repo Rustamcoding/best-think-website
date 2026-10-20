@@ -36,6 +36,9 @@ jobs:
       - name: Test DVX table parser
         run: node scripts/test-dvx-nonresidents.mjs
 
+      - name: Test latest homepage news
+        run: node scripts/test-home-latest-blogs.mjs
+
       - name: Check the official DVX register
         id: sync
         if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
