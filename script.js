@@ -9035,6 +9035,7 @@ document.addEventListener('click', (event) => {
     const replacements = { 'ə': 'e', 'ı': 'i', 'ö': 'o', 'ü': 'u', 'ş': 's', 'ç': 'c', 'ğ': 'g' };
     const categoryNames = {
         tax: 'Vergi',
+        technology: 'Vergi və texnologiya',
         accounting: 'Mühasibatlıq',
         social: 'Sosial müdafiə',
         guides: 'Praktiki təlimatlar'
