@@ -21,8 +21,8 @@ async function loadHeader() {
         const isBlogArticle = window.location.pathname.includes('/Bloglar/');
 
 const headerPath = isBlogArticle
-    ? '../header.html?v=6'
-    : './header.html?v=6';
+    ? '../header.html?v=20261026-site-search-v1'
+    : './header.html?v=20261026-site-search-v1';
 
 const response = await fetch(headerPath);
 
@@ -35,6 +35,22 @@ const response = await fetch(headerPath);
         const headerHTML = await response.text();
 
         headerContainer.innerHTML = headerHTML;
+
+        const siteSearch = headerContainer.querySelector('.site-search');
+        const siteSearchInput = headerContainer.querySelector('#header-site-search-input');
+
+        siteSearch?.addEventListener('toggle', () => {
+            if (siteSearch.open) {
+                siteSearchInput?.focus();
+            }
+        });
+
+        siteSearch?.addEventListener('keydown', event => {
+            if (event.key === 'Escape' && siteSearch.open) {
+                siteSearch.open = false;
+                siteSearch.querySelector('summary')?.focus();
+            }
+        });
 
         const collapseToggle = headerContainer.querySelector('.header-collapse-toggle');
         const mainHeader = headerContainer.querySelector('.header');

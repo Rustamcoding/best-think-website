@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="az">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Saytda axtarış | Best Think Konsaltinq</title>
+    <meta name="description" content="Best Think saytında xidmətlər, bloq məqalələri və faydalı məlumatlar üzrə axtarış edin.">
+    <meta name="robots" content="noindex, follow">
+    <link rel="stylesheet" href="style.css?v=20261026-site-search-v1">
+</head>
+<body>
+    <div id="site-header"></div>
+    <main class="site-search-page">
+        <section class="site-search-hero">
+            <div class="container">
+                <p class="eyebrow">Məlumat axtarış bölməsi</p>
+                <h1>Saytda axtarış</h1>
+                <p class="site-search-intro">Xidmətlərimiz, sual-cavablar, bloq yazıları və faydalı məlumatlar arasında axtarın.</p>
+                <form class="site-search-page-form" id="site-search-results-form" action="/axtaris.html" method="get" role="search">
+                    <label for="site-search-query">Axtarış sözü</label>
+                    <div class="site-search-page-field">
+                        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                            <circle cx="10.8" cy="10.8" r="6.8"></circle>
+                            <path d="m16 16 4.2 4.2"></path>
+                        </svg>
+                        <input id="site-search-query" name="q" type="search" placeholder="Məsələn, ƏDV və ya kadr uçotu" autocomplete="off" required>
+                        <button type="submit" aria-label="Axtar">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <circle cx="10.8" cy="10.8" r="6.8"></circle>
+                                <path d="m16 16 4.2 4.2"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </form>
+                <nav class="site-search-suggestions" aria-label="Məşhur axtarışlar">
+                    <span>Tez axtarış:</span>
+                    <a href="/axtaris.html?q=ƏDV">ƏDV</a>
+                    <a href="/axtaris.html?q=mühasibatlıq">Mühasibatlıq</a>
+                    <a href="/axtaris.html?q=kadr">Kadr</a>
+                    <a href="/axtaris.html?q=konsultasiya">Konsultasiya</a>
+                </nav>
+            </div>
+        </section>
+        <section class="site-search-results-wrap" aria-label="Axtarış nəticələri">
+            <div class="container">
+                <p class="site-search-status" id="site-search-status" role="status" aria-live="polite">Axtarış üçün söz və ya mövzu yazın.</p>
+                <div class="site-search-results" id="site-search-results"></div>
+            </div>
+        </section>
+    </main>
+    <footer class="footer"></footer>
+    <script src="script.js?v=20261026-site-search-v1"></script>
+    <script src="site-search.js?v=20261026-site-search-v1" defer></script>
+</body>
+</html>

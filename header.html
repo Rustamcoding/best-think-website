@@ -44,6 +44,31 @@
 
         </nav>
 
+        <details class="site-search">
+            <summary class="site-search-toggle" aria-label="Saytda axtarış" title="Saytda axtarış">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <circle cx="10.8" cy="10.8" r="6.8"></circle>
+                    <path d="m16 16 4.2 4.2"></path>
+                </svg>
+                <span class="site-search-sr-only">Saytda axtarış</span>
+            </summary>
+            <div class="site-search-popover">
+                <form action="/axtaris.html" method="get" role="search">
+                    <label for="header-site-search-input">Saytda axtar</label>
+                    <div class="global-search-field">
+                        <input id="header-site-search-input" name="q" type="search" placeholder="Məsələn, ƏDV və ya mühasibatlıq" autocomplete="off" required>
+                        <button type="submit" aria-label="Axtar">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <circle cx="10.8" cy="10.8" r="6.8"></circle>
+                                <path d="m16 16 4.2 4.2"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <p>Xidmətlər, bloq məqalələri və faydalı məlumatlarda axtarın.</p>
+                </form>
+            </div>
+        </details>
+
         <button
             class="menu-btn"
             aria-label="Menyu"
