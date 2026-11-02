@@ -1,7 +1,7 @@
 {
   "source": "https://taxes.gov.az/az/page/reqemsal-iqtisadiyyat-uzre-vergitutma",
-  "updatedAt": "2026-10-06T12:00:00.000Z",
-  "checkedAt": "2026-11-02T07:06:56.503Z",
+  "updatedAt": "2026-11-02T17:42:38.868Z",
+  "checkedAt": "2026-11-02T17:42:38.868Z",
   "entries": [
     {
       "number": 1,
@@ -132,7 +132,7 @@
     {
       "number": 22,
       "company": "Spotify AB",
-      "country": "İsveçrə",
+      "country": "İsveç",
       "registrationDate": "01.10.2026"
     },
     {
@@ -140,6 +140,12 @@
       "company": "TikTok Pte. Ltd.",
       "country": "Sinqapur",
       "registrationDate": "01.10.2026"
+    },
+    {
+      "number": 24,
+      "company": "Appcharge Ltd.",
+      "country": "İsrail",
+      "registrationDate": "01.11.2026"
     }
   ]
 }
