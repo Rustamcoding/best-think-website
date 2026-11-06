@@ -1347,7 +1347,13 @@ function initializeFooterQuoteForm() {
 
     closeButton.addEventListener('click', closeModal);
     modal.addEventListener('click', (event) => {
-        if (event.target === modal) closeButton.classList.add('is-highlighted');
+        if (event.target === modal) {
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                dialog.scrollTop = 0;
+            } else {
+                dialog.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
     });
     document.addEventListener('keydown', (event) => {
         if (event.key === 'Escape' && !modal.hidden) closeModal();
