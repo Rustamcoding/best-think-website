@@ -187,7 +187,7 @@ async function loadFooter() {
     }
 
     try {
-        const response = await fetch('/footer.html?v=20261010-contact-mode-v3');
+        const response = await fetch('/footer.html?v=20261106-tax-unknown-v1');
 
         if (!response.ok) {
             throw new Error(`footer.html yüklənmədi: ${response.status}`);
@@ -1353,7 +1353,15 @@ function initializeFooterQuoteForm() {
         if (event.key === 'Escape' && !modal.hidden) closeModal();
     });
 
-    form.addEventListener('change', () => {
+    form.addEventListener('change', (event) => {
+        if (event.target.matches('[name="taxes"]')) {
+            const unknownTaxOption = taxOptions.find((option) => option.dataset.taxUnknown !== undefined);
+            if (event.target === unknownTaxOption && unknownTaxOption.checked) {
+                taxOptions.filter((option) => option !== unknownTaxOption).forEach((option) => { option.checked = false; });
+            } else if (event.target.checked && unknownTaxOption) {
+                unknownTaxOption.checked = false;
+            }
+        }
         if (taxOptions.some((option) => option.checked)) taxError.textContent = '';
         updateQuoteSummary();
     });

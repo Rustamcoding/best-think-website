@@ -1384,7 +1384,7 @@
 .footer-quote-slider-wrap>small{color:#77869a;font-size:11px;font-weight:400}
 .footer-quote-taxes{min-width:0;margin:0}
 .footer-quote-tax-hint{display:block;margin:0;color:#77869a;font-size:11px;font-weight:400}
-.footer-quote-tax-options{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}
+.footer-quote-tax-options{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px}
 .footer-quote-tax-error{grid-column:1/-1;display:block;min-height:15px;margin-top:5px;color:#c6283c;font-size:11px;font-weight:400}
 .footer-quote-form textarea{min-height:88px}
 .footer-quote-form input[type=hidden]{display:none}
