@@ -48,10 +48,9 @@ Mənbə: ChatGPT-dən təhvil sənədi (7 noyabr 2026). Kodla uyğun gəlməyən
 - Banner hündürlüyü ilə illüstrasiya ölçüsü ayrı-ayrı dəyişdirilir.
 
 ## Açıq məsələlər (həll edilməyib)
-1. `sitemap.xml`-də son iki məqalə (kiçik sahibkarlar, mobil POS) yoxdur.
-2. Kirayə və oyuncaq məqalələrində `noindex` var — səbəbi bilinmir, istifadəçidən soruş.
-3. `Bloglar/kalkulyator.html` köhnədir, saxlanma səbəbi bilinmir.
-4. Dörd əməkdaşlıq GIF-inin sinxronluğu təsdiqlənməyib.
-5. Apps Script-in canlı versiyası, poçt qutusu, domen müddəti yoxlanmayıb.
-6. Loqo seçimi təsdiqlənməyib.
-7. Xarici saytlardan götürülən ideyalar (paketlər, rəylər, rezervasiya və s.) yalnız təklifdir, təsdiq yoxdur.
+1. Kirayə və oyuncaq məqalələrində `noindex` var — səbəbi bilinmir, istifadəçidən soruş.
+2. `Bloglar/kalkulyator.html` köhnədir, saxlanma səbəbi bilinmir.
+3. Dörd əməkdaşlıq GIF-inin sinxronluğu təsdiqlənməyib.
+4. Apps Script-in canlı versiyası, poçt qutusu, domen müddəti yoxlanmayıb.
+5. Loqo seçimi təsdiqlənməyib.
+6. Xarici saytlardan götürülən ideyalar (paketlər, rəylər, rezervasiya və s.) yalnız təklifdir, təsdiq yoxdur.
