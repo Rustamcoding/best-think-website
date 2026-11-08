@@ -54,12 +54,16 @@ Mənbə: ChatGPT-dən təhvil sənədi (7 noyabr 2026). Kodla uyğun gəlməyən
 - **Şəkillər:** saytda yüngül `.webp` nüsxələr göstərilir (eni maks. 1600, keyfiyyət 82). Orijinal PNG/JPG saxlanılır — `og:image`/`twitter:image` (link önizləməsi) onlara baxır. Yeni şəkil əlavə edəndə də belə et.
 - **WhatsApp düyməsi:** `script.js` sonunda və `style.css` sonunda; nömrə 994502280036, sağ aşağı küncdə; telefonda kalkulyator banneri açıq olanda gizlənir.
 - **Statistika:** hər səhifənin `<head>` hissəsində Google tag `GTM-TZTF3S72` (Tag Manager). İçində Google Analytics `G-RT4WLX3NMS` quraşdırılıb. Yeni səhifə yaradanda bu kodu da əlavə et.
+- **Formaların spam qoruması:** formalarda gizli `company_site` tələ sahəsi (footer.html, kalkulyator.html), `script.js` sonunda `formToken` (`bt-form-2026`) və `formElapsed` əlavə edilir. Google Apps Script-də `checkSpam()` yoxlayır: tələ doludursa və ya 3 saniyədən tez göndərilibsə səssiz atılır; nişan yoxdursa “səhifəni yeniləyin”; e-poçt başına 10 dəqiqədə 5, saatda ümumi 60 limit. Nişanı dəyişsən, hər iki tərəfdə dəyiş.
+- **Google Apps Script (formaların serveri):** istifadəçinin 3-cü Google hesabında (script.google.com/u/2) “Untitled project”, fayl `Code.gs`. Deployment ID `AKfycbyHMNj-...`. Dəyişiklikdən sonra: Deploy → Manage deployments → qələm → New version → Deploy (heç vaxt “New deployment” yox — URL dəyişər). Kodu istifadəçi özü yapışdırır; Claude-un oraya girişi yoxdur.
+- **E-poçt:** `info@besthink.az` → ImprovMX (pulsuz) vasitəsilə istifadəçinin Gmail-inə yönləndirilir. DNS Smarthost.az-dadır (MX: mx1/mx2.improvmx.com, TXT SPF). DNS xidmətinin bitmə tarixi 16-01-2027. A sətirlərinə (GitHub Pages) toxunma.
+- **Google üçün şirkət məlumatı:** `index.html`-də `application/ld+json` (AccountingService): ad, telefon, e-poçt, ünvan, iş saatları (B.e.–Cümə 09:00–18:00), Instagram. Poçt indeksi məlum deyil — əlavə edilməyib.
 - `script.js` və ya `style.css` dəyişəndə bütün səhifələrdəki `?v=` versiya yazısını yenilə, yoxsa ziyarətçilər köhnə faylı görər.
 
 ## Açıq məsələlər (həll edilməyib)
 1. Kirayə və oyuncaq məqalələrində `noindex` var — səbəbi bilinmir, istifadəçidən soruş.
 2. `Bloglar/kalkulyator.html` köhnədir, saxlanma səbəbi bilinmir.
 3. Dörd əməkdaşlıq GIF-inin sinxronluğu təsdiqlənməyib.
-4. Apps Script-in canlı versiyası, poçt qutusu, domen müddəti yoxlanmayıb.
+4. Domenin öz qeydiyyat müddəti (Smarthost “Domenlər” bölməsi) yoxlanmayıb.
 5. Loqo seçimi təsdiqlənməyib.
 6. Xarici saytlardan götürülən ideyalar (paketlər, rəylər, rezervasiya və s.) yalnız təklifdir, təsdiq yoxdur.
