@@ -187,7 +187,7 @@ async function loadFooter() {
     }
 
     try {
-        const response = await fetch('/footer.html?v=20261106-tax-unknown-v1');
+        const response = await fetch('/footer.html?v=20261108-spamguard-v1');
 
         if (!response.ok) {
             throw new Error(`footer.html yüklənmədi: ${response.status}`);
@@ -9146,4 +9146,34 @@ document.addEventListener('click', (event) => {
     } else {
         addButton();
     }
+})();
+
+/* Formaların spamdan qorunması: gizli tələ sahəsi, doldurma vaxtı və yoxlama nişanı */
+(function initFormSpamGuard() {
+    const FORM_SELECTOR = 'form[action*="script.google.com"]';
+    const TOKEN = 'bt-form-2026';
+
+    function ensureHidden(form, name) {
+        let input = form.querySelector(`input[name="${name}"]`);
+        if (!input) {
+            input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = name;
+            form.appendChild(input);
+        }
+        return input;
+    }
+
+    document.addEventListener('focusin', (event) => {
+        const form = event.target.closest?.(FORM_SELECTOR);
+        if (form && !form.dataset.startedAt) form.dataset.startedAt = String(Date.now());
+    });
+
+    document.addEventListener('submit', (event) => {
+        const form = event.target.closest?.(FORM_SELECTOR);
+        if (!form) return;
+        const startedAt = Number(form.dataset.startedAt || Date.now());
+        ensureHidden(form, 'formToken').value = TOKEN;
+        ensureHidden(form, 'formElapsed').value = String(Math.round((Date.now() - startedAt) / 1000));
+    }, true);
 })();

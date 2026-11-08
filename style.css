@@ -4059,3 +4059,6 @@ body.footer-contact-open{overflow:hidden}
 .related-blog-grid .blog-card h3 {
     font-size: 18px;
 }
+
+/* Formalarda gizli tələ sahəsi (insanlara görünmür) */
+.bt-hp { position: absolute !important; left: -10000px !important; width: 1px; height: 1px; overflow: hidden; }
