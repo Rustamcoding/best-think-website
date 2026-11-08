@@ -50,6 +50,12 @@ Mənbə: ChatGPT-dən təhvil sənədi (7 noyabr 2026). Kodla uyğun gəlməyən
 - Konsultasiya şərtləri kiçik “Şərtlərlə tanış olun” keçidi ilə açılır, başlanğıcda bağlı.
 - Banner hündürlüyü ilə illüstrasiya ölçüsü ayrı-ayrı dəyişdirilir.
 
+## Sonradan əlavə edilənlər (Claude ilə)
+- **Şəkillər:** saytda yüngül `.webp` nüsxələr göstərilir (eni maks. 1600, keyfiyyət 82). Orijinal PNG/JPG saxlanılır — `og:image`/`twitter:image` (link önizləməsi) onlara baxır. Yeni şəkil əlavə edəndə də belə et.
+- **WhatsApp düyməsi:** `script.js` sonunda və `style.css` sonunda; nömrə 994502280036, sağ aşağı küncdə; telefonda kalkulyator banneri açıq olanda gizlənir.
+- **Statistika:** hər səhifənin `<head>` hissəsində Google tag `GTM-TZTF3S72` (Tag Manager). İçində Google Analytics `G-RT4WLX3NMS` quraşdırılıb. Yeni səhifə yaradanda bu kodu da əlavə et.
+- `script.js` və ya `style.css` dəyişəndə bütün səhifələrdəki `?v=` versiya yazısını yenilə, yoxsa ziyarətçilər köhnə faylı görər.
+
 ## Açıq məsələlər (həll edilməyib)
 1. Kirayə və oyuncaq məqalələrində `noindex` var — səbəbi bilinmir, istifadəçidən soruş.
 2. `Bloglar/kalkulyator.html` köhnədir, saxlanma səbəbi bilinmir.
