@@ -10,6 +10,7 @@ Mənbə: ChatGPT-dən təhvil sənədi (7 noyabr 2026). Kodla uyğun gəlməyən
 ## İstifadəçi ilə iş
 - İstifadəçi proqramçı deyil. Cavab Azərbaycan dilində, qısa, sadə, texniki terminsiz olsun.
 - **`main`-ə push = sayt dərhal canlıya çıxır.** Əvvəl dəyişikliyi göstər (ekran şəkli ilə), istifadəçi açıq şəkildə “reala göndər” deməyincə `main`-ə push etmə.
+  - **İstisna — yeni xəbər (bloq məqaləsi):** istifadəçi xəbərin mətnini və hər iki şəklini (üz qabığı + mətndaxili banner) təsdiqlədikdən sonra xəbəri birbaşa canlıya göndər; ekran şəkli ilə ayrıca təsdiq istəmə. Bu istisna yalnız qaydaya uyğun yeni xəbər əlavə etməyə aiddir; dizayn və ya kod dəyişikliyinə aid deyil.
 - Canlıya göndərdikdən sonra GitHub Actions-ın nəticəsini yoxla və bildir.
 - Təsdiqlənmiş dizaynı qoru. Kiçik, yoxlanıla bilən dəyişikliklər et.
 
@@ -32,6 +33,8 @@ Mənbə: ChatGPT-dən təhvil sənədi (7 noyabr 2026). Kodla uyğun gəlməyən
 - Tarixi özbaşına bugünkü tarixlə əvəz etmə.
 - Kartı `blog.html`-ə əlavə et; ana səhifə son üç məqaləni `home-latest-blogs.js` ilə tarixə görə götürür.
 - Yeni məqaləni `sitemap.xml`-ə əlavə et (sayt axtarışı da ondan istifadə edir).
+- Məqalə səhifəsinin sonunda `related-blogs.js` qoşulmalıdır (səhifədə `<base href="../">` varsa `related-blogs.js`, yoxdursa `../related-blogs.js`). Skript `blog.html`-dəki kartlardan `data-blog-categories` üzrə ən uyğun 3 xəbəri “Oxşar xəbərlər” bölməsində avtomatik göstərir; əlavə iş tələb etmir.
+- Ətraflı xəbər qaydaları claude.ai-dakı “WEB-site xəbərlər” layihəsindədir (`claude/xeber-qaydalari.md`).
 - Bloq kateqoriyaları çoxseçimlidir; ikinci klik seçimi ləğv edir; “Hamısı” düyməsi yoxdur.
 
 ## Qəbul edilmiş qərarlar (istifadəçinin seçimi — dəyişmə)

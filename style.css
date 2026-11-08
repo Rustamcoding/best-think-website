@@ -4039,3 +4039,23 @@ body.footer-contact-open{overflow:hidden}
     body:has(.site-calculator-promo) .site-whatsapp { display: none; }
 }
 @media print { .site-whatsapp { display: none; } }
+
+/* OXŞAR XƏBƏRLƏR (məqalə səhifəsinin altında) */
+
+.related-blogs-section {
+    padding: 8px 0 64px;
+}
+
+.related-blogs-section h2 {
+    margin: 0 0 22px;
+    font-size: 26px;
+    color: var(--text);
+}
+
+.related-blog-grid .blog-card-image {
+    height: 185px;
+}
+
+.related-blog-grid .blog-card h3 {
+    font-size: 18px;
+}
