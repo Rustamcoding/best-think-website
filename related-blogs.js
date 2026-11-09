@@ -5,7 +5,8 @@
     // Səhifədə <base> teqi ola bilər, ona görə ünvanlar birbaşa location-dan götürülür.
     const blogUrl = new URL('/blog.html', window.location.origin);
     const currentPath = decodeURIComponent(window.location.pathname);
-    const LIMIT = 3;
+    const LIMIT = 8;
+    const MIN_FOR_MARQUEE = 4;
 
     function localUrl(value, baseUrl, directory) {
         if (!value) return null;
@@ -115,7 +116,25 @@
             const grid = document.createElement('div');
             grid.className = 'blog-placeholder related-blog-grid';
             grid.append(...related.map(renderCard));
-            container.append(heading, grid);
+
+            if (related.length >= MIN_FOR_MARQUEE) {
+                // Axan lent: kartlar iki dəfə düzülür ki, dövr fasiləsiz görünsün.
+                const marquee = document.createElement('div');
+                marquee.className = 'related-marquee';
+                grid.classList.add('related-marquee-track');
+                grid.style.setProperty('--related-duration', `${related.length * 7}s`);
+                related.forEach((article) => {
+                    const clone = renderCard(article);
+                    clone.setAttribute('aria-hidden', 'true');
+                    clone.querySelectorAll('a').forEach((link) => link.setAttribute('tabindex', '-1'));
+                    grid.append(clone);
+                });
+                marquee.addEventListener('touchstart', () => marquee.classList.toggle('is-paused'), { passive: true });
+                marquee.append(grid);
+                container.append(heading, marquee);
+            } else {
+                container.append(heading, grid);
+            }
             section.append(container);
             articleSection.after(section);
         } catch {

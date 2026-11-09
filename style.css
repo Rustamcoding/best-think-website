@@ -4060,5 +4060,41 @@ body.footer-contact-open{overflow:hidden}
     font-size: 18px;
 }
 
+/* Oxşar xəbərlər — axan lent */
+.related-marquee {
+    overflow: hidden;
+    padding: 10px 0 18px;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
+}
+.related-blog-grid.related-marquee-track {
+    display: flex;
+    gap: 24px;
+    width: max-content;
+    animation: related-scroll var(--related-duration, 56s) linear infinite;
+}
+.related-marquee:hover .related-marquee-track,
+.related-marquee:focus-within .related-marquee-track,
+.related-marquee.is-paused .related-marquee-track {
+    animation-play-state: paused;
+}
+.related-marquee-track .blog-card {
+    flex: none;
+    width: 320px;
+}
+@keyframes related-scroll {
+    to { transform: translateX(calc(-50% - 12px)); }
+}
+@media (max-width: 768px) {
+    .related-marquee-track .blog-card { width: 260px; }
+    .related-marquee-track .blog-card-image { height: 150px; }
+    .related-marquee-track .blog-card h3 { font-size: 17px; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .related-marquee { overflow-x: auto; -webkit-mask-image: none; mask-image: none; }
+    .related-blog-grid.related-marquee-track { animation: none; }
+    .related-marquee-track .blog-card[aria-hidden="true"] { display: none; }
+}
+
 /* Formalarda gizli tələ sahəsi (insanlara görünmür) */
 .bt-hp { position: absolute !important; left: -10000px !important; width: 1px; height: 1px; overflow: hidden; }
