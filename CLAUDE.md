@@ -60,6 +60,10 @@ Mənbə: ChatGPT-dən təhvil sənədi (7 noyabr 2026). Kodla uyğun gəlməyən
 - **Google üçün şirkət məlumatı:** `index.html`-də `application/ld+json` (AccountingService): ad, telefon, e-poçt, ünvan, iş saatları (B.e.–Cümə 09:00–18:00), Instagram. Poçt indeksi məlum deyil — əlavə edilməyib.
 - `script.js` və ya `style.css` dəyişəndə bütün səhifələrdəki `?v=` versiya yazısını yenilə, yoxsa ziyarətçilər köhnə faylı görər.
 
+## Davam edən iş: ana səhifənin yeni ilk ekranı
+- Təsdiqlənmiş kompüter nümunəsi və bütün qərarlar `hero-preview` qolunda: `numune/hero-v2/` (`QERARLAR.md`, `index.html`, `yekun-komputer.png`). Bu qol canlı sayta çıxmır.
+- Növbəti addım: mobil görünüş → real sayta keçid (`index.html`, `header.html`) → ekran şəkilləri → “reala göndər”. Əvvəlcə `git fetch origin hero-preview` və `QERARLAR.md`-ni oxu.
+
 ## Açıq məsələlər (həll edilməyib)
 1. Kirayə və oyuncaq məqalələrində `noindex` var — səbəbi bilinmir, istifadəçidən soruş.
 2. `Bloglar/kalkulyator.html` köhnədir, saxlanma səbəbi bilinmir.
