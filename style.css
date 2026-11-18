@@ -4098,3 +4098,10 @@ body.footer-contact-open{overflow:hidden}
 
 /* Formalarda gizli tələ sahəsi (insanlara görünmür) */
 .bt-hp { position: absolute !important; left: -10000px !important; width: 1px; height: 1px; overflow: hidden; }
+
+/* MƏQALƏ MƏTNİ — hər iki kənar bərabər (istifadəçinin istəyi, 18.11.2026) */
+.article-intro p,
+.article-content p:not(.article-source) {
+    text-align: justify;
+    text-justify: inter-word;
+}
