@@ -62,6 +62,7 @@ Mənbə: ChatGPT-dən təhvil sənədi (7 noyabr 2026). Kodla uyğun gəlməyən
 
 ## Ana səhifənin yeni ilk ekranı (canlıda, 23.11.2026)
 - Yeni hero canlıdadır: `index.html` + `hero-v2.css` + `hero-v2.js`; ortaq menyu `header.html` (5 bənd + yaşıl “Pulsuz konsultasiya”). Menyu bəndləri istifadəçinin seçimidir — Bloq yerində qalır (Haqqımızda ilə əvəz edilməsin).
+- Telefonda (≤800px) telefon maketi və yazışma YOXDUR (istifadəçinin seçimi): yuxarıda `assets/hero-qatar-mobile.webp` (adam + noutbuk kəsiyi), altında yazılar. Kompüterdə maket qalır.
 - Qərarların tarixçəsi və nümunə `hero-preview` qolunda: `numune/hero-v2/QERARLAR.md`. `hero-growth.css` artıq qoşulmur.
 
 ## Açıq məsələlər (həll edilməyib)
