@@ -4132,3 +4132,22 @@ body.footer-contact-open{overflow:hidden}
   .header-cta svg{display:none}
   .site-search-toggle{width:34px;height:34px}
 }
+
+/* Telefonda sağda ağ zolaq olmasın: sağdan sürüşərək gələn kartlar ekrandan kənara daşmasın */
+.home-workflow-section,
+.home-advisory-section{overflow-x:hidden;overflow-x:clip}
+
+/* Telefonda yuxarıda qalan (yığcam) menyu ekrana sığsın */
+@media(max-width:600px){
+  #site-header.is-compact .nav{gap:6px}
+  #site-header.is-compact .brand img{width:80px}
+  #site-header.is-compact .header-cta{padding:8px 10px;font-size:12px}
+  #site-header.is-compact .header-cta svg{display:none}
+  #site-header.is-compact .site-search-toggle{width:34px;height:34px}
+  #site-header.is-compact .header-collapse-toggle{flex-basis:32px;width:32px;height:32px}
+}
+@media(max-width:374px){
+  #site-header.is-compact .brand img{width:66px}
+  #site-header.is-compact .header-cta{padding:7px 8px;font-size:11px}
+  #site-header.is-compact .menu-btn{font-size:22px}
+}
