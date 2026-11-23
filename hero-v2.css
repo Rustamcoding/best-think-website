@@ -1,0 +1,117 @@
+/* =========================================================
+   ANA SƏHİFƏ — YENİ İLK EKRAN (hero v2)
+   Yalnız index.html-də qoşulur. Təsdiqlənmiş nümunə:
+   numune/hero-v2/ (hero-preview qolu).
+   ========================================================= */
+
+.hero-v2-shell{--hv-shell:#eef2f7;--hv-green:#34d17f;background:var(--hv-shell);padding:18px 18px 0}
+.hero-v2{position:relative;overflow:hidden;min-height:680px;border-radius:26px;background:#0c1d36;color:#fff;isolation:isolate}
+.hero-v2-bg{position:absolute;inset:0;z-index:-2;width:100%;height:100%;object-fit:cover;object-position:60% 35%;animation:hero-v2-zoom 18s ease-in-out infinite alternate}
+@keyframes hero-v2-zoom{to{transform:scale(1.06)}}
+.hero-v2-shade{position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(8,20,40,.88) 0%,rgba(8,20,40,.62) 38%,rgba(8,20,40,.05) 70%),linear-gradient(0deg,rgba(8,20,40,.55),transparent 35%)}
+.hero-v2 .container{width:auto;margin:0 48px}
+.hero-v2-content{padding:112px 0 150px;max-width:640px}
+.hero-v2-kicker{margin:0 0 16px;color:#9fe3bf;font-size:13px;font-weight:800;letter-spacing:.14em}
+.hero-v2 h1{max-width:620px;margin:0 0 16px;color:#fff;font-size:58px;font-weight:800;line-height:1.04;letter-spacing:-.025em}
+.hero-v2 h1 em{font-style:normal;color:var(--hv-green)}
+.hero-v2-motto{max-width:560px;margin:0 0 30px;color:#fff;font-size:28px;font-weight:700;line-height:1.3}
+.hero-v2-quote{display:inline-flex;align-items:center;gap:10px;padding:13px 24px;border:2px solid var(--hv-green);border-radius:999px;background:rgba(8,20,40,.35);color:#fff;font:inherit;font-size:15px;font-weight:800;line-height:1.2;cursor:pointer;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);transition:background-color .18s}
+.hero-v2-quote:hover{background:rgba(52,209,127,.16)}
+.hero-v2-quote:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.hero-v2-quote svg,.hero-v2-arrow{width:16px;height:16px;flex:none;fill:none;stroke:var(--hv-green);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.hero-v2-metrics{position:absolute;left:48px;bottom:34px;z-index:2;display:flex;gap:28px;margin:0;color:#dfe8f4;font-size:13px}
+.hero-v2-metrics div{margin:0}
+.hero-v2-metrics strong{display:block;color:#fff;font-size:24px;line-height:1.2}
+
+/* Telefon maketi və yazışma */
+.hero-v2-phone{position:absolute;right:5%;bottom:-34px;z-index:2;width:246px;height:476px;padding:10px;border-radius:40px;background:#0a0f18;box-shadow:0 40px 80px rgba(0,0,0,.66),inset 0 0 0 1px rgba(255,255,255,.13)}
+.hero-v2-screen{display:flex;flex-direction:column;height:100%;overflow:hidden;border-radius:31px;background:#eef3f9}
+.hero-v2-chat-head{display:flex;align-items:center;gap:9px;padding:20px 14px 10px;background:#0c1d36;color:#fff;line-height:1.3}
+.hero-v2-avatar{display:grid;place-items:center;flex:none;width:36px;height:36px;border-radius:50%;background:var(--hv-green);color:#062a1a;font-size:13px;font-weight:800}
+.hero-v2-chat-head b{display:block;font-size:14px;white-space:nowrap}
+.hero-v2-chat-head small{color:#9fb2cc;font-size:11px}
+.hero-v2-chat{display:flex;flex:1;flex-direction:column;justify-content:flex-end;gap:9px;padding:14px 12px;overflow:hidden}
+.hero-v2-input{margin:0 12px 22px;padding:11px 14px;border:1px solid #dbe3ee;border-radius:999px;background:#fff;color:#8a99ad;font-size:12px;line-height:1.3}
+.hero-v2-msg{max-width:84%;padding:8px 11px;border-radius:15px;color:#13233e;font-size:11.5px;line-height:1.4;animation:hero-v2-pop .35s ease both}
+.hero-v2-msg.is-client{align-self:flex-end;border-bottom-right-radius:4px;background:#d7f5e5}
+.hero-v2-msg.is-team{align-self:flex-start;border-bottom-left-radius:4px;background:#fff;box-shadow:0 2px 6px rgba(12,29,54,.07)}
+.hero-v2-msg.is-typing{display:flex;gap:4px;padding:12px}
+.hero-v2-msg.is-typing i{width:6px;height:6px;border-radius:50%;background:#8a99ad;animation:hero-v2-dot 1s infinite}
+.hero-v2-msg.is-typing i:nth-child(2){animation-delay:.15s}
+.hero-v2-msg.is-typing i:nth-child(3){animation-delay:.3s}
+@keyframes hero-v2-pop{from{opacity:0;transform:translateY(10px) scale(.97)}}
+@keyframes hero-v2-dot{50%{opacity:1;transform:translateY(-3px)}}
+
+/* Ana səhifədə header ilk ekranın üstündə durur */
+body.home-v2 #site-header{position:absolute;top:18px;left:18px;right:18px;z-index:30}
+body.home-v2 #site-header:not(.is-compact) .header{background:transparent;border:0;-webkit-backdrop-filter:none;backdrop-filter:none}
+body.home-v2 #site-header:not(.is-compact) .container.nav{width:auto;min-height:72px;margin:0 48px;padding:0;align-items:flex-end}
+body.home-v2 #site-header:not(.is-compact) .brand img{display:none}
+body.home-v2 #site-header:not(.is-compact) .brand .brand-logo-dark{display:block;width:auto;height:64px}
+body.home-v2 #site-header:not(.is-compact) .site-search-toggle{border-color:rgba(255,255,255,.3);background:rgba(10,24,46,.45);color:#fff}
+body.home-v2 #site-header:not(.is-compact) .menu-btn{color:#fff}
+
+@media(min-width:1051px){
+  body.home-v2 #site-header:not(.is-compact) .nav nav{position:absolute;top:0;left:50%;display:flex;align-items:center;gap:4px;height:72px;padding:4px 16px 0;border-radius:0 0 22px 22px;background:#eef2f7;color:#13233e;font-size:14px;font-weight:600;transform:translateX(-50%)}
+  body.home-v2 #site-header:not(.is-compact) .nav nav::before,
+  body.home-v2 #site-header:not(.is-compact) .nav nav::after{content:"";position:absolute;top:0;width:22px;height:22px}
+  body.home-v2 #site-header:not(.is-compact) .nav nav::before{left:-22px;background:radial-gradient(circle at 0 100%,transparent 21.5px,#eef2f7 22px)}
+  body.home-v2 #site-header:not(.is-compact) .nav nav::after{right:-22px;background:radial-gradient(circle at 100% 100%,transparent 21.5px,#eef2f7 22px)}
+  body.home-v2 #site-header:not(.is-compact) .nav nav a{padding:9px 14px;border-radius:10px;white-space:nowrap}
+  body.home-v2 #site-header:not(.is-compact) .nav nav a.active{background:#fff;color:var(--blue)}
+  body.home-v2 #site-header:not(.is-compact) .nav nav a.calculator-menu .new-badge{top:-4px;right:-4px}
+  body.home-v2 #site-header:not(.is-compact) .header-cta{padding:12px 22px;font-size:15px}
+}
+
+/* Planşet və telefon */
+@media(max-width:1050px){
+  body.home-v2 #site-header:not(.is-compact) .container.nav{min-height:64px;align-items:center;padding-top:10px}
+  body.home-v2 #site-header:not(.is-compact) .brand .brand-logo-dark{height:54px}
+  body.home-v2 #site-header:not(.is-compact) .nav nav.open{top:74px;border-radius:16px;box-shadow:0 20px 50px rgba(0,0,0,.4)}
+  .hero-v2-content{padding-top:104px}
+}
+
+@media(max-width:800px){
+  .hero-v2-shell{padding:0}
+  .hero-v2{display:flex;flex-direction:column;min-height:0;border-radius:0}
+  body.home-v2 #site-header{top:0;left:0;right:0}
+  body.home-v2 #site-header:not(.is-compact) .container.nav{margin:0 20px;padding-top:14px}
+  body.home-v2 #site-header:not(.is-compact) .brand .brand-logo-dark{height:46px}
+  body.home-v2 #site-header:not(.is-compact) .container.nav{gap:8px}
+  body.home-v2 #site-header:not(.is-compact) .nav nav.open{top:64px;left:-8px;right:-8px}
+  .hero-v2 .container{margin:0 20px}
+  .hero-v2-content{order:1;padding:94px 0 26px}
+  .hero-v2-kicker{margin-bottom:12px;font-size:11px;letter-spacing:.12em}
+  .hero-v2 h1{margin-bottom:12px;font-size:36px;line-height:1.08}
+  .hero-v2-motto{margin-bottom:24px;font-size:19px}
+  .hero-v2-quote{display:flex;justify-content:center;width:100%;padding:14px 20px}
+  .hero-v2-metrics{position:static;order:2;justify-content:space-between;gap:0;padding:0 20px 24px;font-size:12px}
+  .hero-v2-metrics strong{font-size:22px}
+  .hero-v2-shade{display:none}
+  .hero-v2-bg{position:relative;inset:auto;z-index:0;order:3;height:400px;object-position:80% 40%;animation:none}
+  .hero-v2::after{content:"";position:absolute;left:0;right:0;bottom:310px;z-index:1;height:90px;background:linear-gradient(#0c1d36,transparent);pointer-events:none}
+  .hero-v2-phone{right:auto;left:16px;bottom:-26px;width:180px;height:318px;padding:7px;border-radius:30px}
+  .hero-v2-screen{border-radius:24px}
+  .hero-v2-chat-head{gap:7px;padding:14px 10px 8px}
+  .hero-v2-avatar{width:28px;height:28px;font-size:11px}
+  .hero-v2-chat-head b{font-size:11px}
+  .hero-v2-chat-head small{font-size:9.5px}
+  .hero-v2-chat{gap:7px;padding:10px 8px}
+  .hero-v2-msg{padding:7px 9px;font-size:10px}
+  .hero-v2-input{margin:0 8px 14px;padding:8px 10px;font-size:10px}
+}
+
+@media(max-width:400px){
+  .hero-v2-kicker{font-size:10px;letter-spacing:.08em}
+  .hero-v2 h1{font-size:32px}
+  .hero-v2-motto{font-size:17px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .hero-v2-bg,.hero-v2-msg,.hero-v2-msg.is-typing i{animation:none}
+}
+
+@media(max-width:374px){
+  body.home-v2 #site-header:not(.is-compact) .container.nav{margin:0 12px;gap:6px}
+  body.home-v2 #site-header:not(.is-compact) .brand .brand-logo-dark{height:40px}
+}
