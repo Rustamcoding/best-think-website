@@ -26,8 +26,8 @@
 >
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://besthink.az/">
-<link rel="stylesheet" href="style.css?v=20261118-justify-v1">
-<link rel="stylesheet" href="hero-growth.css?v=20261017-1">
+<link rel="stylesheet" href="style.css?v=20261123-hero-v2">
+<link rel="stylesheet" href="hero-v2.css?v=20261123-1">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Mühasibatlıq və Vergi Xidmətləri | Best Think Konsaltinq">
 <meta property="og:description" content="Mühasibat uçotu, vergi uçotu, əmək haqqı hesablanması və maliyyə idarəetməsi üzrə sistemli həllər.">
@@ -50,7 +50,7 @@
       "logo": "https://besthink.az/assets/logo.png",
       "image": "https://besthink.az/assets/logo.png",
       "description": "Vergi, mühasibatlıq, kadr və konsaltinq xidmətləri.",
-      "slogan": "Rəqəmlərdə dəqiqlik, qərarlarda əminlik",
+      "slogan": "İşə vicdanla, rəqəmlərə peşəkarlıqla yanaşırıq.",
       "telephone": "+994502280036",
       "email": "info@besthink.az",
       "address": {
@@ -92,7 +92,7 @@
 </head>
 
 
-<body>
+<body class="home-v2">
 
 
 <!-- MƏRKƏZİ HEADER -->
@@ -104,102 +104,61 @@
 <main>
 
 
-    <!-- HERO -->
+    <!-- İLK EKRAN (hero v2) -->
 
-    <section class="hero hero--growth">
+    <div class="hero-v2-shell">
 
-        <div class="container hero-grid">
+        <section class="hero-v2" aria-labelledby="hero-v2-title">
 
+            <img
+                class="hero-v2-bg"
+                src="assets/hero-qatar.webp"
+                width="1599"
+                height="903"
+                alt=""
+                fetchpriority="high"
+            >
+            <div class="hero-v2-shade" aria-hidden="true"></div>
 
-            <div>
+            <div class="container hero-v2-content">
 
-                <p class="eyebrow">
-                    Vergi və mühasibatlıq üzrə praktik rəqəmsal həllər
-                </p>
+                <p class="hero-v2-kicker">VERGİ · MÜHASİBAT · KADR · KONSALTİNQ</p>
 
+                <h1 id="hero-v2-title"><em>Dürüst</em> vergi və mühasibatlıq xidmətləri</h1>
 
-                <h1>
-                    Rəqəmlərdə dəqiqlik,<br>
-                    <span>qərarlarda əminlik.</span>
-                </h1>
+                <p class="hero-v2-motto">İşə vicdanla, rəqəmlərə peşəkarlıqla yanaşırıq.</p>
 
-
-                <p class="lead">
-                    Vergi, mühasibatlıq və əmək haqqı proseslərini daha
-                    aydın, düzgün və sistemli idarə etməyinizə dəstək oluruq.
-                </p>
-
-
-                <div class="actions">
-
-                    <a
-                        class="btn btn-primary"
-                        href="#konsultasiya"
-                        data-contact-purpose="Pulsuz konsultasiya"
-                    >
-                    Pulsuz konsultasiya <span class="btn-arrow" aria-hidden="true">→</span>
-                    </a>
-
-
-                    <a
-                        class="btn btn-light"
-                        href="kalkulyator.html"
-                    >
-                    Kalkulyatoru sınayın <span class="btn-new">New</span><span class="btn-arrow" aria-hidden="true">→</span>
-                    </a>
-
-                </div>
-
-
-                <div class="metrics">
-
-                    <div>
-                        <strong>11+</strong>
-                        <small>İl təcrübə</small>
-                    </div>
-
-
-                    <div>
-                        <strong>90+</strong>
-                        <small>Məmnun müştəri</small>
-                    </div>
-
-
-                    <div>
-                        <strong>10+</strong>
-                        <small>Xidmət sahəsi</small>
-                    </div>
-
-
-                    <div>
-                        <strong>100%</strong>
-                        <small>Məxfilik və etibar</small>
-                    </div>
-
-                </div>
+                <button
+                    class="hero-v2-quote footer-quote-trigger"
+                    type="button"
+                    aria-haspopup="dialog"
+                    aria-controls="footer-quote-modal"
+                >
+                    Qiymət təklifi al <svg class="hero-v2-arrow" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg>
+                </button>
 
             </div>
 
-
-
-            <div class="hero-visual hero-visual-graphic">
-                <picture>
-                    <source media="(max-width: 600px)" srcset="assets/hero-finance-map-mobile.svg?v=principles-20260930-4">
-                    <img
-                        class="hero-finance-graphic"
-                        src="assets/hero-finance-map.svg?v=principles-20260930-4"
-                        width="640"
-                        height="390"
-                        alt="Vergi, mühasibatlıq və kadr işlərinin dəqiq uçotdan əmin qərarlara keçidini göstərən qrafik"
-                        fetchpriority="high"
-                    >
-                </picture>
+            <div class="hero-v2-phone" aria-hidden="true">
+                <div class="hero-v2-screen">
+                    <div class="hero-v2-chat-head">
+                        <span class="hero-v2-avatar">BT</span>
+                        <div><b>Best Think Konsaltinq</b><small>Mesajlar</small></div>
+                    </div>
+                    <div class="hero-v2-chat" id="hero-v2-chat"></div>
+                    <div class="hero-v2-input">Mesaj yazın…</div>
+                </div>
             </div>
 
+            <div class="hero-v2-metrics">
+                <div><strong>11+</strong>il təcrübə</div>
+                <div><strong>90+</strong>məmnun müştəri</div>
+                <div><strong>100%</strong>məxfilik</div>
+            </div>
 
-        </div>
+        </section>
 
-    </section>
+    </div>
 
 
 
@@ -1372,8 +1331,9 @@
 
 
 
-<script src="script.js?v=20261108-spamguard-v1"></script>
+<script src="script.js?v=20261123-hero-v2"></script>
 <script src="home-latest-blogs.js?v=20261020-1" defer></script>
+<script src="hero-v2.js?v=20261123-1" defer></script>
 
 </body>
 

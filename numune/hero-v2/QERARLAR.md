@@ -23,9 +23,17 @@ Bu qovluq yalnız nümunədir, `hero-preview` qolundadır və canlı sayta çıx
 
 ## Qalan işlər (növbəti söhbət)
 1. Mobil görünüş — nümunə hazırdır, ilkin təsdiq edilib, istifadəçi real telefonda yoxlayır (`mobil-numune.png`, `mobil-menyu.png`): yuxarıda loqo + yaşıl “Pulsuz konsultasiya” + menyu düyməsi (☰, açılan ağ siyahı); mətn tünd fonda; düymə tam enində; göstəricilər bir sırada; foto aşağıda ayrıca blok (adam sağda görünür); solda kiçik telefon maketi, yazışmada eyni anda 2 mesaj.
-2. Real sayta keçid: `index.html` hero bölməsi, ortaq `header.html` menyu (digər səhifələrin açıq fonunda da yoxlanmalı), düymələri mövcud formalara bağlamaq (Pulsuz konsultasiya → əlaqə forması, Qiymət təklifi al → təklif pəncərəsi).
-3. Köhnə şüarı footer və `index.html` ld+json-dan dəyişmək.
+2. ✅ (kodda hazırdır, `claude/jolly-carson-rgrlps` qolunda, canlıya göndərilməyib) Real sayta keçid: `index.html` hero bölməsi, ortaq `header.html` menyu (digər səhifələrin açıq fonunda da yoxlanmalı), düymələri mövcud formalara bağlamaq (Pulsuz konsultasiya → əlaqə forması, Qiymət təklifi al → təklif pəncərəsi).
+3. ✅ Köhnə şüar `index.html`-in hero və ld+json hissəsindən çıxarıldı (footerdə bu şüar yox idi). Köhnə şüarı footer və `index.html` ld+json-dan dəyişmək.
 4. Kompüter + telefon ekran şəkilləri ilə göstərmək, “reala göndər” gözləmək.
 
 ## İlham mənbələri (videodan)
 Scrolltide (scrolltide.co), Navbar Gallery (navbar.gallery), Footer Design (footer.design), CTA Gallery (cta.gallery), Refero Styles (styles.refero.design), Supahero (supahero.io), 3dicons (3dicons.co). Menyu üçün nümunə: navbar.gallery/navbar/solidroad. Hero üçün: Ramp, Manychat (supahero.io).
+
+## Real sayta keçid zamanı edilənlər (23.11.2026)
+- `header.html` (bütün səhifələr): menyu 5 bənd (Haqqımızda, Məqsədimiz çıxarıldı — footerdə qalır), yaşıl “Pulsuz konsultasiya ↗” düyməsi əlavə olundu; axtarış düyməsi saxlanıldı.
+- Ana səhifədə header ilk ekranın üstündədir (asma menyu zolağı, tünd loqo `assets/logo-dark.webp`); aşağı sürüşdürəndə adi ağ yığcam header görünür.
+- Digər səhifələrdə header ağ qalır, sadəcə yeni menyu və yaşıl düymə var.
+- Yeni fayllar: `hero-v2.css`, `hero-v2.js`, `assets/hero-qatar.webp`, `assets/logo-dark.webp`. `hero-growth.css` artıq qoşulmur (fayl saxlanılıb).
+- Köhnə hero-dakı “10+ xidmət sahəsi” göstəricisi və “Kalkulyatoru sınayın” düyməsi təsdiqlənmiş dizayna uyğun olaraq çıxarıldı.
+- Düymələr: “Qiymət təklifi al” → təklif pəncərəsi; “Pulsuz konsultasiya” → əlaqə forması (məqsəd avtomatik seçilir).

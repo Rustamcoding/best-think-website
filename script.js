@@ -21,8 +21,8 @@ async function loadHeader() {
         const isBlogArticle = window.location.pathname.includes('/Bloglar/');
 
 const headerPath = isBlogArticle
-    ? '../header.html?v=20261026-site-search-v1'
-    : './header.html?v=20261026-site-search-v1';
+    ? '../header.html?v=20261123-hero-v2'
+    : './header.html?v=20261123-hero-v2';
 
 const response = await fetch(headerPath);
 
@@ -314,11 +314,12 @@ function initializeFooterContactForm() {
     };
 
     trigger.addEventListener('click', () => openModal(trigger));
-    document.querySelectorAll('[data-contact-purpose]').forEach((contactTrigger) => {
-        contactTrigger.addEventListener('click', (event) => {
-            event.preventDefault();
-            openModal(contactTrigger, contactTrigger.dataset.contactPurpose || '');
-        });
+    // Delegated so triggers added later (e.g. the header button) also work.
+    document.addEventListener('click', (event) => {
+        const contactTrigger = event.target.closest?.('[data-contact-purpose]');
+        if (!contactTrigger) return;
+        event.preventDefault();
+        openModal(contactTrigger, contactTrigger.dataset.contactPurpose || '');
     });
 
     closeButton.addEventListener('click', closeModal);

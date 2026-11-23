@@ -62,7 +62,7 @@ Mənbə: ChatGPT-dən təhvil sənədi (7 noyabr 2026). Kodla uyğun gəlməyən
 
 ## Davam edən iş: ana səhifənin yeni ilk ekranı
 - Təsdiqlənmiş kompüter nümunəsi və bütün qərarlar `hero-preview` qolunda: `numune/hero-v2/` (`QERARLAR.md`, `index.html`, `yekun-komputer.png`). Bu qol canlı sayta çıxmır.
-- Növbəti addım: mobil görünüş → real sayta keçid (`index.html`, `header.html`) → ekran şəkilləri → “reala göndər”. Əvvəlcə `git fetch origin hero-preview` və `QERARLAR.md`-ni oxu.
+- Mobil görünüş ilkin təsdiqlənib. Real sayta keçid kodu `claude/jolly-carson-rgrlps` qolundadır (header.html, index.html, hero-v2.css, hero-v2.js) — istifadəçi “reala göndər” deməyib. Növbəti addım: istifadəçinin baxışı → “reala göndər”. Ətraflı: `numune/hero-v2/QERARLAR.md`.
 
 ## Açıq məsələlər (həll edilməyib)
 1. Kirayə və oyuncaq məqalələrində `noindex` var — səbəbi bilinmir, istifadəçidən soruş.
