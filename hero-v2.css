@@ -80,25 +80,18 @@ body.home-v2 #site-header:not(.is-compact) .menu-btn{color:#fff}
   body.home-v2 #site-header:not(.is-compact) .container.nav{gap:8px}
   body.home-v2 #site-header:not(.is-compact) .nav nav.open{top:64px;left:-8px;right:-8px}
   .hero-v2 .container{margin:0 20px}
-  .hero-v2-content{order:1;padding:94px 0 26px}
+  /* Telefonda: yuxarıda dar kəsilmiş foto (adam + noutbuk), yazılar fotonun tündləşən alt hissəsinin üstündən başlayır */
+  .hero-v2-pic{display:contents}
+  .hero-v2-bg{position:relative;inset:auto;z-index:0;order:1;width:100%;height:auto;aspect-ratio:1020/863;object-position:50% 50%!important;animation:none}
+  .hero-v2-shade{display:block;bottom:auto;height:calc(100vw * 863 / 1020);z-index:1;background:linear-gradient(180deg,rgba(8,20,40,.85) 0%,rgba(8,20,40,.25) 22%,rgba(8,20,40,0) 38%,rgba(8,20,40,0) 62%,rgba(12,29,54,.75) 84%,#0c1d36 100%)}
+  .hero-v2-content{position:relative;z-index:2;order:2;margin-top:-56px;padding:0 0 26px}
   .hero-v2-kicker{margin-bottom:12px;font-size:11px;letter-spacing:.12em}
   .hero-v2 h1{margin-bottom:12px;font-size:36px;line-height:1.08}
   .hero-v2-motto{margin-bottom:24px;font-size:19px}
   .hero-v2-quote{display:flex;justify-content:center;width:100%;padding:14px 20px}
-  .hero-v2-metrics{position:static;order:2;justify-content:space-between;gap:0;padding:0 20px 24px;font-size:12px}
+  .hero-v2-metrics{position:static;order:3;justify-content:space-between;gap:0;padding:0 20px 26px;font-size:12px}
   .hero-v2-metrics strong{font-size:22px}
-  .hero-v2-shade{display:none}
-  .hero-v2-bg{position:relative;inset:auto;z-index:0;order:3;height:400px;object-position:80% 40%;animation:none}
-  .hero-v2::after{content:"";position:absolute;left:0;right:0;bottom:310px;z-index:1;height:90px;background:linear-gradient(#0c1d36,transparent);pointer-events:none}
-  .hero-v2-phone{right:auto;left:16px;bottom:-26px;width:180px;height:318px;padding:7px;border-radius:30px}
-  .hero-v2-screen{border-radius:24px}
-  .hero-v2-chat-head{gap:7px;padding:14px 10px 8px}
-  .hero-v2-avatar{width:28px;height:28px;font-size:11px}
-  .hero-v2-chat-head b{font-size:11px}
-  .hero-v2-chat-head small{font-size:9.5px}
-  .hero-v2-chat{gap:7px;padding:10px 8px}
-  .hero-v2-msg{padding:7px 9px;font-size:10px}
-  .hero-v2-input{margin:0 8px 14px;padding:8px 10px;font-size:10px}
+  .hero-v2-phone{display:none}
 }
 
 @media(max-width:400px){
