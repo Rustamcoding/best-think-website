@@ -89,16 +89,17 @@ body.home-v2 #site-header:not(.is-compact) .menu-btn{color:#fff}
   .hero-v2-metrics strong{font-size:22px}
   .hero-v2-shade{display:none}
   .hero-v2-bg{position:relative;inset:auto;z-index:0;order:3;height:400px;object-position:80% 40%;animation:none}
-  .hero-v2::after{content:"";position:absolute;left:0;right:0;bottom:310px;z-index:1;height:90px;background:linear-gradient(#0c1d36,transparent);pointer-events:none}
-  .hero-v2-phone{right:auto;left:16px;bottom:-26px;width:180px;height:318px;padding:7px;border-radius:30px}
-  .hero-v2-screen{border-radius:24px}
-  .hero-v2-chat-head{gap:7px;padding:14px 10px 8px}
-  .hero-v2-avatar{width:28px;height:28px;font-size:11px}
-  .hero-v2-chat-head b{font-size:11px}
-  .hero-v2-chat-head small{font-size:9.5px}
-  .hero-v2-chat{gap:7px;padding:10px 8px}
-  .hero-v2-msg{padding:7px 9px;font-size:10px}
-  .hero-v2-input{margin:0 8px 14px;padding:8px 10px;font-size:10px}
+  /* Telefon maketi şəklin altında; şəklin yalnız aşağı kənarına 80px çıxır */
+  .hero-v2::after{content:"";position:absolute;left:0;right:0;bottom:530px;z-index:1;height:90px;background:linear-gradient(#0c1d36,transparent);pointer-events:none}
+  .hero-v2-phone{position:relative;order:4;right:auto;bottom:auto;left:auto;width:min(300px,calc(100% - 32px));height:300px;margin:-80px auto 0;padding:8px 8px 0;border-radius:30px 30px 0 0}
+  .hero-v2-screen{border-radius:24px 24px 0 0}
+  .hero-v2-chat-head{gap:8px;padding:14px 12px 10px}
+  .hero-v2-avatar{width:32px;height:32px;font-size:12px}
+  .hero-v2-chat-head b{font-size:13px}
+  .hero-v2-chat-head small{font-size:10.5px}
+  .hero-v2-chat{gap:8px;padding:12px 10px}
+  .hero-v2-msg{padding:9px 12px;font-size:13px}
+  .hero-v2-input{display:none}
 }
 
 @media(max-width:400px){
