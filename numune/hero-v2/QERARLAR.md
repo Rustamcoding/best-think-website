@@ -22,7 +22,7 @@ Bu qovluq yalnız nümunədir, `hero-preview` qolundadır və canlı sayta çıx
   5. Hesabatları hansı müddətlərdə təqdim edirsiniz? → Hər biznesə fərdi yanaşırıq: razılaşdırılmış qrafiklə günlük, həftəlik və ya aylıq hesabatlar təqdim edirik.
 
 ## Qalan işlər (növbəti söhbət)
-1. Mobil görünüş — nümunə hazırdır, TƏSDİQ GÖZLƏYİR (`mobil-numune.png`, `mobil-menyu.png`): yuxarıda loqo + yaşıl “Pulsuz konsultasiya” + menyu düyməsi (☰, açılan ağ siyahı); mətn tünd fonda; düymə tam enində; göstəricilər bir sırada; foto aşağıda ayrıca blok (adam sağda görünür); solda kiçik telefon maketi, yazışmada eyni anda 2 mesaj.
+1. Mobil görünüş — nümunə hazırdır, ilkin təsdiq edilib, istifadəçi real telefonda yoxlayır (`mobil-numune.png`, `mobil-menyu.png`): yuxarıda loqo + yaşıl “Pulsuz konsultasiya” + menyu düyməsi (☰, açılan ağ siyahı); mətn tünd fonda; düymə tam enində; göstəricilər bir sırada; foto aşağıda ayrıca blok (adam sağda görünür); solda kiçik telefon maketi, yazışmada eyni anda 2 mesaj.
 2. Real sayta keçid: `index.html` hero bölməsi, ortaq `header.html` menyu (digər səhifələrin açıq fonunda da yoxlanmalı), düymələri mövcud formalara bağlamaq (Pulsuz konsultasiya → əlaqə forması, Qiymət təklifi al → təklif pəncərəsi).
 3. Köhnə şüarı footer və `index.html` ld+json-dan dəyişmək.
 4. Kompüter + telefon ekran şəkilləri ilə göstərmək, “reala göndər” gözləmək.
