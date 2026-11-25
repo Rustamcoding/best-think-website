@@ -187,7 +187,7 @@ async function loadFooter() {
     }
 
     try {
-        const response = await fetch('/footer.html?v=20261108-spamguard-v1');
+        const response = await fetch('/footer.html?v=20261125-footer-v2');
 
         if (!response.ok) {
             throw new Error(`footer.html yüklənmədi: ${response.status}`);

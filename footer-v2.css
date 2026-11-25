@@ -1,0 +1,61 @@
+/* =========================================================
+   FOOTER v2 — açıq fon, tennis kortu fotosu, böyük BEST THINK
+   footer.html-in içindən qoşulur (bütün səhifələr).
+   ========================================================= */
+
+.footer.footer-v2{position:relative;padding:0;background:#fff;color:#13233e;overflow:hidden}
+.footer-v2 .fv-in{max-width:1360px;margin:0 auto;padding:0 32px}
+
+/* Foto zolağı */
+.footer-v2 .fv-photo{position:relative;height:clamp(220px,26vw,380px);overflow:hidden;border-radius:0 0 4px 4px;background:#2f6a4f}
+.footer-v2 .fv-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 50%}
+.footer-v2 .fv-tag{position:absolute;right:24px;bottom:24px;width:min(360px,calc(100% - 48px));padding:14px 18px;border-radius:6px;background:#fff;box-shadow:0 10px 30px rgba(0,0,0,.18);font-size:13px;line-height:1.4}
+.footer-v2 .fv-tag-top{display:flex;align-items:center;gap:10px;padding-bottom:10px;border-bottom:1px solid #e2e8f0;font-weight:800;color:#0c1d36}
+.footer-v2 .fv-tag-top i{display:inline-block;width:8px;height:8px;border-radius:50%;background:#34d17f}
+.footer-v2 .fv-tag-top span:last-child{margin-left:auto;padding-left:12px;border-left:1px solid #e2e8f0}
+.footer-v2 .fv-tag-bottom{padding-top:9px;color:#4a5b75}
+
+/* Keçidlər */
+.footer-v2 .fv-mid{display:grid;grid-template-columns:1.25fr 1fr 1fr 1fr 1.15fr;gap:32px;padding:38px 0 0}
+.footer-v2 .fv-brand img{display:block;width:auto;height:84px;margin:-6px 0 14px;padding:0;background:none}
+.footer-v2 .fv-brand p{max-width:260px;margin:0;color:#33445f;font-size:15px;line-height:1.6}
+.footer-v2 .fv-col h4{margin:0 0 14px;color:#0c1d36;font-size:14px;font-weight:800}
+.footer-v2 .fv-col a,
+.footer-v2 .fv-col span{display:block;margin:0 0 10px;color:#13233e;font-size:14px;line-height:1.55}
+.footer-v2 .fv-col a:hover{color:#2466d3}
+.footer-v2 .fv-col .fv-hours{color:#4a5b75}
+
+/* Düymələr (köhnə footer düymə qaydalarını üstələyir) */
+.footer.footer-v2 .fv-col .footer-quote-trigger{display:block;width:max-content;margin:0 0 10px!important;padding:0!important;border:0!important;background:transparent!important;color:#13233e!important;font:400 14px/1.55 Inter,"Segoe UI",Arial,sans-serif;text-align:left;cursor:pointer}
+.footer.footer-v2 .fv-col .footer-quote-trigger:hover{color:#2466d3!important}
+.footer.footer-v2 .fv-btn{display:inline-flex!important;align-items:center;gap:7px;width:max-content;margin:6px 0 0!important;padding:9px 16px!important;border-radius:999px!important;font:800 14px/1.2 Inter,"Segoe UI",Arial,sans-serif;cursor:pointer;transition:background-color .18s,color .18s}
+.footer.footer-v2 .fv-btn svg{width:13px;height:13px;flex:none;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.footer.footer-v2 .fv-btn-green{border:0!important;background:#34d17f!important;color:#062a1a!important}
+.footer.footer-v2 .fv-btn-green:hover{background:#2bc172!important;color:#062a1a!important}
+.footer.footer-v2 .fv-btn-outline{margin-top:18px!important;border:1.5px solid #0c1d36!important;background:transparent!important;color:#0c1d36!important}
+.footer.footer-v2 .fv-btn-outline:hover{background:#0c1d36!important;color:#fff!important}
+.footer.footer-v2 .fv-btn:focus-visible,
+.footer.footer-v2 .fv-col a:focus-visible,
+.footer.footer-v2 .footer-quote-trigger:focus-visible{outline:3px solid #2466d3;outline-offset:3px}
+
+/* Böyük ad */
+.footer-v2 .fv-word{margin-top:clamp(60px,8vw,120px);color:#0c1d36;font-size:calc(min(1296px,100vw - 64px) / 5.75);font-weight:900;letter-spacing:-.045em;line-height:.8;text-transform:uppercase;white-space:nowrap}
+.footer-v2 .fv-word .fv-best{background:linear-gradient(90deg,#45a8ec 0%,#3a7fb4 30%,#354044 58%,#3a7fb4 82%,#45a8ec 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.footer-v2 .fv-word .fv-think{color:#0bb862}
+.footer-v2 .fv-bottom{display:flex;justify-content:space-between;gap:20px;padding:22px 0 24px;color:#33445f;font-size:13px}
+
+/* Telefon və planşet */
+@media(max-width:900px){
+  .footer-v2 .fv-in{padding:0 18px}
+  .footer-v2 .fv-photo{height:300px}
+  .footer-v2 .fv-tag{right:12px;bottom:12px;width:calc(100% - 24px);padding:11px 14px}
+  .footer-v2 .fv-mid{grid-template-columns:1fr 1fr;gap:26px 18px}
+  .footer-v2 .fv-brand,
+  .footer-v2 .fv-services,
+  .footer-v2 .fv-contact{grid-column:1/-1}
+  .footer-v2 .fv-services{display:grid;grid-template-columns:1fr 1fr;column-gap:18px}
+  .footer-v2 .fv-services h4{grid-column:1/-1}
+  .footer-v2 .fv-brand img{height:70px}
+  .footer-v2 .fv-word{font-size:calc((100vw - 36px) / 5.75)}
+  .footer-v2 .fv-bottom{flex-direction:column;gap:6px}
+}
