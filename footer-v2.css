@@ -59,3 +59,21 @@
   .footer-v2 .fv-word{font-size:calc((100vw - 36px) / 5.75)}
   .footer-v2 .fv-bottom{flex-direction:column;gap:6px}
 }
+
+/* Aşağı hissənin fonu: tennis kortu xətlərinə bənzəyən çox zəif mavi xətlər */
+.footer.footer-v2::after{content:"";position:absolute;left:0;right:0;bottom:0;z-index:0;height:560px;pointer-events:none;
+  background:
+    linear-gradient(180deg,#fff 0%,rgba(255,255,255,0) 30%),
+    linear-gradient(90deg,transparent calc(50% - 1px),rgba(36,102,211,.09) calc(50% - 1px),rgba(36,102,211,.09) calc(50% + 1px),transparent calc(50% + 1px)),
+    linear-gradient(0deg,transparent 70px,rgba(36,102,211,.09) 70px,rgba(36,102,211,.09) 72px,transparent 72px),
+    linear-gradient(0deg,transparent 330px,rgba(36,102,211,.09) 330px,rgba(36,102,211,.09) 332px,transparent 332px),
+    linear-gradient(90deg,transparent 8%,rgba(36,102,211,.09) 8%,rgba(36,102,211,.09) calc(8% + 2px),transparent calc(8% + 2px),transparent 92%,rgba(36,102,211,.09) 92%,rgba(36,102,211,.09) calc(92% + 2px),transparent calc(92% + 2px)),
+    linear-gradient(180deg,#fcfdfe,#f6f9fd)}
+.footer-v2 .fv-in{position:relative;z-index:1}
+@media(max-width:900px){
+  .footer.footer-v2::after{height:300px;background:
+    linear-gradient(180deg,#fff 0%,rgba(255,255,255,0) 30%),
+    linear-gradient(90deg,transparent calc(50% - 1px),rgba(36,102,211,.09) calc(50% - 1px),rgba(36,102,211,.09) calc(50% + 1px),transparent calc(50% + 1px)),
+    linear-gradient(90deg,transparent 4%,rgba(36,102,211,.09) 4%,rgba(36,102,211,.09) calc(4% + 2px),transparent calc(4% + 2px),transparent 96%,rgba(36,102,211,.09) 96%,rgba(36,102,211,.09) calc(96% + 2px),transparent calc(96% + 2px)),
+    linear-gradient(180deg,#fcfdfe,#f6f9fd)}
+}
