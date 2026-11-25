@@ -17,7 +17,7 @@ Mənbə: ChatGPT-dən təhvil sənədi (7 noyabr 2026). Kodla uyğun gəlməyən
 ## Texniki quruluş
 - Statik HTML/CSS/JavaScript. Ortaq `header.html` və `footer.html` dinamik yüklənir.
 - `script.js` — ortaq funksiyalar, formalar, kalkulyatorlar, bloq filtrləri. Dəyişiklik bir neçə səhifəyə təsir edir.
-- `style.css` — əsas dizayn; `hero-growth.css` və `footer-growth.css` — təsdiqlənmiş fonlar. Footer fonunda pəncərələrin qatlarını pozma.
+- `style.css` — əsas dizayn. Footer: `footer-v2.css` (açıq fon, tennis kortu fotosu `assets/footer-tennis.webp`, kartda şüar “Think best, move fast.”, aşağıda loqo rəngli böyük BEST THINK). Köhnə `footer-growth.css` və `hero-growth.css` artıq qoşulmur. Footerdəki forma pəncərələrinin (müraciət və təklif) qatlarını pozma.
 - Workflow `.github/workflows/pages-and-dvx-sync.yml`: push, əl ilə başlatma, saatlıq DVX yoxlaması və deploy. DVX parser və son xəbərlər yoxlamalarını özü işlədir (`scripts/test-*.mjs`).
 - Formalar Google Apps Script-ə bağlıdır. Apps Script kodu bu repoda deyil.
 - `README.txt` köhnədir, cari təlimat kimi istifadə etmə.
