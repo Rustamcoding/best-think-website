@@ -77,3 +77,8 @@
     linear-gradient(90deg,transparent 4%,rgba(36,102,211,.09) 4%,rgba(36,102,211,.09) calc(4% + 2px),transparent calc(4% + 2px),transparent 96%,rgba(36,102,211,.09) 96%,rgba(36,102,211,.09) calc(96% + 2px),transparent calc(96% + 2px)),
     linear-gradient(180deg,#fcfdfe,#f6f9fd)}
 }
+
+/* Tennis kortu fotosu yalnız ana səhifədə; digər səhifələrdə gizlənir */
+body:not(.home-v2) .footer-v2 .fv-photo{display:none}
+body:not(.home-v2) .footer-v2 .fv-in{border-top:1px solid #e2e8f0}
+body:not(.home-v2) .footer-v2 .fv-mid{padding-top:56px}

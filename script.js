@@ -187,7 +187,7 @@ async function loadFooter() {
     }
 
     try {
-        const response = await fetch('/footer.html?v=20261125-footer-v2b');
+        const response = await fetch('/footer.html?v=20261125-footer-v2c');
 
         if (!response.ok) {
             throw new Error(`footer.html yüklənmədi: ${response.status}`);
