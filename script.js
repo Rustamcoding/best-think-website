@@ -234,6 +234,21 @@ if (document.readyState === 'complete') {
 }
 
 /* =========================================================
+   STATİSTİKA: uğurlu müraciəti Google Tag Manager-ə bildir
+   (GTM-də "generate_lead" adlı hadisə kimi tutulur)
+   ========================================================= */
+function trackLead(formName, purpose) {
+    try {
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+            event: 'generate_lead',
+            form_name: formName,
+            lead_purpose: purpose || ''
+        });
+    } catch (e) { /* statistika xətası formanı pozmasın */ }
+}
+
+/* =========================================================
    FOOTER ƏLAQƏ FORMASI
    ========================================================= */
 
@@ -383,6 +398,7 @@ function initializeFooterContactForm() {
         status.textContent = event.data.message || (event.data.ok ? 'Müraciətiniz qəbul edildi.' : 'Müraciət göndərilmədi. Yenidən cəhd edin.');
         status.classList.toggle('is-error', !event.data.ok);
         if (event.data.ok) {
+            trackLead('contact', purpose.value);
             form.reset();
             updateComposerAccess();
             window.setTimeout(closeModal, 1700);
@@ -1401,6 +1417,7 @@ function initializeFooterQuoteForm() {
         status.classList.toggle('is-error', !event.data.ok);
         status.classList.remove('is-success');
         if (event.data.ok) {
+            trackLead('quote', contactModeToggle.checked ? 'Mənimlə əlaqə saxlanılsın' : 'Ətraflı təklif sorğusu');
             if (contactModeToggle.checked) {
                 quickContactSubmitted = true;
                 status.classList.add('is-success');
