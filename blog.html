@@ -37,6 +37,7 @@
 <meta name="twitter:description" content="Vergi qanunvericiliyi, mühasibat uçotu, əmək haqqı və biznes mühiti üzrə aktual məqalələr.">
 <meta name="twitter:image" content="https://besthink.az/assets/Siyah%C4%B1%20%C3%BC%C3%A7%C3%BCn.png">
 <link rel="stylesheet" href="style.css?v=20261124-overflow">
+<link rel="stylesheet" href="blog-view.css?v=20261127-1">
 
     <link rel="icon" href="/favicon.ico" sizes="48x48">
     <link rel="icon" href="/favicon-192.png" type="image/png" sizes="192x192">
@@ -91,7 +92,19 @@
             <button class="blog-filter" type="button" data-blog-filter="guides" aria-pressed="false">Praktiki təlimatlar</button>
         </div>
     </div>
-    <p class="blog-result-count" id="blog-result-count" role="status" aria-live="polite">14 məqalə</p>
+    <div class="blog-view-row">
+        <div class="blog-view-toggle" role="group" aria-label="Görünüş">
+            <button class="blog-view-btn is-active" type="button" data-blog-view="grid" aria-pressed="true" title="Şəkilli kartlar">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg>
+                <span class="blog-view-sr">Şəkilli kartlar</span>
+            </button>
+            <button class="blog-view-btn" type="button" data-blog-view="list" aria-pressed="false" title="Yığcam siyahı">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1.2"/><circle cx="4.5" cy="12" r="1.2"/><circle cx="4.5" cy="18" r="1.2"/></svg>
+                <span class="blog-view-sr">Yığcam siyahı</span>
+            </button>
+        </div>
+        <p class="blog-result-count" id="blog-result-count" role="status" aria-live="polite">14 məqalə</p>
+    </div>
     <p class="blog-empty-message" id="blog-empty-message" hidden>Axtarışa uyğun məqalə tapılmadı. Başqa söz və ya kateqoriya seçin.</p>
 </div>
 
@@ -873,6 +886,7 @@
 
 
 <script src="script.js?v=20261125-footer-v2c"></script>
+<script src="blog-view.js?v=20261127-1" defer></script>
 
 
 </body>
